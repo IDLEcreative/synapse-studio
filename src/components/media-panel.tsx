@@ -128,7 +128,7 @@ export function MediaItemRow({
   return (
     <div
       className={cn(
-        "flex items-start space-x-2 py-2 w-full px-4 hover:bg-accent transition-all",
+        "flex items-start space-x-2 py-2 w-full px-4 hover:bg-blue-500/5 rounded-md transition-all cursor-pointer",
         className,
       )}
       {...props}
@@ -151,7 +151,7 @@ export function MediaItemRow({
           <GripVerticalIcon className="w-4 h-4" />
         </div>
       )}
-      <div className="w-16 h-16 aspect-square relative rounded overflow-hidden border border-transparent hover:border-accent bg-accent transition-all">
+      <div className="w-16 h-16 aspect-square relative rounded-md overflow-hidden border border-white/5 hover:border-blue-500/30 bg-gray-800/50 transition-all shadow-md">
         {data.status === "completed" ? (
           <>
             {(data.mediaType === "image" || data.mediaType === "video") &&
@@ -193,37 +193,42 @@ export function MediaItemRow({
           </div>
         )}
       </div>
-      <div className="flex flex-col h-full gap-1 flex-1">
+          <div className="flex flex-col h-full gap-1 flex-1">
         <div className="flex flex-col items-start justify-center">
           <div className="flex w-full justify-between">
             <h3 className="text-sm font-medium flex flex-row gap-1 items-center">
               {createElement(trackIcons[data.mediaType], {
-                className: "w-4 h-4 stroke-1",
+                className: cn("w-4 h-4 stroke-1", {
+                  "text-purple-400": data.mediaType === "image",
+                  "text-green-400": data.mediaType === "music",
+                  "text-yellow-400": data.mediaType === "voiceover",
+                  "text-red-400": data.mediaType === "video",
+                }),
               } as React.ComponentProps<
                 (typeof trackIcons)[keyof typeof trackIcons]
               >)}
               <span>{data.kind === "generated" ? "Job" : "File"}</span>
-              <code className="text-muted-foreground">#{mediaId}</code>
+              <code className="text-muted-foreground font-mono text-xs">#{mediaId}</code>
             </h3>
             {data.status !== "completed" && (
               <Badge
                 variant="outline"
-                className={cn({
-                  "text-rose-700": data.status === "failed",
-                  "text-sky-500": data.status === "running",
-                  "text-muted-foreground": data.status === "pending",
+                className={cn("text-xs font-medium px-2 py-0 h-5", {
+                  "text-rose-400 bg-rose-500/10 border-rose-500/30": data.status === "failed",
+                  "text-blue-400 bg-blue-500/10 border-blue-500/30": data.status === "running",
+                  "text-amber-400 bg-amber-500/10 border-amber-500/30": data.status === "pending",
                 })}
               >
                 {data.status}
               </Badge>
             )}
           </div>
-          <p className="opacity-40 text-sm line-clamp-1 ">
-            {data.input?.prompt}
+          <p className="text-gray-400 text-xs line-clamp-1 mt-0.5">
+            {data.input?.prompt || "Uploaded media"}
           </p>
         </div>
-        <div className="flex flex-row gap-2 justify-between">
-          <span className="text-xs text-muted-foreground">
+        <div className="flex flex-row gap-2 justify-between mt-1">
+          <span className="text-xs text-gray-500">
             {formatDistanceToNow(data.createdAt, { addSuffix: true })}
           </span>
         </div>
@@ -250,7 +255,7 @@ export function MediaItemPanel({
   return (
     <div
       className={cn(
-        "flex flex-col overflow-hidden divide-y divide-border",
+        "flex flex-col overflow-hidden space-y-1",
         className,
       )}
     >

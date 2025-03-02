@@ -29,6 +29,7 @@ import {
   MicIcon,
   MusicIcon,
   TrashIcon,
+  SparklesIcon,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -52,12 +53,12 @@ function AudioPlayer({ media, ...props }: AudioPlayerProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="aspect-square bg-accent text-muted-foreground flex flex-col items-center justify-center">
-        {media.mediaType === "music" && <MusicIcon className="w-1/2 h-1/2" />}
-        {media.mediaType === "voiceover" && <MicIcon className="w-1/2 h-1/2" />}
+      <div className="aspect-square bg-gray-800/50 border border-white/5 rounded-md shadow-lg text-muted-foreground flex flex-col items-center justify-center">
+        {media.mediaType === "music" && <MusicIcon className="w-1/2 h-1/2 text-green-400 opacity-70" />}
+        {media.mediaType === "voiceover" && <MicIcon className="w-1/2 h-1/2 text-yellow-400 opacity-70" />}
       </div>
       <div>
-        <audio src={src} {...props} controls className="rounded" />
+        <audio src={src} {...props} controls className="rounded-md w-full bg-gray-800/50 border border-white/5" />
       </div>
     </div>
   );
@@ -78,7 +79,7 @@ function MediaPropertyItem({
   return (
     <div
       className={cn(
-        "group relative flex flex-col gap-1 rounded bg-black/50 p-3 text-sm flex-wrap text-wrap overflow-hidden",
+        "group relative flex flex-col gap-1 rounded-md bg-gray-800/50 border border-white/5 p-3 text-sm flex-wrap text-wrap overflow-hidden shadow-md",
         className,
       )}
     >
@@ -88,13 +89,15 @@ function MediaPropertyItem({
           size="icon"
           onClick={() => {
             navigator.clipboard.writeText(value);
+            // Could add a toast notification here
           }}
+          className="h-7 w-7 hover:bg-blue-500/10 hover:text-blue-400"
         >
-          <CopyIcon className="w-4 h-4" />
+          <CopyIcon className="w-3.5 h-3.5" />
         </Button>
       </div>
-      <div className="font-medium text-muted-foreground">{label}</div>
-      <div className="font-semibold text-foreground text-ellipsis">
+      <div className="font-medium text-gray-400 text-xs">{label}</div>
+      <div className="font-medium text-gray-200 text-ellipsis text-xs">
         {children ?? value}
       </div>
     </div>
@@ -249,32 +252,50 @@ export function MediaGallerySheet({
             </div>
             <div className="flex flex-row gap-2">
               {selectedMedia?.mediaType === "image" && (
+              <>
                 <Button
                   onClick={handleOpenGenerateDialog}
                   variant="secondary"
                   disabled={deleteMedia.isPending}
+                  className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 border-blue-500/30"
                 >
-                  <FilmIcon className="w-4 h-4 opacity-50" />
+                  <FilmIcon className="w-4 h-4 mr-1.5" />
                   Make Video
                 </Button>
+                <Button
+                  onClick={() => {
+                    const openFluxProStudio = useVideoProjectStore.getState().openFluxProStudio;
+                    openFluxProStudio(mediaUrl, "fill");
+                    close();
+                  }}
+                  variant="secondary"
+                  disabled={deleteMedia.isPending}
+                  className="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 border-cyan-500/30"
+                >
+                  <SparklesIcon className="w-4 h-4 mr-1.5" />
+                  Flux Pro
+                </Button>
+              </>
               )}
               <Button
                 onClick={handleVary}
                 variant="secondary"
                 disabled={deleteMedia.isPending}
+                className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-300 border-purple-500/30"
               >
-                <ImagesIcon className="w-4 h-4 opacity-50" />
+                <ImagesIcon className="w-4 h-4 mr-1.5" />
                 Re-run
               </Button>
               <Button
                 variant="secondary"
                 disabled={deleteMedia.isPending}
                 onClick={() => deleteMedia.mutate()}
+                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border-rose-500/30"
               >
                 {deleteMedia.isPending ? (
-                  <LoadingIcon />
+                  <LoadingIcon className="mr-1.5" />
                 ) : (
-                  <TrashIcon className="w-4 h-4 opacity-50" />
+                  <TrashIcon className="w-4 h-4 mr-1.5" />
                 )}
                 Delete
               </Button>

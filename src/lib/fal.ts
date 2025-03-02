@@ -2,10 +2,28 @@
 
 import { createFalClient } from "@fal-ai/client";
 
+// Safe localStorage access that works in both client and server environments
+const getLocalStorageItem = (key: string): string | null => {
+  if (typeof window !== 'undefined') {
+    return localStorage?.getItem(key);
+  }
+  return null;
+};
+
+// Create a client that uses the server-side proxy without exposing credentials
 export const fal = createFalClient({
-  credentials: () => localStorage?.getItem("falKey") as string,
+  // No credentials needed here - they will be handled by the server-side proxy
   proxyUrl: "/api/fal",
 });
+
+// For admin/developer use only - allows setting a custom key in localStorage
+// This is not used for regular API calls
+export const setCustomFalKey = (key: string): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('fal_key', key);
+    console.log('Custom FAL key set. This will be used for development purposes only.');
+  }
+};
 
 export type InputAsset =
   | "video"
@@ -33,23 +51,91 @@ export const AVAILABLE_ENDPOINTS: ApiInfo[] = [
   {
     endpointId: "fal-ai/flux/dev",
     label: "Flux Dev",
-    description: "Generate a video from a text prompt",
+    description: "Generate high-quality images from text prompts",
     cost: "",
     category: "image",
   },
   {
     endpointId: "fal-ai/flux/schnell",
     label: "Flux Schnell",
-    description: "Generate a video from a text prompt",
+    description: "Fast image generation with good quality results",
     cost: "",
     category: "image",
   },
   {
     endpointId: "fal-ai/flux-pro/v1.1-ultra",
     label: "Flux Pro 1.1 Ultra",
-    description: "Generate a video from a text prompt",
+    description: "Premium image quality with advanced prompt understanding",
     cost: "",
     category: "image",
+  },
+  // Redux models
+  {
+    endpointId: "fal-ai/flux-pro/v1.1/redux",
+    label: "FLUX 1.1 [pro] Redux",
+    description: "Generate stylistic variations from a base image",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  {
+    endpointId: "fal-ai/flux-pro/v1/redux",
+    label: "FLUX.1 [pro] Redux",
+    description: "Generate stylistic variations from a base image",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  // Canny models
+  {
+    endpointId: "fal-ai/flux-pro/v1/canny",
+    label: "FLUX.1 [pro] Canny",
+    description: "Edge-guided image generation with structural conditioning",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  {
+    endpointId: "fal-ai/flux-pro/v1/canny-fine-tuned",
+    label: "FLUX.1 [pro] Canny Fine-tuned",
+    description: "Enhanced edge-guided image generation with improved detail",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  // Depth models
+  {
+    endpointId: "fal-ai/flux-pro/v1/depth",
+    label: "FLUX.1 [pro] Depth",
+    description: "Depth-guided image generation for 3D-aware results",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  {
+    endpointId: "fal-ai/flux-pro/v1/depth-fine-tuned",
+    label: "FLUX.1 [pro] Depth Fine-tuned",
+    description: "Enhanced depth-guided image generation with improved detail",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  // Fill models
+  {
+    endpointId: "fal-ai/flux-pro/v1/fill",
+    label: "FLUX.1 [pro] Fill",
+    description: "Advanced inpainting and outpainting with state-of-the-art results",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
+  },
+  {
+    endpointId: "fal-ai/flux-pro/v1/fill-fine-tuned",
+    label: "FLUX.1 [pro] Fill Fine-tuned",
+    description: "Enhanced inpainting with improved detail and coherence",
+    cost: "",
+    category: "image",
+    inputAsset: ["image"],
   },
   {
     endpointId: "fal-ai/stable-diffusion-v35-large",

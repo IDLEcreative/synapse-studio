@@ -3,8 +3,7 @@
 import { AVAILABLE_ENDPOINTS } from "@/lib/fal";
 import type { PlayerRef } from "@remotion/player";
 import { createContext, useContext } from "react";
-import { createStore } from "zustand";
-import { useStore } from "zustand/react";
+import { create } from "zustand";
 
 export const LAST_PROJECT_ID_KEY = "__aivs_lastProjectId";
 
@@ -17,7 +16,23 @@ export type GenerateData = {
   audio_url?: File | string | null;
   duration: number;
   voice: string;
+  // Flux Pro tool parameters
+  edgeStrength?: number;    // For Canny models
+  depthStrength?: number;   // For Depth models
+  maskImage?: string | File | null;  // For Fill models (mask area)
+  variationStrength?: number; // For Redux models
+  advanced_camera_control?: {
+    movement: string;
+    value: number;
+  };
   [key: string]: any;
+};
+
+export type FluxProStudioState = {
+  isOpen: boolean;
+  initialImage: string | null;
+  activeTab: "fill" | "canny" | "depth" | "redux" | "batch";
+  projectId: string;
 };
 
 interface VideoProjectProps {
@@ -33,6 +48,7 @@ interface VideoProjectProps {
   generateData: GenerateData;
   exportDialogOpen: boolean;
   endpointId: string;
+  fluxProStudio: FluxProStudioState;
 }
 
 interface VideoProjectState extends VideoProjectProps {
@@ -51,6 +67,11 @@ interface VideoProjectState extends VideoProjectProps {
   setExportDialogOpen: (open: boolean) => void;
   setEndpointId: (endpointId: string) => void;
   onGenerate: () => void;
+  
+  // Flux Pro Studio functions
+  setFluxProStudio: (state: Partial<FluxProStudioState>) => void;
+  openFluxProStudio: (initialImage?: string | null, tab?: "fill" | "canny" | "depth" | "redux" | "batch") => void;
+  closeFluxProStudio: () => void;
 }
 
 const DEFAULT_PROPS: VideoProjectProps = {
@@ -73,78 +94,82 @@ const DEFAULT_PROPS: VideoProjectProps = {
     audio_url: null,
   },
   exportDialogOpen: false,
+  fluxProStudio: {
+    isOpen: false,
+    initialImage: null,
+    activeTab: "fill",
+    projectId: "",
+  },
 };
 
-type VideoProjectStore = ReturnType<typeof createVideoProjectStore>;
-
-export const createVideoProjectStore = (
-  initProps?: Partial<VideoProjectProps>,
-) => {
-  return createStore<VideoProjectState>()((set, state) => ({
-    ...DEFAULT_PROPS,
-    ...initProps,
-    projectDialogOpen: initProps?.projectId ? false : true,
-    setEndpointId: (endpointId: string) => set({ endpointId }),
-    setProjectId: (projectId: string) => set({ projectId }),
-    setProjectDialogOpen: (projectDialogOpen: boolean) =>
-      set({ projectDialogOpen }),
-    setGenerateData: (generateData: Partial<GenerateData>) =>
+// Create a store using Zustand's create function
+export const useVideoProjectStore = create<VideoProjectState>((set, get) => ({
+  ...DEFAULT_PROPS,
+  setProjectId: (projectId: string) => set({ projectId }),
+  setProjectDialogOpen: (projectDialogOpen: boolean) =>
+    set({ projectDialogOpen }),
+  setGenerateData: (generateData: Partial<GenerateData>) =>
+    set({
+      generateData: Object.assign({}, get().generateData, generateData),
+    }),
+  resetGenerateData: () =>
+    set({
+      generateData: {
+        ...get().generateData,
+        prompt: "",
+        duration: 30,
+        image: null,
+        video_url: null,
+        audio_url: null,
+        voice: "",
+      },
+    }),
+  // [NOTE]: This is a placeholder function
+  onGenerate: () => {},
+  setPlayer: (player: PlayerRef) => set({ player }),
+  setPlayerCurrentTimestamp: (playerCurrentTimestamp: number) =>
+    set({ playerCurrentTimestamp }),
+  setPlayerState: (playerState: "playing" | "paused") => set({ playerState }),
+  setGenerateMediaType: (generateMediaType: MediaType) =>
+    set({ generateMediaType }),
+  openGenerateDialog: (mediaType) =>
+    set({
+      generateDialogOpen: true,
+      generateMediaType: mediaType ?? get().generateMediaType,
+    }),
+  closeGenerateDialog: () => set({ generateDialogOpen: false }),
+  setSelectedMediaId: (selectedMediaId: string | null) =>
+    set({ selectedMediaId }),
+  selectKeyframe: (frameId: string) => {
+    const selected = get().selectedKeyframes;
+    if (selected.includes(frameId)) {
       set({
-        generateData: Object.assign({}, state().generateData, generateData),
-      }),
-    resetGenerateData: () =>
-      set({
-        generateData: {
-          ...state().generateData,
-          prompt: "",
-          duration: 30,
-          image: null,
-          video_url: null,
-          audio_url: null,
-          voice: "",
-        },
-      }),
-    // [NOTE]: This is a placeholder function
-    onGenerate: () => {},
-    setPlayer: (player: PlayerRef) => set({ player }),
-    setPlayerCurrentTimestamp: (playerCurrentTimestamp: number) =>
-      set({ playerCurrentTimestamp }),
-    setPlayerState: (playerState: "playing" | "paused") => set({ playerState }),
-    setGenerateMediaType: (generateMediaType: MediaType) =>
-      set({ generateMediaType }),
-    openGenerateDialog: (mediaType) =>
-      set({
-        generateDialogOpen: true,
-        generateMediaType: mediaType ?? state().generateMediaType,
-      }),
-    closeGenerateDialog: () => set({ generateDialogOpen: false }),
-    setSelectedMediaId: (selectedMediaId: string | null) =>
-      set({ selectedMediaId }),
-    selectKeyframe: (frameId: string) => {
-      const selected = state().selectedKeyframes;
-      if (selected.includes(frameId)) {
-        set({
-          selectedKeyframes: selected.filter((id) => id !== frameId),
-        });
-      } else {
-        set({ selectedKeyframes: [...selected, frameId] });
-      }
-    },
-    setExportDialogOpen: (exportDialogOpen: boolean) =>
-      set({ exportDialogOpen }),
-  }));
-};
-
-export const VideoProjectStoreContext = createContext<VideoProjectStore>(
-  createVideoProjectStore(),
-);
-
-export function useVideoProjectStore<T>(
-  selector: (state: VideoProjectState) => T,
-): T {
-  const store = useContext(VideoProjectStoreContext);
-  return useStore(store, selector);
-}
+        selectedKeyframes: selected.filter((id) => id !== frameId),
+      });
+    } else {
+      set({ selectedKeyframes: [...selected, frameId] });
+    }
+  },
+  setExportDialogOpen: (exportDialogOpen: boolean) =>
+    set({ exportDialogOpen }),
+  setEndpointId: (endpointId: string) => set({ endpointId }),
+  
+  // Flux Pro Studio functions
+  setFluxProStudio: (state: Partial<FluxProStudioState>) => set({
+    fluxProStudio: { ...get().fluxProStudio, ...state }
+  }),
+  openFluxProStudio: (initialImage = null, tab = "fill") => set({
+    fluxProStudio: { 
+      isOpen: true, 
+      initialImage, 
+      activeTab: tab,
+      projectId: get().projectId
+    }
+  }),
+  closeFluxProStudio: () => set({
+    fluxProStudio: { ...get().fluxProStudio, isOpen: false }
+  }),
+}));
 
 export function useProjectId() {
   return useVideoProjectStore((s) => s.projectId);

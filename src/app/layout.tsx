@@ -3,8 +3,9 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Video Developer Starter Kit | fal.ai",
-  description: "Open-source AI video editor built for developers.",
+  title: "Synapse Studio | Advanced AI Video Editor",
+  description:
+    "A powerful AI-driven video editing platform for creators and professionals.",
 };
 
 export default function RootLayout({

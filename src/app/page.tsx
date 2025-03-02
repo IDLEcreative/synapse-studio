@@ -1,6 +1,7 @@
 import Header from "@/components/landing-header";
 import Hero from "@/components/landing-hero";
 import Features from "@/components/landing-features";
+import Pricing from "@/components/landing-pricing";
 import Community from "@/components/landing-community";
 import Footer from "@/components/landing-footer";
 
@@ -11,6 +12,7 @@ export default function IndexPage() {
       <main className="lg:pt-48">
         <Hero />
         <Features />
+        <Pricing />
         <Community />
       </main>
       <Footer />
