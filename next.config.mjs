@@ -30,7 +30,7 @@ const nextConfig = {
   experimental: {
     // ppr: true, // Requires canary version of Next.js
     serverActions: {
-      bodySizeLimit: '2mb', // Increased limit for video processing
+      bodySizeLimit: "2mb", // Increased limit for video processing
     },
     optimizePackageImports: [
       "@radix-ui/react-dialog",
