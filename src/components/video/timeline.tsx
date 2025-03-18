@@ -27,12 +27,15 @@ export function TimelineRuler({
 
   // Calculate the effective duration based on zoom level
   const effectiveDuration = Math.max(duration / zoomLevel, 5);
-  
+
   // Calculate visible range
   const startTime = Math.max(0, playerCurrentTimestamp - effectiveDuration / 2);
   const endTime = Math.min(duration, startTime + effectiveDuration);
-  const adjustedStartTime = Math.max(0, Math.min(startTime, duration - effectiveDuration));
-  
+  const adjustedStartTime = Math.max(
+    0,
+    Math.min(startTime, duration - effectiveDuration),
+  );
+
   // Calculate major ticks (every 5 seconds for more minimal look)
   const visibleDuration = endTime - adjustedStartTime;
   const majorTickInterval = 5; // Show ticks every 5 seconds
@@ -68,7 +71,13 @@ export function TimelineRuler({
       setPlayerCurrentTimestamp(Math.round(targetTime * 10) / 10);
       player.seekTo(Math.round(targetTime * 30));
     },
-    [adjustedStartTime, duration, player, setPlayerCurrentTimestamp, visibleDuration],
+    [
+      adjustedStartTime,
+      duration,
+      player,
+      setPlayerCurrentTimestamp,
+      visibleDuration,
+    ],
   );
 
   return (
@@ -115,14 +124,18 @@ export function TimelineRuler({
         {/* Minimal timeline ticks - only show every 5 seconds */}
         <div className="flex w-full relative mt-6">
           {Array.from({ length: majorTickCount }).map((_, index) => {
-            const tickTime = Math.floor(adjustedStartTime / majorTickInterval) * majorTickInterval + index * majorTickInterval;
+            const tickTime =
+              Math.floor(adjustedStartTime / majorTickInterval) *
+                majorTickInterval +
+              index * majorTickInterval;
             if (tickTime > duration) return null;
 
-            const position = ((tickTime - adjustedStartTime) / visibleDuration) * 100;
-            
+            const position =
+              ((tickTime - adjustedStartTime) / visibleDuration) * 100;
+
             return (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="absolute flex flex-col items-center"
                 style={{ left: `${position}%` }}
               >

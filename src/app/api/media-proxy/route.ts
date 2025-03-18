@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
     }
 
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     const mediaUrlObj = new URL(mediaUrl);
     const isAllowedDomain = allowedDomains.some((domain) =>
-      mediaUrlObj.hostname.endsWith(domain)
+      mediaUrlObj.hostname.endsWith(domain),
     );
 
     if (!isAllowedDomain) {
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
     }
 
@@ -69,26 +69,27 @@ export async function GET(request: NextRequest) {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
     }
 
     // Get the content type from the response
-    const contentType = response.headers.get("Content-Type") || "application/octet-stream";
-    
+    const contentType =
+      response.headers.get("Content-Type") || "application/octet-stream";
+
     // Get the content length if available
     const contentLength = response.headers.get("Content-Length");
-    
+
     // Create headers for the response
     const headers = new Headers();
     headers.set("Content-Type", contentType);
     if (contentLength) {
       headers.set("Content-Length", contentLength);
     }
-    
+
     // Add cache control headers for better performance
     headers.set("Cache-Control", "public, max-age=86400"); // Cache for 24 hours
-    
+
     // Stream the response back to the client
     const blob = await response.blob();
     return new NextResponse(blob, {
@@ -107,7 +108,7 @@ export async function GET(request: NextRequest) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   }
 }

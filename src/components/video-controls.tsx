@@ -98,14 +98,22 @@ export function VideoControls() {
   useHotkeys("left", onSeekBackward, [player]);
   useHotkeys("right", onSeekForward, [player]);
   useHotkeys("m", toggleMute, [player]);
-  useHotkeys("1", () => {
-    setPlaybackRate(1);
-    (player as any).setPlaybackRate?.(1);
-  }, [player]);
-  useHotkeys("2", () => {
-    setPlaybackRate(2);
-    (player as any).setPlaybackRate?.(2);
-  }, [player]);
+  useHotkeys(
+    "1",
+    () => {
+      setPlaybackRate(1);
+      (player as any).setPlaybackRate?.(1);
+    },
+    [player],
+  );
+  useHotkeys(
+    "2",
+    () => {
+      setPlaybackRate(2);
+      (player as any).setPlaybackRate?.(2);
+    },
+    [player],
+  );
 
   return (
     <div className="flex justify-center items-center gap-2 px-3 py-1 bg-gray-900/40">
@@ -124,7 +132,7 @@ export function VideoControls() {
           "p-1 rounded-full transition-colors",
           playerState === "paused"
             ? "text-blue-400 hover:text-blue-300"
-            : "text-gray-300 hover:text-white"
+            : "text-gray-300 hover:text-white",
         )}
         title={playerState === "paused" ? "Play (Space)" : "Pause (Space)"}
       >

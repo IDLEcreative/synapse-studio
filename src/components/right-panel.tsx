@@ -78,9 +78,7 @@ function ModelEndpointPicker({
 }: ModelEndpointPickerProps) {
   const endpoints = useMemo(
     () =>
-      AVAILABLE_ENDPOINTS.filter(
-        (endpoint) => endpoint.category === mediaType
-      ),
+      AVAILABLE_ENDPOINTS.filter((endpoint) => endpoint.category === mediaType),
     [mediaType],
   );
 
@@ -316,15 +314,15 @@ export default function RightPanel({
 
   const handleMediaTypeChange = (mediaType: string) => {
     setMediaType(mediaType as MediaType);
-    
+
     // Get all endpoints for this media type
     const filteredEndpoints = AVAILABLE_ENDPOINTS.filter(
-      (endpoint) => endpoint.category === mediaType
+      (endpoint) => endpoint.category === mediaType,
     );
-    
+
     // Get the first available endpoint for this media type
     const endpoint = filteredEndpoints.length > 0 ? filteredEndpoints[0] : null;
-    
+
     const initialInput = endpoint?.initialInput || {};
 
     if (
@@ -337,7 +335,11 @@ export default function RightPanel({
       setGenerateData({ ...initialInput });
     }
 
-    setEndpointId(endpoint?.endpointId ?? filteredEndpoints[0]?.endpointId ?? AVAILABLE_ENDPOINTS[0].endpointId);
+    setEndpointId(
+      endpoint?.endpointId ??
+        filteredEndpoints[0]?.endpointId ??
+        AVAILABLE_ENDPOINTS[0].endpointId,
+    );
   };
 
   const createJob = useJobCreator({
@@ -604,10 +606,14 @@ export default function RightPanel({
 
                 {/* Image Size Selector */}
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-sm font-medium text-gray-300">Image Size</h3>
+                  <h3 className="text-sm font-medium text-gray-300">
+                    Image Size
+                  </h3>
                   <Select
                     value={generateData.image_size || "square_hd"}
-                    onValueChange={(value) => setGenerateData({ image_size: value })}
+                    onValueChange={(value) =>
+                      setGenerateData({ image_size: value })
+                    }
                   >
                     <SelectTrigger className="bg-black/50 border-white/5 rounded-xl">
                       <SelectValue placeholder="Select image size" />
@@ -616,7 +622,9 @@ export default function RightPanel({
                       <SelectItem value="square_hd">Square HD</SelectItem>
                       <SelectItem value="portrait_hd">Portrait HD</SelectItem>
                       <SelectItem value="landscape_hd">Landscape HD</SelectItem>
-                      <SelectItem value="widescreen_hd">Widescreen HD (16:9)</SelectItem>
+                      <SelectItem value="widescreen_hd">
+                        Widescreen HD (16:9)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-gray-400">
@@ -625,7 +633,7 @@ export default function RightPanel({
                 </div>
               </div>
             )}
-            
+
             {/* Generate Button */}
             <Button
               variant="default"

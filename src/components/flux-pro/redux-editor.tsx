@@ -277,7 +277,7 @@ export default function ReduxEditor({
           num_images: 1,
           safety_tolerance: "2", // Default value from API docs
           output_format: "jpeg",
-          aspect_ratio: "1:1" // Default square aspect ratio
+          aspect_ratio: "1:1", // Default square aspect ratio
         },
         logs: true,
         onQueueUpdate: (update: any) => {

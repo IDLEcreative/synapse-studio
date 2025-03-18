@@ -12,7 +12,7 @@ const enhancedRoute = () => {
       // Check if this is a request for a specific requestId
       const url = new URL(req.url);
       const requestId = url.searchParams.get("requestId");
-      
+
       if (requestId) {
         // This is a request for a specific job status
         const apiKey = process.env.FAL_KEY || process.env.NEXT_PUBLIC_FAL_KEY;
@@ -82,7 +82,7 @@ const enhancedRoute = () => {
       // Check if this is a request for a specific endpoint
       if (body.endpoint) {
         console.log("FAL API Endpoint:", body.endpoint);
-        
+
         // Create a direct client with the API key
         const directClient = createFalClient({
           credentials: apiKey,
@@ -91,8 +91,11 @@ const enhancedRoute = () => {
         try {
           // Log the request for debugging
           console.log("FAL API Request to endpoint:", body.endpoint);
-          console.log("FAL API Request input:", JSON.stringify(body.input, null, 2));
-          
+          console.log(
+            "FAL API Request input:",
+            JSON.stringify(body.input, null, 2),
+          );
+
           // Submit the request to the specified endpoint
           const result = await directClient.subscribe(body.endpoint, {
             input: body.input,
@@ -101,7 +104,10 @@ const enhancedRoute = () => {
           });
 
           // Log the response for debugging
-          console.log("FAL API Response:", JSON.stringify(result.data, null, 2));
+          console.log(
+            "FAL API Response:",
+            JSON.stringify(result.data, null, 2),
+          );
 
           // Return the result
           return new NextResponse(JSON.stringify(result.data), { status: 200 });

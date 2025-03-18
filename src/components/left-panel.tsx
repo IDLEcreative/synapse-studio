@@ -3,19 +3,45 @@
 import { useProjectUpdater } from "@/data/mutations";
 import { queryKeys, useProject, useProjectMediaItems } from "@/data/queries";
 import { type MediaItem, PROJECT_PLACEHOLDER } from "@/data/schema";
-import { type MediaType, useProjectId, useVideoProjectStore } from "@/data/store";
+import {
+  type MediaType,
+  useProjectId,
+  useVideoProjectStore,
+} from "@/data/store";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
-  ChevronDown, FilmIcon, FolderOpenIcon, GalleryVerticalIcon, ImageIcon,
-  ImagePlusIcon, MusicIcon, LoaderCircleIcon, CloudUploadIcon, SparklesIcon,
-  ChevronLeftIcon, ChevronRightIcon, GridIcon, ListIcon, SearchIcon, TagIcon,
-  SlidersHorizontalIcon, BookmarkIcon, StarIcon, XIcon, KeyboardIcon
+  ChevronDown,
+  FilmIcon,
+  FolderOpenIcon,
+  GalleryVerticalIcon,
+  ImageIcon,
+  ImagePlusIcon,
+  MusicIcon,
+  LoaderCircleIcon,
+  CloudUploadIcon,
+  SparklesIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  GridIcon,
+  ListIcon,
+  SearchIcon,
+  TagIcon,
+  SlidersHorizontalIcon,
+  BookmarkIcon,
+  StarIcon,
+  XIcon,
+  KeyboardIcon,
 } from "lucide-react";
 import { MediaItemPanel } from "./media-panel";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { useEffect, useRef, useState } from "react";
 import { useUploadThing } from "@/lib/uploadthing";
 import type { ClientUploadedFileData } from "uploadthing/types";
@@ -23,7 +49,12 @@ import { db } from "@/data/db";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { getMediaMetadata } from "@/lib/ffmpeg";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
 import { cn } from "@/lib/utils";
 import { WithTooltip } from "./ui/tooltip";
 
@@ -36,44 +67,68 @@ export default function LeftPanel() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"newest" | "oldest" | "a-z" | "z-a">("newest");
+  const [sortOrder, setSortOrder] = useState<
+    "newest" | "oldest" | "a-z" | "z-a"
+  >("newest");
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
-  const { data: allMediaItems = [], isLoading } = useProjectMediaItems(projectId);
-  
+  const { data: allMediaItems = [], isLoading } =
+    useProjectMediaItems(projectId);
+
   // Filter media items based on type and search query
-  const mediaItems = allMediaItems.filter(item => {
+  const mediaItems = allMediaItems.filter((item) => {
     const matchesType = mediaType === "all" || item.mediaType === mediaType;
-    const matchesSearch = !searchQuery || 
-      (item.metadata?.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-       item.metadata?.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       item.id.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch =
+      !searchQuery ||
+      item.metadata?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.metadata?.description
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      item.id.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesSearch;
   });
-  
-  const setProjectDialogOpen = useVideoProjectStore((s) => s.setProjectDialogOpen);
+
+  const setProjectDialogOpen = useVideoProjectStore(
+    (s) => s.setProjectDialogOpen,
+  );
   const openGenerateDialog = useVideoProjectStore((s) => s.openGenerateDialog);
   const { startUpload, isUploading } = useUploadThing("fileUploader");
 
   // Keyboard shortcuts
-  useHotkeys('ctrl+f, cmd+f', (e) => {
-    e.preventDefault();
-    setShowSearch(true);
-    setTimeout(() => searchInputRef.current?.focus(), 100);
-  }, { enableOnFormTags: true });
-  
-  useHotkeys('escape', () => {
-    if (showSearch && searchQuery) setSearchQuery('');
-    else if (showSearch) setShowSearch(false);
-  }, { enableOnFormTags: true });
-  
-  useHotkeys('ctrl+1, cmd+1', () => setMediaType('all'), { enableOnFormTags: true });
-  useHotkeys('ctrl+2, cmd+2', () => setMediaType('image'), { enableOnFormTags: true });
-  useHotkeys('ctrl+3, cmd+3', () => setMediaType('music'), { enableOnFormTags: true });
-  useHotkeys('ctrl+4, cmd+4', () => setMediaType('video'), { enableOnFormTags: true });
-  
+  useHotkeys(
+    "ctrl+f, cmd+f",
+    (e) => {
+      e.preventDefault();
+      setShowSearch(true);
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    },
+    { enableOnFormTags: true },
+  );
+
+  useHotkeys(
+    "escape",
+    () => {
+      if (showSearch && searchQuery) setSearchQuery("");
+      else if (showSearch) setShowSearch(false);
+    },
+    { enableOnFormTags: true },
+  );
+
+  useHotkeys("ctrl+1, cmd+1", () => setMediaType("all"), {
+    enableOnFormTags: true,
+  });
+  useHotkeys("ctrl+2, cmd+2", () => setMediaType("image"), {
+    enableOnFormTags: true,
+  });
+  useHotkeys("ctrl+3, cmd+3", () => setMediaType("music"), {
+    enableOnFormTags: true,
+  });
+  useHotkeys("ctrl+4, cmd+4", () => setMediaType("video"), {
+    enableOnFormTags: true,
+  });
+
   // Focus search input when search is shown
   useEffect(() => {
     if (showSearch) searchInputRef.current?.focus();
@@ -95,7 +150,9 @@ export default function LeftPanel() {
     }
   };
 
-  const handleUploadComplete = async (files: ClientUploadedFileData<{ uploadedBy: string }>[]) => {
+  const handleUploadComplete = async (
+    files: ClientUploadedFileData<{ uploadedBy: string }>[],
+  ) => {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const mediaType = file.type.split("/")[0];
@@ -132,27 +189,43 @@ export default function LeftPanel() {
   // Sort media items based on selected order
   const sortedMediaItems = [...mediaItems].sort((a, b) => {
     switch (sortOrder) {
-      case "newest": return (b.createdAt || 0) - (a.createdAt || 0);
-      case "oldest": return (a.createdAt || 0) - (b.createdAt || 0);
-      case "a-z": return (a.metadata?.title || a.id || "").localeCompare(b.metadata?.title || b.id || "");
-      case "z-a": return (b.metadata?.title || b.id || "").localeCompare(a.metadata?.title || a.id || "");
-      default: return 0;
+      case "newest":
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      case "oldest":
+        return (a.createdAt || 0) - (b.createdAt || 0);
+      case "a-z":
+        return (a.metadata?.title || a.id || "").localeCompare(
+          b.metadata?.title || b.id || "",
+        );
+      case "z-a":
+        return (b.metadata?.title || b.id || "").localeCompare(
+          a.metadata?.title || a.id || "",
+        );
+      default:
+        return 0;
     }
   });
 
   // Display the sort order text
   const getSortOrderText = () => {
     switch (sortOrder) {
-      case "newest": return "Newest";
-      case "oldest": return "Oldest";
-      case "a-z": return "Name (A-Z)";
-      case "z-a": return "Name (Z-A)";
-      default: return "Newest";
+      case "newest":
+        return "Newest";
+      case "oldest":
+        return "Oldest";
+      case "a-z":
+        return "Name (A-Z)";
+      case "z-a":
+        return "Name (Z-A)";
+      default:
+        return "Newest";
     }
   };
 
   return (
-    <div className={`flex flex-col float-panel ${isCollapsed ? "w-16" : "w-96"} transition-all duration-300 relative`}>
+    <div
+      className={`flex flex-col float-panel ${isCollapsed ? "w-16" : "w-96"} transition-all duration-300 relative`}
+    >
       {/* Keyboard shortcuts dialog */}
       {showKeyboardShortcuts && (
         <div className="absolute inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -162,9 +235,9 @@ export default function LeftPanel() {
                 <KeyboardIcon className="w-4 h-4 mr-2" />
                 Keyboard Shortcuts
               </h3>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setShowKeyboardShortcuts(false)}
                 className="h-6 w-6 p-0 rounded-full hover:bg-white/10"
               >
@@ -174,33 +247,45 @@ export default function LeftPanel() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-300">Search</span>
-                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">Ctrl/⌘ + F</span>
+                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">
+                  Ctrl/⌘ + F
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-300">All Media</span>
-                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">Ctrl/⌘ + 1</span>
+                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">
+                  Ctrl/⌘ + 1
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-300">Images</span>
-                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">Ctrl/⌘ + 2</span>
+                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">
+                  Ctrl/⌘ + 2
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-300">Audio</span>
-                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">Ctrl/⌘ + 3</span>
+                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">
+                  Ctrl/⌘ + 3
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-300">Video</span>
-                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">Ctrl/⌘ + 4</span>
+                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">
+                  Ctrl/⌘ + 4
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-300">Close/Clear</span>
-                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">Esc</span>
+                <span className="text-gray-400 font-mono bg-black/30 px-2 py-0.5 rounded">
+                  Esc
+                </span>
               </div>
             </div>
           </div>
         </div>
       )}
-      
+
       {/* Collapse/Expand button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -213,9 +298,11 @@ export default function LeftPanel() {
           <ChevronLeftIcon className="w-4 h-4 text-gray-300" />
         )}
       </button>
-      
+
       {/* Project header section */}
-      <div className={`p-4 flex items-center ${isCollapsed ? "justify-center" : "gap-4"} border-b border-white/5 bg-black/50 backdrop-blur-sm`}>
+      <div
+        className={`p-4 flex items-center ${isCollapsed ? "justify-center" : "gap-4"} border-b border-white/5 bg-black/50 backdrop-blur-sm`}
+      >
         {isCollapsed ? (
           <Button
             className="btn-minimal text-blue-400 hover:text-blue-300 transition-colors rounded-xl"
@@ -229,7 +316,12 @@ export default function LeftPanel() {
         ) : (
           <>
             <div className="flex w-full">
-              <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full"
+                defaultValue="item-1"
+              >
                 <AccordionItem value="item-1" className="border-b-0">
                   <AccordionTrigger className="py-3 hover:bg-white/5 rounded-xl px-3 transition-all group">
                     <div className="flex flex-row items-center gap-2">
@@ -256,8 +348,14 @@ export default function LeftPanel() {
                           name="name"
                           placeholder="untitled"
                           value={project.title}
-                          onChange={(e) => projectUpdate.mutate({ title: e.target.value })}
-                          onBlur={(e) => projectUpdate.mutate({ title: e.target.value.trim() })}
+                          onChange={(e) =>
+                            projectUpdate.mutate({ title: e.target.value })
+                          }
+                          onBlur={(e) =>
+                            projectUpdate.mutate({
+                              title: e.target.value.trim(),
+                            })
+                          }
                           className="focus-visible:ring-blue-500 bg-black/50 border-white/5 hover:border-blue-500/30 transition-colors rounded-xl"
                         />
                       </div>
@@ -276,8 +374,16 @@ export default function LeftPanel() {
                           className="resize-none focus-visible:ring-blue-500 bg-black/50 border-white/5 hover:border-blue-500/30 transition-colors rounded-xl"
                           value={project.description}
                           rows={4}
-                          onChange={(e) => projectUpdate.mutate({ description: e.target.value })}
-                          onBlur={(e) => projectUpdate.mutate({ description: e.target.value.trim() })}
+                          onChange={(e) =>
+                            projectUpdate.mutate({
+                              description: e.target.value,
+                            })
+                          }
+                          onBlur={(e) =>
+                            projectUpdate.mutate({
+                              description: e.target.value.trim(),
+                            })
+                          }
                         />
                       </div>
                     </div>
@@ -299,7 +405,7 @@ export default function LeftPanel() {
           </>
         )}
       </div>
-      
+
       {/* Media gallery section */}
       <div className="flex-1 py-4 flex flex-col gap-4 border-b border-white/5 h-full overflow-hidden relative">
         {isCollapsed ? (
@@ -317,9 +423,10 @@ export default function LeftPanel() {
               variant={mediaType === "all" ? "default" : "ghost"}
               size="sm"
               onClick={() => setMediaType("all")}
-              className={mediaType === "all"
-                ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 p-2 rounded-xl"
-                : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
+              className={
+                mediaType === "all"
+                  ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 p-2 rounded-xl"
+                  : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
               }
               title="All Media"
             >
@@ -329,9 +436,10 @@ export default function LeftPanel() {
               variant={mediaType === "image" ? "default" : "ghost"}
               size="sm"
               onClick={() => setMediaType("image")}
-              className={mediaType === "image"
-                ? "bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:text-purple-300 p-2 rounded-xl"
-                : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
+              className={
+                mediaType === "image"
+                  ? "bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:text-purple-300 p-2 rounded-xl"
+                  : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
               }
               title="Images"
             >
@@ -341,9 +449,10 @@ export default function LeftPanel() {
               variant={mediaType === "music" ? "default" : "ghost"}
               size="sm"
               onClick={() => setMediaType("music")}
-              className={mediaType === "music"
-                ? "bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 p-2 rounded-xl"
-                : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
+              className={
+                mediaType === "music"
+                  ? "bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 p-2 rounded-xl"
+                  : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
               }
               title="Audio"
             >
@@ -353,9 +462,10 @@ export default function LeftPanel() {
               variant={mediaType === "video" ? "default" : "ghost"}
               size="sm"
               onClick={() => setMediaType("video")}
-              className={mediaType === "video"
-                ? "bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 p-2 rounded-xl"
-                : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
+              className={
+                mediaType === "video"
+                  ? "bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 p-2 rounded-xl"
+                  : "hover:bg-white/5 text-gray-400 hover:text-white p-2 rounded-xl"
               }
               title="Video"
             >
@@ -396,7 +506,9 @@ export default function LeftPanel() {
                   <div className="w-6 h-6 flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
                     <GalleryVerticalIcon className="w-3.5 h-3.5" />
                   </div>
-                  <h2 className="text-sm font-semibold text-blue-400">Media Gallery</h2>
+                  <h2 className="text-sm font-semibold text-blue-400">
+                    Media Gallery
+                  </h2>
                 </div>
                 <div className="flex items-center gap-2">
                   <WithTooltip tooltip="Keyboard shortcuts">
@@ -415,13 +527,17 @@ export default function LeftPanel() {
                       size="sm"
                       onClick={() => {
                         setShowSearch(!showSearch);
-                        if (!showSearch) setTimeout(() => searchInputRef.current?.focus(), 100);
+                        if (!showSearch)
+                          setTimeout(
+                            () => searchInputRef.current?.focus(),
+                            100,
+                          );
                       }}
                       className={cn(
                         "h-7 w-7 p-0 rounded-lg",
-                        showSearch 
-                          ? "bg-blue-500/10 text-blue-400" 
-                          : "hover:bg-white/5 text-gray-400 hover:text-gray-300"
+                        showSearch
+                          ? "bg-blue-500/10 text-blue-400"
+                          : "hover:bg-white/5 text-gray-400 hover:text-gray-300",
                       )}
                     >
                       <SearchIcon className="w-3.5 h-3.5" />
@@ -431,9 +547,10 @@ export default function LeftPanel() {
                     variant={mediaItems.length > 0 ? "outline" : "default"}
                     size="sm"
                     onClick={() => openGenerateDialog()}
-                    className={mediaItems.length > 0
-                      ? "btn-minimal text-blue-400 hover:text-blue-300 rounded-xl"
-                      : "btn-accent rounded-xl"
+                    className={
+                      mediaItems.length > 0
+                        ? "btn-minimal text-blue-400 hover:text-blue-300 rounded-xl"
+                        : "btn-accent rounded-xl"
                     }
                   >
                     <SparklesIcon className="w-4 h-4 mr-1.5" />
@@ -478,7 +595,7 @@ export default function LeftPanel() {
                       "flex-1 rounded-lg transition-all duration-200",
                       mediaType === "all"
                         ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300"
-                        : "hover:bg-white/5 text-gray-400 hover:text-white"
+                        : "hover:bg-white/5 text-gray-400 hover:text-white",
                     )}
                   >
                     <GalleryVerticalIcon className="w-3.5 h-3.5 mr-1" />
@@ -493,7 +610,7 @@ export default function LeftPanel() {
                       "flex-1 rounded-lg transition-all duration-200",
                       mediaType === "image"
                         ? "bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 hover:text-purple-300"
-                        : "hover:bg-white/5 text-gray-400 hover:text-white"
+                        : "hover:bg-white/5 text-gray-400 hover:text-white",
                     )}
                   >
                     <ImageIcon className="w-3.5 h-3.5 mr-1" />
@@ -508,7 +625,7 @@ export default function LeftPanel() {
                       "flex-1 rounded-lg transition-all duration-200",
                       mediaType === "music"
                         ? "bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:text-green-300"
-                        : "hover:bg-white/5 text-gray-400 hover:text-white"
+                        : "hover:bg-white/5 text-gray-400 hover:text-white",
                     )}
                   >
                     <MusicIcon className="w-3.5 h-3.5 mr-1" />
@@ -523,7 +640,7 @@ export default function LeftPanel() {
                       "flex-1 rounded-lg transition-all duration-200",
                       mediaType === "video"
                         ? "bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300"
-                        : "hover:bg-white/5 text-gray-400 hover:text-white"
+                        : "hover:bg-white/5 text-gray-400 hover:text-white",
                     )}
                   >
                     <FilmIcon className="w-3.5 h-3.5 mr-1" />
@@ -531,7 +648,7 @@ export default function LeftPanel() {
                     <span className="ml-1 text-xs opacity-70">⌘4</span>
                   </Button>
                 </div>
-                
+
                 {/* Upload and filter buttons */}
                 <div className="flex items-center gap-1">
                   <Button
@@ -559,7 +676,7 @@ export default function LeftPanel() {
                       Upload
                     </label>
                   </Button>
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button

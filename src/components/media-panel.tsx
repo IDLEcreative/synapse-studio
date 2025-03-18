@@ -47,12 +47,12 @@ export function MediaItemRow({
     queryKey: queryKeys.projectMedia(projectId, data.id),
     queryFn: async () => {
       if (data.kind === "uploaded") return null;
-      
+
       try {
         const queueStatus = await fal.queue.status(data.endpointId, {
           requestId: data.requestId,
         });
-        
+
         if (queueStatus.status === "IN_PROGRESS") {
           await db.media.update(data.id, {
             ...data,
@@ -62,7 +62,7 @@ export function MediaItemRow({
             queryKey: queryKeys.projectMediaItems(data.projectId),
           });
         }
-        
+
         let media: Partial<MediaItem> = {};
 
         if (queueStatus.status === "COMPLETED") {
@@ -82,7 +82,7 @@ export function MediaItemRow({
               title: "Generation completed",
               description: `Your ${data.mediaType} has been generated successfully.`,
             });
-            
+
             if (media.mediaType !== "image") {
               const mediaMetadata = await getMediaMetadata(media as MediaItem);
 
@@ -110,7 +110,7 @@ export function MediaItemRow({
             });
           }
         }
-        
+
         return null;
       } catch (error) {
         console.error("Error checking queue status:", error);
@@ -325,18 +325,21 @@ export function MediaItemGrid({
             )}
           </div>
         )}
-        
+
         {/* Type indicator */}
         <div className="absolute top-2 left-2 z-10">
-          <div className={cn(
-            "w-6 h-6 rounded-full flex items-center justify-center",
-            {
-              "bg-purple-500/20 text-purple-400": data.mediaType === "image",
-              "bg-green-500/20 text-green-400": data.mediaType === "music",
-              "bg-yellow-500/20 text-yellow-400": data.mediaType === "voiceover",
-              "bg-red-500/20 text-red-400": data.mediaType === "video",
-            }
-          )}>
+          <div
+            className={cn(
+              "w-6 h-6 rounded-full flex items-center justify-center",
+              {
+                "bg-purple-500/20 text-purple-400": data.mediaType === "image",
+                "bg-green-500/20 text-green-400": data.mediaType === "music",
+                "bg-yellow-500/20 text-yellow-400":
+                  data.mediaType === "voiceover",
+                "bg-red-500/20 text-red-400": data.mediaType === "video",
+              },
+            )}
+          >
             {createElement(trackIcons[data.mediaType], {
               className: "w-3.5 h-3.5 stroke-1",
             } as React.ComponentProps<
@@ -344,7 +347,7 @@ export function MediaItemGrid({
             >)}
           </div>
         </div>
-        
+
         {/* Status badge */}
         {data.status !== "completed" && (
           <div className="absolute top-2 right-2 z-10">
@@ -364,7 +367,7 @@ export function MediaItemGrid({
           </div>
         )}
       </div>
-      
+
       {/* Info footer */}
       <div className="p-2 bg-black/70">
         <div className="flex items-center justify-between">
@@ -406,26 +409,24 @@ export function MediaItemPanel({
   });
 
   return (
-    <div 
+    <div
       className={cn(
         "overflow-hidden",
         viewMode === "list" ? "flex flex-col space-y-1" : "flex flex-wrap",
-        className
+        className,
       )}
     >
-      {viewMode === "list" ? (
-        // List view
-        filteredData.map((media) => (
-          <Fragment key={media.id}>
-            <MediaItemRow data={media} onOpen={handleOnOpen} />
-          </Fragment>
-        ))
-      ) : (
-        // Grid view
-        filteredData.map((media) => (
-          <MediaItemGrid key={media.id} data={media} onOpen={handleOnOpen} />
-        ))
-      )}
+      {viewMode === "list"
+        ? // List view
+          filteredData.map((media) => (
+            <Fragment key={media.id}>
+              <MediaItemRow data={media} onOpen={handleOnOpen} />
+            </Fragment>
+          ))
+        : // Grid view
+          filteredData.map((media) => (
+            <MediaItemGrid key={media.id} data={media} onOpen={handleOnOpen} />
+          ))}
     </div>
   );
 }

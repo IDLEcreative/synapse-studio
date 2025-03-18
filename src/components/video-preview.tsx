@@ -180,10 +180,14 @@ const ErrorBoundaryVideo: React.FC<{
   // Log the video source for debugging
   useEffect(() => {
     console.log(`Attempting to load video: ${src}`);
-    
+
     // Check if we need to proxy this URL
-    if (!src.startsWith('/api/media-proxy') && 
-        (src.includes('fal.media') || src.includes('v2.fal.media') || src.includes('v3.fal.media'))) {
+    if (
+      !src.startsWith("/api/media-proxy") &&
+      (src.includes("fal.media") ||
+        src.includes("v2.fal.media") ||
+        src.includes("v3.fal.media"))
+    ) {
       const newSrc = `/api/media-proxy?url=${encodeURIComponent(src)}`;
       console.log(`Using proxied URL for video: ${newSrc}`);
       setProxiedSrc(newSrc);
@@ -226,7 +230,7 @@ const ErrorBoundaryVideo: React.FC<{
         videoEl.preload = "auto";
         videoEl.crossOrigin = "anonymous";
         videoEl.src = proxiedSrc;
-        
+
         videoEl.onloadeddata = () => {
           console.log(`Successfully preloaded video: ${proxiedSrc}`);
           setIsLoaded(true);
@@ -237,7 +241,7 @@ const ErrorBoundaryVideo: React.FC<{
           console.error(`Error preloading video: ${proxiedSrc}`, e);
           setHasError(true);
         };
-        
+
         videoEl.load();
       } catch (error) {
         console.error(`Exception preloading video: ${proxiedSrc}`, error);
@@ -351,10 +355,14 @@ const ErrorBoundaryAudio: React.FC<{
   // Log the audio source for debugging
   useEffect(() => {
     console.log(`Attempting to load audio: ${src}`);
-    
+
     // Check if we need to proxy this URL
-    if (!src.startsWith('/api/media-proxy') && 
-        (src.includes('fal.media') || src.includes('v2.fal.media') || src.includes('v3.fal.media'))) {
+    if (
+      !src.startsWith("/api/media-proxy") &&
+      (src.includes("fal.media") ||
+        src.includes("v2.fal.media") ||
+        src.includes("v3.fal.media"))
+    ) {
       const newSrc = `/api/media-proxy?url=${encodeURIComponent(src)}`;
       console.log(`Using proxied URL for audio: ${newSrc}`);
       setProxiedSrc(newSrc);
@@ -384,7 +392,7 @@ const ErrorBoundaryAudio: React.FC<{
         audioEl.preload = "auto";
         audioEl.crossOrigin = "anonymous";
         audioEl.src = proxiedSrc;
-        
+
         audioEl.onloadeddata = () => {
           console.log(`Successfully preloaded audio: ${proxiedSrc}`);
           setIsLoaded(true);
@@ -394,7 +402,7 @@ const ErrorBoundaryAudio: React.FC<{
           console.error(`Error preloading audio: ${proxiedSrc}`, e);
           setHasError(true);
         };
-        
+
         audioEl.load();
       } catch (error) {
         console.error(`Exception preloading audio: ${proxiedSrc}`, error);
@@ -461,17 +469,17 @@ export default function VideoPreview() {
           videoEl.muted = true;
           videoEl.crossOrigin = "anonymous";
           videoEl.src = mediaUrl;
-          
+
           // Set up event listeners before loading
           videoEl.onloadeddata = () => {
             console.log(`Successfully preloaded video: ${mediaUrl}`);
           };
-          
+
           videoEl.onerror = async (e) => {
             console.error(`Error preloading video element: ${mediaUrl}`, e);
             // The error is already being handled by the retry mechanism
           };
-          
+
           videoEl.load();
 
           // Also use the Remotion preloader
@@ -481,10 +489,16 @@ export default function VideoPreview() {
             console.warn(`Remotion preloadVideo failed: ${mediaUrl}`, error);
             // The resolveMediaUrl function should already route problematic URLs through our proxy
             // This is just a fallback in case that didn't work
-            if (!mediaUrl.startsWith('/api/media-proxy') && 
-                (mediaUrl.includes('fal.media') || mediaUrl.includes('v2.fal.media') || mediaUrl.includes('v3.fal.media'))) {
+            if (
+              !mediaUrl.startsWith("/api/media-proxy") &&
+              (mediaUrl.includes("fal.media") ||
+                mediaUrl.includes("v2.fal.media") ||
+                mediaUrl.includes("v3.fal.media"))
+            ) {
               console.log(`Attempting direct fetch for: ${mediaUrl}`);
-              await fetch(mediaUrl, { mode: 'no-cors' }).catch(e => console.log('Fetch no-cors completed'));
+              await fetch(mediaUrl, { mode: "no-cors" }).catch((e) =>
+                console.log("Fetch no-cors completed"),
+              );
             }
           }
         }
@@ -497,17 +511,17 @@ export default function VideoPreview() {
           audioEl.preload = "auto";
           audioEl.crossOrigin = "anonymous";
           audioEl.src = mediaUrl;
-          
+
           // Set up event listeners before loading
           audioEl.onloadeddata = () => {
             console.log(`Successfully preloaded audio: ${mediaUrl}`);
           };
-          
+
           audioEl.onerror = async (e) => {
             console.error(`Error preloading audio element: ${mediaUrl}`, e);
             // The error is already being handled by the retry mechanism
           };
-          
+
           audioEl.load();
 
           // Also use the Remotion preloader
@@ -517,10 +531,16 @@ export default function VideoPreview() {
             console.warn(`Remotion preloadAudio failed: ${mediaUrl}`, error);
             // The resolveMediaUrl function should already route problematic URLs through our proxy
             // This is just a fallback in case that didn't work
-            if (!mediaUrl.startsWith('/api/media-proxy') && 
-                (mediaUrl.includes('fal.media') || mediaUrl.includes('v2.fal.media') || mediaUrl.includes('v3.fal.media'))) {
+            if (
+              !mediaUrl.startsWith("/api/media-proxy") &&
+              (mediaUrl.includes("fal.media") ||
+                mediaUrl.includes("v2.fal.media") ||
+                mediaUrl.includes("v3.fal.media"))
+            ) {
               console.log(`Attempting direct fetch for: ${mediaUrl}`);
-              await fetch(mediaUrl, { mode: 'no-cors' }).catch(e => console.log('Fetch no-cors completed'));
+              await fetch(mediaUrl, { mode: "no-cors" }).catch((e) =>
+                console.log("Fetch no-cors completed"),
+              );
             }
           }
         }

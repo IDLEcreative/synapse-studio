@@ -113,16 +113,12 @@ export function resolveMediaUrl(item: MediaItem | undefined): string | null {
   if (!mediaUrl) return null;
 
   // Check if the URL is from a domain that might cause CORS issues
-  const corsProblematicDomains = [
-    "fal.media",
-    "v2.fal.media",
-    "v3.fal.media",
-  ];
+  const corsProblematicDomains = ["fal.media", "v2.fal.media", "v3.fal.media"];
 
   try {
     const urlObj = new URL(mediaUrl);
-    const shouldProxy = corsProblematicDomains.some(domain => 
-      urlObj.hostname.includes(domain)
+    const shouldProxy = corsProblematicDomains.some((domain) =>
+      urlObj.hostname.includes(domain),
     );
 
     // If the URL is from a problematic domain, route it through our proxy

@@ -180,20 +180,27 @@ export default function BottomBar() {
             }}
             onMouseDown={(e) => {
               e.stopPropagation();
-              const timelineContainer = document.querySelector(".timeline-container");
+              const timelineContainer = document.querySelector(
+                ".timeline-container",
+              );
               if (!timelineContainer) return;
 
               const timelineRect = timelineContainer.getBoundingClientRect();
-              const initialOffset = e.clientX - e.currentTarget.getBoundingClientRect().left;
+              const initialOffset =
+                e.clientX - e.currentTarget.getBoundingClientRect().left;
 
               const handleMouseMove = (moveEvent: MouseEvent) => {
                 moveEvent.preventDefault();
-                const relativeX = moveEvent.clientX - timelineRect.left - initialOffset;
+                const relativeX =
+                  moveEvent.clientX - timelineRect.left - initialOffset;
                 const timelineWidth = timelineRect.width;
-                const percentX = Math.max(0, Math.min(1, relativeX / timelineWidth));
+                const percentX = Math.max(
+                  0,
+                  Math.min(1, relativeX / timelineWidth),
+                );
                 const newTimestamp = percentX * 30;
                 setPlayerCurrentTimestamp(Math.round(newTimestamp * 10) / 10);
-                
+
                 if (player) {
                   player.seekTo(Math.round(newTimestamp * 30));
                 }

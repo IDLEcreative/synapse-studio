@@ -39,8 +39,10 @@ export function FluxProStudio() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<string>(fluxProStudio.activeTab);
-  const isToolPanelCollapsed = useVideoProjectStore((s) => s.fluxProStudio.isToolPanelCollapsed);
-  
+  const isToolPanelCollapsed = useVideoProjectStore(
+    (s) => s.fluxProStudio.isToolPanelCollapsed,
+  );
+
   const toggleToolPanel = () => {
     setFluxProStudio({ isToolPanelCollapsed: !isToolPanelCollapsed });
   };
@@ -68,7 +70,14 @@ export function FluxProStudio() {
       // Number keys 1-6 to switch tabs
       if (e.key >= "1" && e.key <= "6" && e.altKey) {
         const tabIndex = parseInt(e.key) - 1;
-        const tabValues = ["flux-pro", "fill", "canny", "depth", "redux", "finetune"];
+        const tabValues = [
+          "flux-pro",
+          "fill",
+          "canny",
+          "depth",
+          "redux",
+          "finetune",
+        ];
         if (tabIndex >= 0 && tabIndex < tabValues.length) {
           setActiveTab(tabValues[tabIndex]);
         }
@@ -104,7 +113,7 @@ export function FluxProStudio() {
     setFluxProStudio({
       initialImage: result.url,
     });
-    
+
     // Show success toast
     toast({
       title: "Edit Complete",
@@ -130,11 +139,12 @@ export function FluxProStudio() {
         projectId: fluxProStudio.projectId,
         kind: "generated",
         // Use the appropriate endpoint ID based on the active tab
-        endpointId: activeTab === "flux-pro" 
-          ? "fal-ai/flux-pro/v1.1" 
-          : activeTab === "redux" 
-            ? "fal-ai/flux-pro/v1.1/redux"
-            : `fal-ai/flux-pro/v1/${activeTab}`,
+        endpointId:
+          activeTab === "flux-pro"
+            ? "fal-ai/flux-pro/v1.1"
+            : activeTab === "redux"
+              ? "fal-ai/flux-pro/v1.1/redux"
+              : `fal-ai/flux-pro/v1/${activeTab}`,
         requestId: `flux-pro-${Date.now()}`,
         createdAt: Date.now(),
         mediaType: "image",
@@ -194,11 +204,12 @@ export function FluxProStudio() {
 
       // Find a video endpoint from ALL_ENDPOINTS
       const videoEndpoints = ALL_ENDPOINTS.filter(
-        endpoint => endpoint.category === "video"
+        (endpoint) => endpoint.category === "video",
       );
-      const defaultVideoEndpoint = videoEndpoints.length > 0 
-        ? videoEndpoints[0].endpointId 
-        : "fal-ai/minimax/video-01-live"; // Fallback
+      const defaultVideoEndpoint =
+        videoEndpoints.length > 0
+          ? videoEndpoints[0].endpointId
+          : "fal-ai/minimax/video-01-live"; // Fallback
 
       // Set up for video generation
       setGenerateMediaType("video");
@@ -276,8 +287,7 @@ export function FluxProStudio() {
             onClick={() => {
               toast({
                 title: "Keyboard Shortcuts",
-                description:
-                  "Alt+1-6: Switch tabs, Esc: Exit fullscreen",
+                description: "Alt+1-6: Switch tabs, Esc: Exit fullscreen",
               });
             }}
             className="btn-minimal rounded-xl"
@@ -295,7 +305,12 @@ export function FluxProStudio() {
         <CollapsibleToolPanel
           isCollapsed={isToolPanelCollapsed}
           onToggleCollapse={() => {
-            console.log("Toggling tool panel from", isToolPanelCollapsed, "to", !isToolPanelCollapsed);
+            console.log(
+              "Toggling tool panel from",
+              isToolPanelCollapsed,
+              "to",
+              !isToolPanelCollapsed,
+            );
             setFluxProStudio({ isToolPanelCollapsed: !isToolPanelCollapsed });
           }}
         >
@@ -304,7 +319,7 @@ export function FluxProStudio() {
             activeTab={activeTab}
             onSelectTab={setActiveTab}
           />
-          
+
           <ExportTools
             isCollapsed={isToolPanelCollapsed}
             onExportToVideo={exportToVideo}
@@ -314,7 +329,7 @@ export function FluxProStudio() {
             isSaving={isSaving}
           />
         </CollapsibleToolPanel>
-        
+
         {/* Editing area */}
         <div className="flex-1 flex flex-col transition-all duration-300">
           <Tabs
@@ -331,7 +346,7 @@ export function FluxProStudio() {
                   />
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="fill" className="h-full">
                 <FillEditor
                   initialImage={fluxProStudio.initialImage}

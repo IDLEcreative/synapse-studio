@@ -62,7 +62,7 @@ export const CollapsibleToolPanel = ({
       className={cn(
         "tool-panel flex flex-col h-full transition-all duration-300 ease-in-out bg-black/80 backdrop-blur-md border-r border-white/10",
         isCollapsed ? "w-16" : "w-64",
-        className
+        className,
       )}
     >
       <div className="tool-panel-header flex justify-between items-center p-4 border-b border-white/5 bg-black/50">
@@ -108,7 +108,7 @@ export const ToolCategory = ({
   className,
 }: ToolCategoryProps) => {
   const [isExpandedInternal, setIsExpandedInternal] = useState(isExpanded);
-  
+
   const handleToggle = () => {
     if (onToggleExpand) {
       onToggleExpand();
@@ -116,24 +116,26 @@ export const ToolCategory = ({
       setIsExpandedInternal(!isExpandedInternal);
     }
   };
-  
+
   const expanded = onToggleExpand ? isExpanded : isExpandedInternal;
-  
+
   return (
     <div className={cn("tool-category mb-2", className)}>
       <WithTooltip tooltip={isCollapsed ? label : ""}>
         <div
           className={cn(
             "tool-category-header flex items-center px-4 py-2 cursor-pointer hover:bg-white/5 transition-colors",
-            expanded ? "text-blue-400" : "text-gray-300"
+            expanded ? "text-blue-400" : "text-gray-300",
           )}
           onClick={handleToggle}
         >
-          <div className={cn(
-            "flex-shrink-0",
-            !isCollapsed && "mr-3",
-            expanded && "text-blue-400"
-          )}>
+          <div
+            className={cn(
+              "flex-shrink-0",
+              !isCollapsed && "mr-3",
+              expanded && "text-blue-400",
+            )}
+          >
             {icon}
           </div>
           {!isCollapsed && (
@@ -148,7 +150,7 @@ export const ToolCategory = ({
           )}
         </div>
       </WithTooltip>
-      
+
       {expanded && !isCollapsed && (
         <div className="tool-category-content pl-10 pr-3 py-1 space-y-1">
           {children}
@@ -170,7 +172,9 @@ export const ToolItem = ({
   disabled = false,
 }: ToolItemProps) => {
   return (
-    <WithTooltip tooltip={isCollapsed ? `${label} ${shortcut ? `(${shortcut})` : ""}` : ""}>
+    <WithTooltip
+      tooltip={isCollapsed ? `${label} ${shortcut ? `(${shortcut})` : ""}` : ""}
+    >
       <button
         className={cn(
           "tool-item flex items-center w-full px-3 py-2 rounded-xl transition-colors",
@@ -179,7 +183,7 @@ export const ToolItem = ({
             : "text-gray-300 hover:bg-white/5",
           disabled && "opacity-50 cursor-not-allowed",
           isCollapsed ? "justify-center" : "justify-between",
-          className
+          className,
         )}
         onClick={onClick}
         disabled={disabled}
@@ -188,9 +192,7 @@ export const ToolItem = ({
           <div className={cn("flex-shrink-0", !isCollapsed && "mr-3")}>
             {icon}
           </div>
-          {!isCollapsed && (
-            <span className="text-sm">{label}</span>
-          )}
+          {!isCollapsed && <span className="text-sm">{label}</span>}
         </div>
         {!isCollapsed && shortcut && (
           <span className="text-xs text-gray-500 ml-2">{shortcut}</span>
@@ -268,7 +270,6 @@ export const GenerationTools = ({
     </ToolCategory>
   );
 };
-
 
 export const ExportTools = ({
   isCollapsed,

@@ -37,7 +37,7 @@ export default function FillEditor({
   supportLayers = false,
 }: FillEditorProps) {
   console.log("FillEditor RENDERING with initialImage:", initialImage);
-  
+
   // Core state
   const [image, setImage] = useState<string | null>(initialImage || null);
   const [prompt, setPrompt] = useState("");
@@ -47,56 +47,60 @@ export default function FillEditor({
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [showMediaGallery, setShowMediaGallery] = useState(false);
-  
+
   // History management
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [maskHistory, setMaskHistory] = useState<string[]>([]);
   const [maskHistoryIndex, setMaskHistoryIndex] = useState(-1);
-  
+
   // Project and toast
   const projectId = useVideoProjectStore((s) => s.projectId);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
+
   // Canvas refs
   const imageCanvasRef = useRef<HTMLCanvasElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement>(null);
   const displayCanvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   // Upload functionality
   const { startUpload } = useUploadThing("fileUploader");
 
   // Initialize canvases
   useEffect(() => {
     console.log("FillEditor useEffect - initializing canvases");
-    
+
     // Wait for next tick to ensure refs are available
     const timer = setTimeout(() => {
-      if (!imageCanvasRef.current || !maskCanvasRef.current || !displayCanvasRef.current) {
+      if (
+        !imageCanvasRef.current ||
+        !maskCanvasRef.current ||
+        !displayCanvasRef.current
+      ) {
         console.error("Canvas refs not available");
         return;
       }
-      
+
       console.log("Canvas refs available, initializing...");
-      
+
       const imageCanvas = imageCanvasRef.current;
       const maskCanvas = maskCanvasRef.current;
       const displayCanvas = displayCanvasRef.current;
-      
+
       // Set canvas dimensions
       const canvasWidth = 512;
       const canvasHeight = 512;
-      
+
       imageCanvas.width = canvasWidth;
       imageCanvas.height = canvasHeight;
       maskCanvas.width = canvasWidth;
       maskCanvas.height = canvasHeight;
       displayCanvas.width = canvasWidth;
       displayCanvas.height = canvasHeight;
-      
+
       // Initialize image canvas
-      const imageCtx = imageCanvas.getContext('2d');
+      const imageCtx = imageCanvas.getContext("2d");
       if (imageCtx) {
         if (image) {
           console.log("Loading image into canvas:", image);
@@ -110,7 +114,10 @@ export default function FillEditor({
             addToHistory(imageCanvas.toDataURL());
           };
           img.onerror = (e) => {
-            console.error("Error loading image, possibly due to CORS restrictions:", e);
+            console.error(
+              "Error loading image, possibly due to CORS restrictions:",
+              e,
+            );
             imageCtx.fillStyle = "#333333";
             imageCtx.fillRect(0, 0, canvasWidth, canvasHeight);
             updateDisplayCanvas();
@@ -126,31 +133,41 @@ export default function FillEditor({
           addToHistory(imageCanvas.toDataURL());
         }
       }
-      
+
       // Initialize mask canvas
-      const maskCtx = maskCanvas.getContext('2d');
+      const maskCtx = maskCanvas.getContext("2d");
       if (maskCtx) {
         maskCtx.clearRect(0, 0, canvasWidth, canvasHeight);
         addToMaskHistory(maskCanvas.toDataURL());
       }
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, [image]);
 
   // Update display canvas by compositing image and mask
   const updateDisplayCanvas = () => {
-    if (!imageCanvasRef.current || !maskCanvasRef.current || !displayCanvasRef.current) return;
-    
-    const displayCtx = displayCanvasRef.current.getContext('2d');
+    if (
+      !imageCanvasRef.current ||
+      !maskCanvasRef.current ||
+      !displayCanvasRef.current
+    )
+      return;
+
+    const displayCtx = displayCanvasRef.current.getContext("2d");
     if (!displayCtx) return;
-    
+
     // Clear display canvas
-    displayCtx.clearRect(0, 0, displayCanvasRef.current.width, displayCanvasRef.current.height);
-    
+    displayCtx.clearRect(
+      0,
+      0,
+      displayCanvasRef.current.width,
+      displayCanvasRef.current.height,
+    );
+
     // Draw image
     displayCtx.drawImage(imageCanvasRef.current, 0, 0);
-    
+
     // Draw mask with semi-transparency
     displayCtx.globalAlpha = 0.5;
     displayCtx.drawImage(maskCanvasRef.current, 0, 0);
@@ -188,14 +205,19 @@ export default function FillEditor({
 
   const loadImageFromHistory = (index: number) => {
     if (!imageCanvasRef.current) return;
-    
-    const ctx = imageCanvasRef.current.getContext('2d');
+
+    const ctx = imageCanvasRef.current.getContext("2d");
     if (!ctx) return;
-    
+
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
-      ctx.clearRect(0, 0, imageCanvasRef.current!.width, imageCanvasRef.current!.height);
+      ctx.clearRect(
+        0,
+        0,
+        imageCanvasRef.current!.width,
+        imageCanvasRef.current!.height,
+      );
       ctx.drawImage(img, 0, 0);
       updateDisplayCanvas();
     };
@@ -209,77 +231,82 @@ export default function FillEditor({
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     console.log("startDrawing called");
     setIsDrawing(true);
-    
+
     if (!maskCanvasRef.current) return;
-    
+
     const canvas = maskCanvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX - rect.left) * (canvas.width / rect.width);
     const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-    
+
     // Set drawing style
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineWidth = brushSize;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
-    
+
     if (isErasing) {
       ctx.globalCompositeOperation = "destination-out";
     } else {
       ctx.globalCompositeOperation = "source-over";
       ctx.strokeStyle = "#ffffff";
     }
-    
+
     // Draw a dot at the starting point
     ctx.lineTo(x + 0.1, y + 0.1);
     ctx.stroke();
-    
+
     updateDisplayCanvas();
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
-    
+
     if (!maskCanvasRef.current) return;
-    
+
     const canvas = maskCanvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    
+
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX - rect.left) * (canvas.width / rect.width);
     const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-    
+
     ctx.lineTo(x, y);
     ctx.stroke();
-    
+
     updateDisplayCanvas();
   };
 
   const endDrawing = () => {
     setIsDrawing(false);
-    
+
     if (!maskCanvasRef.current) return;
-    
+
     // Add to mask history
     addToMaskHistory(maskCanvasRef.current.toDataURL());
   };
 
   const clearMask = () => {
     if (!maskCanvasRef.current) return;
-    
-    const ctx = maskCanvasRef.current.getContext('2d');
+
+    const ctx = maskCanvasRef.current.getContext("2d");
     if (!ctx) return;
-    
-    ctx.clearRect(0, 0, maskCanvasRef.current.width, maskCanvasRef.current.height);
-    
+
+    ctx.clearRect(
+      0,
+      0,
+      maskCanvasRef.current.width,
+      maskCanvasRef.current.height,
+    );
+
     // Add to mask history
     addToMaskHistory(maskCanvasRef.current.toDataURL());
-    
+
     updateDisplayCanvas();
   };
 
@@ -309,7 +336,7 @@ export default function FillEditor({
       // Get image and mask data URLs
       const imageDataUrl = imageCanvasRef.current?.toDataURL() || null;
       const maskDataUrl = maskCanvasRef.current?.toDataURL() || null;
-      
+
       if (!imageDataUrl || !maskDataUrl) {
         throw new Error("Failed to get image or mask data");
       }
@@ -319,33 +346,33 @@ export default function FillEditor({
         imageUrl: imageDataUrl ? "present" : "missing",
         maskUrl: maskDataUrl ? "present" : "missing",
       });
-      
+
       // Call the API
       const result = await fal.subscribe("fal-ai/flux-pro/v1/fill", {
         input: {
           prompt,
           image_url: imageDataUrl,
           mask_url: maskDataUrl,
-        }
+        },
       } as any);
 
       console.log("API call successful");
-      
+
       // Process the result
       let resultImageUrl: string | null = null;
-      
-      if (result && 'data' in result && result.data) {
+
+      if (result && "data" in result && result.data) {
         const data = result.data as any;
-        
+
         if (data.images && data.images.length > 0 && data.images[0].url) {
           resultImageUrl = data.images[0].url;
         }
       }
-      
+
       if (resultImageUrl) {
         // Load the result image
         await loadResultImage(resultImageUrl);
-        
+
         // Call onComplete with the result
         onComplete({
           url: resultImageUrl,
@@ -354,7 +381,7 @@ export default function FillEditor({
             model: "fal-ai/flux-pro/v1/fill",
           },
         });
-        
+
         toast({
           title: "Generation Complete",
           description: "Your image has been successfully generated.",
@@ -376,21 +403,26 @@ export default function FillEditor({
   // Validate that a mask has been drawn
   const validateMaskExists = async (): Promise<boolean> => {
     if (!maskCanvasRef.current) return false;
-    
-    const ctx = maskCanvasRef.current.getContext('2d');
+
+    const ctx = maskCanvasRef.current.getContext("2d");
     if (!ctx) return false;
-    
+
     // Get image data to check if any non-transparent pixels exist
-    const imageData = ctx.getImageData(0, 0, maskCanvasRef.current.width, maskCanvasRef.current.height);
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      maskCanvasRef.current.width,
+      maskCanvasRef.current.height,
+    );
     const data = imageData.data;
-    
+
     // Check if there are any non-transparent pixels (alpha > 0)
     for (let i = 3; i < data.length; i += 4) {
       if (data[i] > 0) {
         return true;
       }
     }
-    
+
     return false;
   };
 
@@ -402,7 +434,7 @@ export default function FillEditor({
         return;
       }
 
-      const ctx = imageCanvasRef.current.getContext('2d');
+      const ctx = imageCanvasRef.current.getContext("2d");
       if (!ctx) {
         reject(new Error("Could not get canvas context"));
         return;
@@ -410,17 +442,33 @@ export default function FillEditor({
 
       const img = new Image();
       img.crossOrigin = "anonymous";
-      
+
       img.onload = () => {
         // Clear the canvas and draw the new image
-        ctx.clearRect(0, 0, imageCanvasRef.current!.width, imageCanvasRef.current!.height);
-        ctx.drawImage(img, 0, 0, imageCanvasRef.current!.width, imageCanvasRef.current!.height);
+        ctx.clearRect(
+          0,
+          0,
+          imageCanvasRef.current!.width,
+          imageCanvasRef.current!.height,
+        );
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          imageCanvasRef.current!.width,
+          imageCanvasRef.current!.height,
+        );
 
         // Clear the mask canvas
         if (maskCanvasRef.current) {
-          const maskCtx = maskCanvasRef.current.getContext('2d');
+          const maskCtx = maskCanvasRef.current.getContext("2d");
           if (maskCtx) {
-            maskCtx.clearRect(0, 0, maskCanvasRef.current.width, maskCanvasRef.current.height);
+            maskCtx.clearRect(
+              0,
+              0,
+              maskCanvasRef.current.width,
+              maskCanvasRef.current.height,
+            );
             addToMaskHistory(maskCanvasRef.current.toDataURL());
           }
         }
@@ -430,14 +478,14 @@ export default function FillEditor({
 
         // Add to history
         addToHistory(resultImageUrl);
-        
+
         resolve();
       };
-      
+
       img.onerror = (e) => {
         reject(new Error("Error loading result image"));
       };
-      
+
       img.src = resultImageUrl;
     });
   };
@@ -453,10 +501,10 @@ export default function FillEditor({
       const uploadedFiles = await startUpload(Array.from(files));
       if (uploadedFiles && uploadedFiles.length > 0) {
         const file = uploadedFiles[0];
-        
+
         // Set the image to the uploaded file URL
         setImage(file.url);
-        
+
         toast({
           title: "Image uploaded successfully",
           description: "Your image is ready for editing.",
@@ -474,25 +522,26 @@ export default function FillEditor({
   };
 
   // Media Gallery Dialog Component
-  const MediaGalleryDialog = ({ 
-    isOpen, 
-    onClose, 
-    onSelectImage 
-  }: { 
-    isOpen: boolean; 
-    onClose: () => void; 
+  const MediaGalleryDialog = ({
+    isOpen,
+    onClose,
+    onSelectImage,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
     onSelectImage: (mediaItem: MediaItem) => void;
   }) => {
     const { data: mediaItems = [] } = useProjectMediaItems(projectId);
-    const imageMediaItems = mediaItems.filter((item: MediaItem) => 
-      item.mediaType === "image" && item.status === "completed"
+    const imageMediaItems = mediaItems.filter(
+      (item: MediaItem) =>
+        item.mediaType === "image" && item.status === "completed",
     );
 
     return (
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4">Select an Image</h2>
-          
+
           {imageMediaItems.length === 0 ? (
             <div className="text-center py-8 text-gray-400">
               No images found in your gallery
@@ -500,15 +549,15 @@ export default function FillEditor({
           ) : (
             <div className="grid grid-cols-3 gap-4">
               {imageMediaItems.map((item: MediaItem) => (
-                <div 
+                <div
                   key={item.id}
                   className="relative aspect-square rounded-lg overflow-hidden border border-gray-700 hover:border-blue-500 cursor-pointer transition-all"
                   onClick={() => onSelectImage(item)}
                 >
                   {item.url && (
-                    <img 
-                      src={item.url} 
-                      alt="Gallery image" 
+                    <img
+                      src={item.url}
+                      alt="Gallery image"
                       className="w-full h-full object-cover"
                     />
                   )}
@@ -526,7 +575,7 @@ export default function FillEditor({
     if (mediaItem.url) {
       setImage(mediaItem.url);
       setShowMediaGallery(false);
-      
+
       toast({
         title: "Image selected",
         description: "You can now edit the selected image.",
@@ -538,19 +587,25 @@ export default function FillEditor({
   return (
     <div className="flex flex-col h-full bg-black p-4">
       <div className="mb-4">
-        <h2 className="text-xl font-bold text-white mb-2">Fill & Inpaint Editor</h2>
-        <p className="text-gray-400">Draw a mask and generate content with AI</p>
+        <h2 className="text-xl font-bold text-white mb-2">
+          Fill & Inpaint Editor
+        </h2>
+        <p className="text-gray-400">
+          Draw a mask and generate content with AI
+        </p>
       </div>
-      
+
       {!image ? (
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="bg-gray-800 p-6 rounded-lg max-w-md text-center">
             <SparklesIcon className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white mb-4">No Image Selected</h3>
+            <h3 className="text-lg font-medium text-white mb-4">
+              No Image Selected
+            </h3>
             <p className="text-gray-400 mb-6">
               Upload an image to get started with the Fill & Inpaint feature.
             </p>
-            
+
             <div className="flex flex-col gap-4">
               <div className="relative">
                 <input
@@ -579,7 +634,7 @@ export default function FillEditor({
                   )}
                 </Button>
               </div>
-              
+
               <Button
                 variant="outline"
                 className="w-full"
@@ -590,10 +645,10 @@ export default function FillEditor({
               </Button>
             </div>
           </div>
-          
+
           {/* Media Gallery Dialog */}
           {showMediaGallery && (
-            <MediaGalleryDialog 
+            <MediaGalleryDialog
               isOpen={showMediaGallery}
               onClose={() => setShowMediaGallery(false)}
               onSelectImage={handleSelectFromGallery}
@@ -607,10 +662,10 @@ export default function FillEditor({
             <div className="relative w-full h-full">
               {/* Hidden image canvas */}
               <canvas ref={imageCanvasRef} className="hidden" />
-              
+
               {/* Hidden mask canvas */}
               <canvas ref={maskCanvasRef} className="hidden" />
-              
+
               {/* Display canvas */}
               <canvas
                 ref={displayCanvasRef}
@@ -620,7 +675,7 @@ export default function FillEditor({
                 onMouseUp={endDrawing}
                 onMouseLeave={endDrawing}
               />
-              
+
               {/* Toolbar */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 p-2 bg-gray-800 rounded-full">
                 <Button
@@ -631,7 +686,7 @@ export default function FillEditor({
                 >
                   <Paintbrush className="w-4 h-4" />
                 </Button>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -640,9 +695,9 @@ export default function FillEditor({
                 >
                   <Eraser className="w-4 h-4" />
                 </Button>
-                
+
                 <div className="h-4 w-px bg-gray-700 mx-1"></div>
-                
+
                 <Slider
                   defaultValue={[brushSize]}
                   value={[brushSize]}
@@ -652,13 +707,13 @@ export default function FillEditor({
                   step={1}
                   className="w-24"
                 />
-                
+
                 <span className="text-xs text-gray-400 w-6 text-center">
                   {brushSize}
                 </span>
-                
+
                 <div className="h-4 w-px bg-gray-700 mx-1"></div>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -668,7 +723,7 @@ export default function FillEditor({
                   <TrashIcon className="w-4 h-4" />
                 </Button>
               </div>
-              
+
               {/* Loading overlay */}
               {isGenerating && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -680,7 +735,7 @@ export default function FillEditor({
               )}
             </div>
           </div>
-          
+
           {/* Side panel */}
           <div className="w-full md:w-64 bg-gray-800 rounded-lg p-4 flex flex-col">
             <h3 className="text-white font-medium mb-2">Prompt</h3>
@@ -690,7 +745,7 @@ export default function FillEditor({
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
             />
-            
+
             <Button
               className="w-full bg-blue-600 hover:bg-blue-700"
               onClick={generateWithFluxProFill}

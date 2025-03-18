@@ -24,7 +24,7 @@ export const falClient = {
       endpoint: endpointId,
       input: options.input,
     });
-    
+
     const response = await fetch("/api/fal", {
       method: "POST",
       headers: {
@@ -40,7 +40,9 @@ export const falClient = {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API request failed:", errorText);
-      throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+      throw new Error(
+        `API request failed with status ${response.status}: ${errorText}`,
+      );
     }
 
     const data = await response.json();
@@ -53,7 +55,7 @@ export const falClient = {
         endpoint: endpointId,
         input: options.input,
       });
-      
+
       const response = await fetch("/api/fal", {
         method: "POST",
         headers: {
@@ -69,7 +71,9 @@ export const falClient = {
       if (!response.ok) {
         const errorText = await response.text();
         console.error("API request failed:", errorText);
-        throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+        throw new Error(
+          `API request failed with status ${response.status}: ${errorText}`,
+        );
       }
 
       const data = await response.json();
@@ -167,7 +171,8 @@ export const FLUX_PRO_TOOLS: ApiInfo[] = [
   {
     endpointId: "fal-ai/flux-pro/v1.1-ultra",
     label: "Flux Pro 1.1 Ultra",
-    description: "Premium image quality with enhanced detail, superior text rendering, better composition, and advanced prompt understanding. Produces more realistic outputs with improved lighting and reduced artifacts.",
+    description:
+      "Premium image quality with enhanced detail, superior text rendering, better composition, and advanced prompt understanding. Produces more realistic outputs with improved lighting and reduced artifacts.",
     cost: "",
     category: "image",
     isProTool: true,
@@ -252,13 +257,14 @@ export const AVAILABLE_ENDPOINTS: ApiInfo[] = [
     category: "image",
     initialInput: {
       image_size: "square_hd",
-      style: "realistic_image"
-    }
+      style: "realistic_image",
+    },
   },
   {
     endpointId: "fal-ai/flux-pro/v1.1-ultra",
     label: "Flux Pro 1.1 Ultra",
-    description: "Premium image quality with enhanced detail, superior text rendering, better composition, and advanced prompt understanding. Produces more realistic outputs with improved lighting and reduced artifacts.",
+    description:
+      "Premium image quality with enhanced detail, superior text rendering, better composition, and advanced prompt understanding. Produces more realistic outputs with improved lighting and reduced artifacts.",
     cost: "",
     category: "image",
   },

@@ -116,14 +116,10 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
           </button>
 
           <div className={`w-2 h-2 rounded-full ${trackColor}`} />
-          
-          <span className="text-xs text-gray-300">
-            {trackLabel}
-          </span>
-          
-          <span className="text-xs text-gray-500 ml-1">
-            {keyframes.length}
-          </span>
+
+          <span className="text-xs text-gray-300">{trackLabel}</span>
+
+          <span className="text-xs text-gray-500 ml-1">{keyframes.length}</span>
         </div>
 
         <button
@@ -218,7 +214,7 @@ function AudioWaveform({ data, volume = 1 }: AudioWaveformProps) {
 
   // Sample the waveform to reduce visual complexity
   const sampledWaveform = waveform.filter((_, i) => i % 2 === 0);
-  
+
   // Apply volume scaling to waveform visualization
   const scaledWaveform = sampledWaveform.map((v) => v * volume);
 
@@ -228,7 +224,7 @@ function AudioWaveform({ data, volume = 1 }: AudioWaveformProps) {
         {scaledWaveform.map((v, index) => {
           const amplitude = Math.abs(v);
           const height = Math.max(amplitude * 15, 1); // Even smaller max height
-          
+
           return (
             <div
               key={index}
@@ -376,7 +372,7 @@ export function VideoTrackView({
     ghostElement.style.height = `${trackElement.offsetHeight}px`;
     ghostElement.style.borderRadius = "4px";
     ghostElement.style.transition = "opacity 0.1s ease";
-    
+
     // Create a minimal remove indicator
     const removeIndicator = document.createElement("div");
     removeIndicator.className = "remove-indicator";
