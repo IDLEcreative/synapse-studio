@@ -125,6 +125,21 @@ Next.js 15 introduces several new features and improvements:
 | Edge Runtime API Routes | Updated API routes to use Edge Runtime for better performance |
 | Streaming SSR | Implemented streaming for dynamic routes with Suspense boundaries |
 | React Server Components | Converted components to RSCs to reduce client-side JavaScript |
+| PageProps Type Mismatch | Updated PageProps interface to match Next.js 15 expectations |
+
+## Known Issues
+
+1. **Production Build Type Error**
+   
+   There's a type mismatch in the production build for dynamic routes:
+   
+   ```
+   Type error: Type 'PageProps' does not satisfy the constraint 'import("/Users/jamesguy/synapse-studio/.next/types/app/share/[id]/page").PageProps'.
+   Types of property 'params' are incompatible.
+   Type '{ id: string; }' is missing the following properties from type 'Promise<any>': then catch finally [Symbol.toStringTag]
+   ```
+   
+   This appears to be a Next.js 15 type definition issue. The development server works correctly, but the production build fails due to this type mismatch. A potential workaround is to use `@ts-ignore` or `@ts-expect-error` comments in the affected files, or to wait for a fix in a future Next.js patch release.
 
 ## Performance Improvements
 
