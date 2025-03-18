@@ -5,6 +5,7 @@ import {
   PropsWithChildren,
   useMemo,
 } from "react";
+import Image from "next/image";
 import {
   Sheet,
   SheetDescription,
@@ -206,11 +207,18 @@ export function MediaGallerySheet({
           {!!mediaUrl && (
             <>
               {selectedMedia.mediaType === "image" && (
-                <img
-                  src={mediaUrl}
-                  className="animate-fade-scale-in h-auto max-h-[90%] w-auto max-w-[90%] object-contain transition-all"
-                  onClick={preventClose}
-                />
+                <div className="relative w-full max-w-[90%] h-auto max-h-[90%]" onClick={preventClose}>
+                  <Image
+                    src={mediaUrl}
+                    alt={prompt || "Media image"}
+                    width={1200}
+                    height={800}
+                    className="animate-fade-scale-in object-contain transition-all"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                    priority
+                    unoptimized={mediaUrl.startsWith('blob:') || mediaUrl.startsWith('data:')}
+                  />
+                </div>
               )}
               {selectedMedia.mediaType === "video" && (
                 <video

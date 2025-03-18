@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -844,11 +845,16 @@ export default function FluxProEditor({
                               onClick={() => loadFromPromptHistory(item)}
                             >
                               {item.thumbnail && (
-                                <img
-                                  src={item.thumbnail}
-                                  alt="Thumbnail"
-                                  className="w-10 h-10 object-cover rounded-sm"
-                                />
+                                <div className="relative w-12 h-12 rounded-md overflow-hidden">
+                                  <Image
+                                    src={item.thumbnail}
+                                    alt={`Prompt: ${item.prompt.substring(0, 20)}...`}
+                                    width={48}
+                                    height={48}
+                                    className="object-cover"
+                                    unoptimized={item.thumbnail.startsWith('blob:') || item.thumbnail.startsWith('data:')}
+                                  />
+                                </div>
                               )}
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs text-gray-300 truncate">
