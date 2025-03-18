@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "biome format --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@fal-ai/client": "^1.2.1",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@next/bundle-analyzer": "^15.2.3",
     "@remotion/cli": "^4.0.240",
     "@types/node": "^20",
     "@types/react": "^18",
