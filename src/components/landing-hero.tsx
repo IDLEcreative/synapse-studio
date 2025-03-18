@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="pt-32 pb-16 md:pt-40 md:pb-24 relative overflow-hidden">
+    <section className="pt-32 pb-16 @container relative overflow-hidden @md:pt-40 @md:pb-24">
       {/* Simplified background elements */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.02]"></div>
 
@@ -30,14 +30,14 @@ export default function Hero() {
           </div>
 
           {/* Simplified heading with less gradient */}
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 text-white">
+          <h1 className="text-5xl @md:text-7xl font-bold tracking-tight mb-8 text-white">
             Synapse Studio
-            <span className="block mt-3 text-4xl md:text-6xl text-white/90">
+            <span className="block mt-3 text-4xl @md:text-6xl text-white/90">
               AI-Powered Video Editing
             </span>
           </h1>
 
-          <p className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-white/70 text-lg @md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
             Transform your creative vision into stunning videos with our
             advanced AI tools. Effortlessly create professional-quality content
             in minutes, not hours.
@@ -63,7 +63,7 @@ export default function Hero() {
           </div>
 
           {/* More minimal buttons */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-5 mb-24">
+          <div className="flex flex-col @md:flex-row items-center justify-center gap-5 mb-24">
             <Link href="/app">
               <Button
                 size="lg"
@@ -88,7 +88,7 @@ export default function Hero() {
         {/* App Screenshot with more minimal floating elements */}
         <div className="relative max-w-6xl mx-auto">
           {/* Floating UI elements with more minimal styling */}
-          <div className="absolute -top-10 -right-10 float-card p-4 z-20 hidden md:block hover-scale">
+          <div className="absolute -top-10 -right-10 float-card p-4 z-20 hidden @md:block hover-scale">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/10 rounded-full">
                 <Star className="h-5 w-5 text-blue-400" />
@@ -99,7 +99,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="absolute -bottom-10 -left-10 float-card p-4 z-20 hidden md:block hover-scale">
+          <div className="absolute -bottom-10 -left-10 float-card p-4 z-20 hidden @md:block hover-scale">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/10 rounded-full">
                 <Wand2 className="h-5 w-5 text-blue-400" />
