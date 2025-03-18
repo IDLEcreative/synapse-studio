@@ -1,6 +1,6 @@
 # Next.js Optimizations
 
-This document outlines the performance optimizations implemented for the Next.js application in Synapse Studio.
+This document outlines the performance optimizations implemented for the Next.js 15 application in Synapse Studio.
 
 ## Configuration Enhancements
 
@@ -170,9 +170,16 @@ To test the PPR implementation:
 
 3. Observe how the Header and Hero sections render immediately while other sections load progressively with skeleton loaders
 
+## Implemented Next.js 15 Features
+
+- **Edge Runtime**: API routes optimized with Edge Runtime for faster global response times
+- **Streaming SSR**: Implemented streaming for dynamic routes with Suspense boundaries
+- **React Server Components**: Converted components to RSCs to reduce client-side JavaScript
+- **Container Queries**: Implemented container queries for component-based responsive design
+
 ## Future Optimizations
 
-- **React Server Components**: Convert more components to RSCs to reduce client-side JavaScript
-- **Edge Runtime**: Move API routes to Edge runtime for faster global response times
-- **Streaming SSR**: Implement streaming for dynamic routes with large data requirements
-- **View Transitions API**: Add smooth transitions between pages using the experimental View Transitions API
+- **View Transitions API**: Add smooth transitions between pages using the View Transitions API
+- **React 19 Integration**: Leverage React 19 features when available
+- **Turbopack Adoption**: Switch from Webpack to Turbopack for faster builds
+- **Server-Only Modules**: Use server-only modules to prevent client-side code leakage

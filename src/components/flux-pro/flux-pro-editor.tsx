@@ -852,7 +852,10 @@ export default function FluxProEditor({
                                     width={48}
                                     height={48}
                                     className="object-cover"
-                                    unoptimized={item.thumbnail.startsWith('blob:') || item.thumbnail.startsWith('data:')}
+                                    unoptimized={
+                                      item.thumbnail.startsWith("blob:") ||
+                                      item.thumbnail.startsWith("data:")
+                                    }
                                   />
                                 </div>
                               )}

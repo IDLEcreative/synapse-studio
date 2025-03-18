@@ -4,10 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
  * Media proxy API route to handle CORS issues with external media files.
  * This route fetches media from external domains server-side (where CORS doesn't apply)
  * and streams it back to the client with proper headers.
- * 
+ *
  * Using Edge Runtime for faster global response times and reduced latency.
  */
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export async function GET(request: NextRequest) {
   try {

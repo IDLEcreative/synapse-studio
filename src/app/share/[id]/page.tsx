@@ -101,7 +101,7 @@ function VideoContentSkeleton() {
 export default async function SharePage({ params }: PageProps) {
   const shareId = params.id;
   const shareData = await fetchSharedVideo(shareId);
-  
+
   if (!shareData) {
     return notFound();
   }

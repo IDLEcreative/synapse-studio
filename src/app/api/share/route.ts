@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
  * API route for sharing videos.
  * Using Edge Runtime for faster global response times and reduced latency.
  */
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export const POST = async (req: NextRequest) => {
   if (!IS_SHARE_ENABLED) {

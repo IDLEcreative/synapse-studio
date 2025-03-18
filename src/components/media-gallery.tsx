@@ -207,7 +207,10 @@ export function MediaGallerySheet({
           {!!mediaUrl && (
             <>
               {selectedMedia.mediaType === "image" && (
-                <div className="relative w-full max-w-[90%] h-auto max-h-[90%]" onClick={preventClose}>
+                <div
+                  className="relative w-full max-w-[90%] h-auto max-h-[90%]"
+                  onClick={preventClose}
+                >
                   <Image
                     src={mediaUrl}
                     alt={prompt || "Media image"}
@@ -216,7 +219,10 @@ export function MediaGallerySheet({
                     className="animate-fade-scale-in object-contain transition-all"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
                     priority
-                    unoptimized={mediaUrl.startsWith('blob:') || mediaUrl.startsWith('data:')}
+                    unoptimized={
+                      mediaUrl.startsWith("blob:") ||
+                      mediaUrl.startsWith("data:")
+                    }
                   />
                 </div>
               )}
