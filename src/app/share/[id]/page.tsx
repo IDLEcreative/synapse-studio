@@ -1,9 +1,10 @@
 import Header from "@/components/header";
-import { Button } from "@/components/ui/button";
 import { fetchSharedVideo } from "@/lib/share";
-import { DownloadIcon } from "lucide-react";
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import VideoContent from "./video-content";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type PageParams = {
   id: string;
@@ -80,9 +81,27 @@ export async function generateMetadata(
   };
 }
 
+// Loading fallback component for the video content
+function VideoContentSkeleton() {
+  return (
+    <>
+      <Skeleton className="h-8 w-64" />
+      <Skeleton className="h-4 w-full max-w-3xl" />
+      <div className="max-w-4xl w-full">
+        <Skeleton className="w-full aspect-video" />
+      </div>
+      <div className="flex flex-row gap-2 items-center justify-center">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+    </>
+  );
+}
+
 export default async function SharePage({ params }: PageProps) {
   const shareId = params.id;
   const shareData = await fetchSharedVideo(shareId);
+  
   if (!shareData) {
     return notFound();
   }
@@ -93,29 +112,9 @@ export default async function SharePage({ params }: PageProps) {
       <main className="flex overflow-hidden h-full">
         <div className="container mx-auto py-8 h-full">
           <div className="flex flex-col gap-8 items-center justify-center h-full">
-            <h1 className="font-semibold text-2xl">{shareData.title}</h1>
-            <p className="text-muted-foreground max-w-3xl w-full sm:w-3xl text-center">
-              {shareData.description}
-            </p>
-            <div className="max-w-4xl">
-              <video
-                src={shareData.videoUrl}
-                poster={shareData.thumbnailUrl}
-                controls
-                className="w-full h-full aspect-video"
-              />
-            </div>
-            <div className="flex flex-row gap-2 items-center justify-center">
-              <Button variant="secondary" asChild size="lg">
-                <a href={shareData.videoUrl} download>
-                  <DownloadIcon className="w-4 h-4 opacity-50" />
-                  Download
-                </a>
-              </Button>
-              <Button variant="secondary" size="lg" asChild>
-                <a href="/">Start your project</a>
-              </Button>
-            </div>
+            <Suspense fallback={<VideoContentSkeleton />}>
+              <VideoContent shareData={shareData} />
+            </Suspense>
           </div>
         </div>
       </main>
