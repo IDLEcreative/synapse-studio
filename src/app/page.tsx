@@ -13,7 +13,10 @@ function FeaturesSkeleton() {
       <div className="w-48 h-8 bg-white/5 rounded-lg mx-auto mb-12"></div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="p-6 rounded-xl bg-white/5 h-64 animate-pulse"></div>
+          <div
+            key={i}
+            className="p-6 rounded-xl bg-white/5 h-64 animate-pulse"
+          ></div>
         ))}
       </div>
     </div>
@@ -26,7 +29,10 @@ function PricingSkeleton() {
       <div className="w-48 h-8 bg-white/5 rounded-lg mx-auto mb-12"></div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="p-6 rounded-xl bg-white/5 h-96 animate-pulse"></div>
+          <div
+            key={i}
+            className="p-6 rounded-xl bg-white/5 h-96 animate-pulse"
+          ></div>
         ))}
       </div>
     </div>
@@ -39,7 +45,10 @@ function CommunitySkeleton() {
       <div className="w-48 h-8 bg-white/5 rounded-lg mx-auto mb-12"></div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
         {[...Array(2)].map((_, i) => (
-          <div key={i} className="p-6 rounded-xl bg-white/5 h-64 animate-pulse"></div>
+          <div
+            key={i}
+            className="p-6 rounded-xl bg-white/5 h-64 animate-pulse"
+          ></div>
         ))}
       </div>
     </div>
@@ -53,16 +62,16 @@ export default function IndexPage() {
       <Header />
       <main className="lg:pt-48">
         <Hero />
-        
+
         {/* Dynamic content that loads with Suspense */}
         <Suspense fallback={<FeaturesSkeleton />}>
           <Features />
         </Suspense>
-        
+
         <Suspense fallback={<PricingSkeleton />}>
           <Pricing />
         </Suspense>
-        
+
         <Suspense fallback={<CommunitySkeleton />}>
           <Community />
         </Suspense>

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from 'next/font/google';
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 // Initialize the Inter font with optimization settings
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
+  subsets: ["latin"],
+  display: "swap",
   preload: true,
 });
 
