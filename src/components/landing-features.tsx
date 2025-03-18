@@ -114,7 +114,7 @@ export default function Features() {
                     "Content-aware transitions",
                   ].map((item, i) => (
                     <li key={i} className="flex items-start">
-                      <div className="mr-3 h-6 w-6 flex-shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center">
+                      <div className="mr-3 h-6 w-6 shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center">
                         <Sparkles className="h-3.5 w-3.5 text-white" />
                       </div>
                       <span className="text-gray-200">{item}</span>

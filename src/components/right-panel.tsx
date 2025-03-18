@@ -98,7 +98,7 @@ function ModelEndpointPicker({
               {selectedEndpoint.endpointId.includes("v1.5") && (
                 <Badge
                   variant="outline"
-                  className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 flex-shrink-0"
+                  className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 shrink-0"
                 >
                   NEW
                 </Badge>
@@ -124,7 +124,7 @@ function ModelEndpointPicker({
                   {endpoint.endpointId.includes("v1.5") && (
                     <Badge
                       variant="outline"
-                      className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 flex-shrink-0"
+                      className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 shrink-0"
                     >
                       NEW
                     </Badge>
@@ -140,7 +140,7 @@ function ModelEndpointPicker({
                 {endpoint.endpointId.includes("v1.5") && (
                   <Badge
                     variant="outline"
-                    className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 flex-shrink-0"
+                    className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 shrink-0"
                   >
                     NEW
                   </Badge>

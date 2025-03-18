@@ -157,11 +157,11 @@ export default function Pricing() {
                   {plan.features.map((feature, i) => (
                     <div key={i} className="flex items-start">
                       {feature.included ? (
-                        <div className="h-5 w-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <div className="h-5 w-5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center mr-3 shrink-0 mt-0.5">
                           <Check className="h-3 w-3 text-white" />
                         </div>
                       ) : (
-                        <div className="h-5 w-5 rounded-full bg-gray-800 flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                        <div className="h-5 w-5 rounded-full bg-gray-800 flex items-center justify-center mr-3 shrink-0 mt-0.5">
                           <X className="h-3 w-3 text-gray-500" />
                         </div>
                       )}

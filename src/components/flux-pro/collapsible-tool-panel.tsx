@@ -131,7 +131,7 @@ export const ToolCategory = ({
         >
           <div
             className={cn(
-              "flex-shrink-0",
+              "shrink-0",
               !isCollapsed && "mr-3",
               expanded && "text-blue-400",
             )}
@@ -189,9 +189,7 @@ export const ToolItem = ({
         disabled={disabled}
       >
         <div className="flex items-center">
-          <div className={cn("flex-shrink-0", !isCollapsed && "mr-3")}>
-            {icon}
-          </div>
+          <div className={cn("shrink-0", !isCollapsed && "mr-3")}>{icon}</div>
           {!isCollapsed && <span className="text-sm">{label}</span>}
         </div>
         {!isCollapsed && shortcut && (

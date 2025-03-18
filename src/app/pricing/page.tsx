@@ -36,35 +36,35 @@ export default function PricingPage() {
               <div className="p-6">
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Basic video editing tools
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       720p export quality
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">5 projects</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Basic AI features
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Community support
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       1GB cloud storage
                     </span>
@@ -96,47 +96,47 @@ export default function PricingPage() {
               <div className="p-6">
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Advanced editing tools
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       4K export quality
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Unlimited projects
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">Full AI suite</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Priority support
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Custom templates
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       50GB cloud storage
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Advanced effects library
                     </span>
@@ -167,47 +167,47 @@ export default function PricingPage() {
               <div className="p-6">
                 <ul className="space-y-3 mb-6">
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Everything in Pro
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Team collaboration
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Advanced analytics
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">API access</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Dedicated support
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       Custom branding
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       500GB cloud storage
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-cyan-400 mr-2 shrink-0 mt-0.5" />
                     <span className="text-sm text-gray-300">
                       SSO & advanced security
                     </span>
