@@ -178,13 +178,87 @@ This document outlines our plan for upgrading from Tailwind CSS 3.4.1 to Tailwin
    }
    ```
 
-3. **Handle uploadthing integration**
-   - Test if the `withUt` wrapper is compatible with v4
-   - If not, implement alternative approach:
+3. **Configure dark mode**
+   
+   Current approach (v3.4.1):
+   ```ts
+   // tailwind.config.ts
+   const config: Config = withUt({
+     darkMode: ["class"],
+     // ...
+   });
+   ```
+   
+   New approach (v4.0):
    ```css
    /* src/app/globals.css */
    @import "tailwindcss";
-   @import "@uploadthing/react/styles.css";
+   @custom-variant dark (&:where(.dark, .dark *));
+   ```
+
+4. **Configure plugins**
+   
+   Current approach (v3.4.1):
+   ```ts
+   // tailwind.config.ts
+   const config: Config = withUt({
+     // ...
+     plugins: [require("tailwindcss-animate")],
+   });
+   ```
+   
+   New approach (v4.0):
+   ```css
+   /* src/app/globals.css */
+   @import "tailwindcss";
+   @plugin "tailwindcss-animate";
+   ```
+
+5. **Handle uploadthing integration**
+   
+   Current approach (v3.4.1):
+   ```ts
+   // tailwind.config.ts
+   import { withUt } from "uploadthing/tw";
+   
+   const config: Config = withUt({
+     // ...
+   });
+   ```
+   
+   New approach (v4.0):
+   ```ts
+   // src/lib/uploadthing-tailwind.ts
+   import type { Config } from "tailwindcss";
+   
+   export function withUploadThing(config: Config): Config {
+     const uploadthingPaths = [
+       "./node_modules/@uploadthing/react/dist/**/*.{js,ts,jsx,tsx}",
+       "./node_modules/@uploadthing/react/src/**/*.{js,ts,jsx,tsx}"
+     ];
+   
+     return {
+       ...config,
+       content: [
+         ...(Array.isArray(config.content) ? config.content : []),
+         ...uploadthingPaths
+       ]
+     };
+   }
+   
+   // tailwind.config.ts
+   import type { Config } from "tailwindcss";
+   import { withUploadThing } from "./src/lib/uploadthing-tailwind";
+   
+   const config: Config = {
+     content: [
+       "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+       "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+       "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+     ],
+   };
+   
+   export default withUploadThing(config);
    ```
 
 ### Phase 3: Component Testing (Estimated: 2-3 days)
@@ -199,6 +273,8 @@ This document outlines our plan for upgrading from Tailwind CSS 3.4.1 to Tailwin
    - Border utilities (default border color removed)
    - Ring utilities (default width changed from 3px to 1px)
    - Opacity utilities (syntax changed)
+   - Class renames (e.g., `flex-shrink-0` to `shrink-0`)
+   - Container query syntax (e.g., `max-md:text-lg` to `@max-md:text-lg`)
 
 3. **Test responsive behavior**
    - Verify media query breakpoints work as expected
@@ -207,6 +283,10 @@ This document outlines our plan for upgrading from Tailwind CSS 3.4.1 to Tailwin
 4. **Verify animations and transitions**
    - Check accordion animations
    - Verify hover/focus states
+
+5. **Test dark mode**
+   - Verify dark mode toggle works correctly
+   - Check all components in dark mode
 
 ### Phase 4: Performance Validation (Estimated: 1 day)
 
@@ -267,7 +347,10 @@ If critical issues are encountered:
 | CSS variable conflicts | Use namespaced variables (e.g., `--tw-color-*`) |
 | Build errors | Check PostCSS configuration and plugin order |
 | Component styling regressions | Test each component individually, focusing on borders, shadows, and colors |
-| uploadthing integration | Test with and without the `withUt` wrapper |
+| uploadthing integration | Create custom wrapper function to replace `withUt` |
+| Dark mode not working | Verify `@custom-variant dark` is properly configured |
+| Plugin not loading | Ensure `@plugin` directives are correctly added to globals.css |
+| Class renames | Check for deprecated classes and update to new syntax |
 
 ## Timeline
 
