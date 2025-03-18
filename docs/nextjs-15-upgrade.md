@@ -59,17 +59,25 @@ Additional manual adjustments that were needed:
 2. **Page Props Type Changes**
    ```tsx
    // Before
+   type PageParams = {
+     id: string;
+   };
+
    type PageProps = {
      params: PageParams;
    };
 
    // After
-   type PageProps = {
-     params: PageParams;
+   interface PageProps {
+     params: {
+       id: string;
+     };
      searchParams?: { [key: string]: string | string[] | undefined };
-   };
+   }
    ```
-   - The `PageProps` type now requires the `searchParams` property
+   - Changed from type alias to interface for better compatibility
+   - Inlined the params type definition
+   - Added the `searchParams` property
    - This is needed for proper type compatibility with Next.js 15
 
 ### Phase 4: Testing

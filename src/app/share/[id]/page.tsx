@@ -6,14 +6,12 @@ import { Suspense } from "react";
 import VideoContent from "./video-content";
 import { Skeleton } from "@/components/ui/skeleton";
 
-type PageParams = {
-  id: string;
-};
-
-type PageProps = {
-  params: PageParams;
+interface PageProps {
+  params: {
+    id: string;
+  };
   searchParams?: { [key: string]: string | string[] | undefined };
-};
+}
 
 export async function generateMetadata(
   { params }: PageProps,
