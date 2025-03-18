@@ -9,7 +9,7 @@ This document outlines the performance optimizations implemented for the Next.js
 ```javascript
 // next.config.mjs
 experimental: {
-  ppr: true,
+  // ppr: true, // Requires canary version of Next.js
   serverActions: {
     bodySizeLimit: '2mb', // Increased limit for video processing
   },
