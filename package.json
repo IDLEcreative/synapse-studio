@@ -9,7 +9,8 @@
     "lint": "next lint",
     "format": "biome format --write",
     "prepare": "husky",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "update-tailwind": "node scripts/update-tailwind-classes.js"
   },
   "dependencies": {
     "@fal-ai/client": "^1.2.1",
