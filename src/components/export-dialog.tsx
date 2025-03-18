@@ -32,7 +32,13 @@ import type { ShareVideoParams } from "@/lib/share";
 import { PROJECT_PLACEHOLDER } from "@/data/schema";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { Label } from "./ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -63,29 +69,29 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
     resolution: "1080p",
     format: "mp4",
     quality: "high",
-    fps: 30
+    fps: 30,
   });
 
   // Resolution options based on aspect ratio
   const { data: project = PROJECT_PLACEHOLDER } = useProject(projectId);
   const aspectRatio = project?.aspectRatio || "16:9";
-  
+
   const resolutionOptions = {
     "16:9": [
       { label: "720p (1280×720)", value: "720p" },
       { label: "1080p (1920×1080)", value: "1080p" },
-      { label: "4K (3840×2160)", value: "4k" }
+      { label: "4K (3840×2160)", value: "4k" },
     ],
     "9:16": [
       { label: "720p (720×1280)", value: "720p" },
       { label: "1080p (1080×1920)", value: "1080p" },
-      { label: "4K (2160×3840)", value: "4k" }
+      { label: "4K (2160×3840)", value: "4k" },
     ],
     "1:1": [
       { label: "720p (720×720)", value: "720p" },
       { label: "1080p (1080×1080)", value: "1080p" },
-      { label: "4K (2160×2160)", value: "4k" }
-    ]
+      { label: "4K (2160×2160)", value: "4k" },
+    ],
   };
 
   const exportVideo = useMutation({
@@ -100,41 +106,49 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
           url: resolveMediaUrl(mediaItems[frame.data.mediaId]),
         })),
       }));
-      
+
       if (videoData.length === 0) {
         throw new Error("No tracks to export");
       }
-      
+
       // Get dimensions based on resolution and aspect ratio
       let width = 1920;
       let height = 1080;
-      
+
       if (exportSettings.resolution === "720p") {
-        width = aspectRatio === "16:9" ? 1280 : (aspectRatio === "9:16" ? 720 : 720);
-        height = aspectRatio === "16:9" ? 720 : (aspectRatio === "9:16" ? 1280 : 720);
+        width =
+          aspectRatio === "16:9" ? 1280 : aspectRatio === "9:16" ? 720 : 720;
+        height =
+          aspectRatio === "16:9" ? 720 : aspectRatio === "9:16" ? 1280 : 720;
       } else if (exportSettings.resolution === "4k") {
-        width = aspectRatio === "16:9" ? 3840 : (aspectRatio === "9:16" ? 2160 : 2160);
-        height = aspectRatio === "16:9" ? 2160 : (aspectRatio === "9:16" ? 3840 : 2160);
+        width =
+          aspectRatio === "16:9" ? 3840 : aspectRatio === "9:16" ? 2160 : 2160;
+        height =
+          aspectRatio === "16:9" ? 2160 : aspectRatio === "9:16" ? 3840 : 2160;
       } else {
         // 1080p (default)
-        width = aspectRatio === "16:9" ? 1920 : (aspectRatio === "9:16" ? 1080 : 1080);
-        height = aspectRatio === "16:9" ? 1080 : (aspectRatio === "9:16" ? 1920 : 1080);
+        width =
+          aspectRatio === "16:9" ? 1920 : aspectRatio === "9:16" ? 1080 : 1080;
+        height =
+          aspectRatio === "16:9" ? 1080 : aspectRatio === "9:16" ? 1920 : 1080;
       }
-      
+
       // Convert quality setting to bitrate
       const qualityMap = {
-        "low": { videoBitrate: "2M", audioBitrate: "128k" },
-        "medium": { videoBitrate: "5M", audioBitrate: "192k" },
-        "high": { videoBitrate: "8M", audioBitrate: "256k" }
+        low: { videoBitrate: "2M", audioBitrate: "128k" },
+        medium: { videoBitrate: "5M", audioBitrate: "192k" },
+        high: { videoBitrate: "8M", audioBitrate: "256k" },
       };
-      
-      const quality = qualityMap[exportSettings.quality as keyof typeof qualityMap];
-      
+
+      const quality =
+        qualityMap[exportSettings.quality as keyof typeof qualityMap];
+
       toast({
         title: "Export started",
-        description: "Your video is being processed. This may take a few minutes.",
+        description:
+          "Your video is being processed. This may take a few minutes.",
       });
-      
+
       const { data } = await fal.subscribe("fal-ai/ffmpeg-api/compose", {
         input: {
           tracks: videoData,
@@ -143,17 +157,17 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
           height,
           fps: exportSettings.fps,
           video_bitrate: quality.videoBitrate,
-          audio_bitrate: quality.audioBitrate
+          audio_bitrate: quality.audioBitrate,
         },
         mode: "polling",
         pollInterval: 3000,
       });
-      
+
       toast({
         title: "Export complete",
         description: "Your video has been successfully exported.",
       });
-      
+
       return data as ShareResult;
     },
   });
@@ -171,28 +185,34 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
         throw new Error("No video to share");
       }
       const videoInfo = exportVideo.data;
-      
+
       // Get dimensions based on current export settings
       let width = 1920;
       let height = 1080;
-      
+
       if (exportSettings.resolution === "720p") {
-        width = aspectRatio === "16:9" ? 1280 : (aspectRatio === "9:16" ? 720 : 720);
-        height = aspectRatio === "16:9" ? 720 : (aspectRatio === "9:16" ? 1280 : 720);
+        width =
+          aspectRatio === "16:9" ? 1280 : aspectRatio === "9:16" ? 720 : 720;
+        height =
+          aspectRatio === "16:9" ? 720 : aspectRatio === "9:16" ? 1280 : 720;
       } else if (exportSettings.resolution === "4k") {
-        width = aspectRatio === "16:9" ? 3840 : (aspectRatio === "9:16" ? 2160 : 2160);
-        height = aspectRatio === "16:9" ? 2160 : (aspectRatio === "9:16" ? 3840 : 2160);
+        width =
+          aspectRatio === "16:9" ? 3840 : aspectRatio === "9:16" ? 2160 : 2160;
+        height =
+          aspectRatio === "16:9" ? 2160 : aspectRatio === "9:16" ? 3840 : 2160;
       } else {
         // 1080p (default)
-        width = aspectRatio === "16:9" ? 1920 : (aspectRatio === "9:16" ? 1080 : 1080);
-        height = aspectRatio === "16:9" ? 1080 : (aspectRatio === "9:16" ? 1920 : 1080);
+        width =
+          aspectRatio === "16:9" ? 1920 : aspectRatio === "9:16" ? 1080 : 1080;
+        height =
+          aspectRatio === "16:9" ? 1080 : aspectRatio === "9:16" ? 1920 : 1080;
       }
-      
+
       toast({
         title: "Sharing video",
         description: "Preparing your video for sharing...",
       });
-      
+
       const response = await fetch("/api/share", {
         method: "POST",
         headers: {
@@ -208,16 +228,16 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
           height,
         } satisfies ShareVideoParams),
       });
-      
+
       if (!response.ok) {
         throw new Error("Failed to share video");
       }
-      
+
       toast({
         title: "Video shared",
         description: "Your video has been successfully shared.",
       });
-      
+
       return response.json();
     },
   });
@@ -229,14 +249,15 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
     } catch (error) {
       toast({
         title: "Share failed",
-        description: "There was a problem sharing your video. Please try again.",
-        variant: "destructive"
+        description:
+          "There was a problem sharing your video. Please try again.",
+        variant: "destructive",
       });
     }
   };
 
   const actionsDisabled = exportVideo.isPending || share.isPending;
-  
+
   // Reset to export tab when dialog opens
   useEffect(() => {
     if (props.open) {
@@ -256,7 +277,7 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
             Export your video to share or download
           </DialogDescription>
         </DialogHeader>
-        
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid grid-cols-2 mb-4">
             <TabsTrigger value="export" className="flex items-center gap-2">
@@ -268,17 +289,20 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
               Settings
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="export" className="space-y-4">
             <div className="text-muted-foreground mb-4">
               <p>This may take a while, sit back and relax.</p>
             </div>
-            
+
             <div
               className={cn(
                 "w-full max-h-[500px] mx-auto max-w-full relative overflow-hidden rounded-lg border border-gray-800 shadow-xl",
-                project?.aspectRatio === "16:9" ? "aspect-[16/9]" : 
-                project?.aspectRatio === "9:16" ? "aspect-[9/16]" : "aspect-[1/1]",
+                project?.aspectRatio === "16:9"
+                  ? "aspect-[16/9]"
+                  : project?.aspectRatio === "9:16"
+                    ? "aspect-[9/16]"
+                    : "aspect-[1/1]",
               )}
             >
               {exportVideo.isPending || exportVideo.data === undefined ? (
@@ -294,14 +318,20 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
                         <LoadingIcon className="w-24 h-24 relative z-10" />
                       </div>
                       <div className="text-center">
-                        <p className="text-lg font-medium text-white mb-1">Processing your video</p>
-                        <p className="text-sm text-gray-400">This may take a few minutes</p>
+                        <p className="text-lg font-medium text-white mb-1">
+                          Processing your video
+                        </p>
+                        <p className="text-sm text-gray-400">
+                          This may take a few minutes
+                        </p>
                       </div>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center gap-4">
                       <FilmIcon className="w-24 h-24 opacity-50" />
-                      <p className="text-gray-400">Click Export to start processing</p>
+                      <p className="text-gray-400">
+                        Click Export to start processing
+                      </p>
                     </div>
                   )}
                 </div>
@@ -322,7 +352,7 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
                 </div>
               )}
             </div>
-            
+
             {exportVideo.data && (
               <div className="flex flex-col gap-4 mt-4">
                 <div className="flex flex-row gap-2 items-center">
@@ -336,7 +366,9 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
                     size="icon"
                     variant="outline"
                     onClick={() => {
-                      navigator.clipboard.writeText(exportVideo.data?.video_url ?? "");
+                      navigator.clipboard.writeText(
+                        exportVideo.data?.video_url ?? "",
+                      );
                       toast({
                         title: "URL copied",
                         description: "Video URL copied to clipboard",
@@ -350,7 +382,7 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
                 </div>
               </div>
             )}
-            
+
             <DialogFooter className="mt-6">
               <Button
                 onClick={handleOnShare}
@@ -392,107 +424,200 @@ export function ExportDialog({ onOpenChange, ...props }: ExportDialogProps) {
               </Button>
             </DialogFooter>
           </TabsContent>
-          
+
           <TabsContent value="settings" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <Label htmlFor="resolution">Resolution</Label>
-                <Select 
-                  value={exportSettings.resolution} 
-                  onValueChange={(value) => setExportSettings({...exportSettings, resolution: value})}
+                <Select
+                  value={exportSettings.resolution}
+                  onValueChange={(value) =>
+                    setExportSettings({ ...exportSettings, resolution: value })
+                  }
                 >
-                  <SelectTrigger id="resolution" className="bg-gray-900/50 border-gray-700">
+                  <SelectTrigger
+                    id="resolution"
+                    className="bg-gray-900/50 border-gray-700"
+                  >
                     <SelectValue placeholder="Select resolution" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900/95 backdrop-blur-md border-gray-700">
-                    {resolutionOptions[aspectRatio as keyof typeof resolutionOptions].map((option) => (
-                      <SelectItem key={option.value} value={option.value} className="text-sm hover:bg-gray-800 focus:bg-gray-800">
+                    {resolutionOptions[
+                      aspectRatio as keyof typeof resolutionOptions
+                    ].map((option) => (
+                      <SelectItem
+                        key={option.value}
+                        value={option.value}
+                        className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                      >
                         {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-400">Higher resolution means better quality but larger file size</p>
+                <p className="text-xs text-gray-400">
+                  Higher resolution means better quality but larger file size
+                </p>
               </div>
-              
+
               <div className="space-y-3">
                 <Label htmlFor="format">Format</Label>
-                <Select 
-                  value={exportSettings.format} 
-                  onValueChange={(value) => setExportSettings({...exportSettings, format: value})}
+                <Select
+                  value={exportSettings.format}
+                  onValueChange={(value) =>
+                    setExportSettings({ ...exportSettings, format: value })
+                  }
                 >
-                  <SelectTrigger id="format" className="bg-gray-900/50 border-gray-700">
+                  <SelectTrigger
+                    id="format"
+                    className="bg-gray-900/50 border-gray-700"
+                  >
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900/95 backdrop-blur-md border-gray-700">
-                    <SelectItem value="mp4" className="text-sm hover:bg-gray-800 focus:bg-gray-800">MP4 (H.264)</SelectItem>
-                    <SelectItem value="webm" className="text-sm hover:bg-gray-800 focus:bg-gray-800">WebM (VP9)</SelectItem>
-                    <SelectItem value="mov" className="text-sm hover:bg-gray-800 focus:bg-gray-800">MOV (QuickTime)</SelectItem>
+                    <SelectItem
+                      value="mp4"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      MP4 (H.264)
+                    </SelectItem>
+                    <SelectItem
+                      value="webm"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      WebM (VP9)
+                    </SelectItem>
+                    <SelectItem
+                      value="mov"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      MOV (QuickTime)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-400">MP4 is widely compatible, WebM is better for web</p>
+                <p className="text-xs text-gray-400">
+                  MP4 is widely compatible, WebM is better for web
+                </p>
               </div>
-              
+
               <div className="space-y-3">
                 <Label htmlFor="quality">Quality</Label>
-                <Select 
-                  value={exportSettings.quality} 
-                  onValueChange={(value) => setExportSettings({...exportSettings, quality: value})}
+                <Select
+                  value={exportSettings.quality}
+                  onValueChange={(value) =>
+                    setExportSettings({ ...exportSettings, quality: value })
+                  }
                 >
-                  <SelectTrigger id="quality" className="bg-gray-900/50 border-gray-700">
+                  <SelectTrigger
+                    id="quality"
+                    className="bg-gray-900/50 border-gray-700"
+                  >
                     <SelectValue placeholder="Select quality" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900/95 backdrop-blur-md border-gray-700">
-                    <SelectItem value="low" className="text-sm hover:bg-gray-800 focus:bg-gray-800">Low (2 Mbps)</SelectItem>
-                    <SelectItem value="medium" className="text-sm hover:bg-gray-800 focus:bg-gray-800">Medium (5 Mbps)</SelectItem>
-                    <SelectItem value="high" className="text-sm hover:bg-gray-800 focus:bg-gray-800">High (8 Mbps)</SelectItem>
+                    <SelectItem
+                      value="low"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      Low (2 Mbps)
+                    </SelectItem>
+                    <SelectItem
+                      value="medium"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      Medium (5 Mbps)
+                    </SelectItem>
+                    <SelectItem
+                      value="high"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      High (8 Mbps)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-400">Higher quality means better visuals but larger file size</p>
+                <p className="text-xs text-gray-400">
+                  Higher quality means better visuals but larger file size
+                </p>
               </div>
-              
+
               <div className="space-y-3">
                 <Label htmlFor="fps">Frame Rate (FPS)</Label>
-                <Select 
-                  value={exportSettings.fps.toString()} 
-                  onValueChange={(value) => setExportSettings({...exportSettings, fps: parseInt(value)})}
+                <Select
+                  value={exportSettings.fps.toString()}
+                  onValueChange={(value) =>
+                    setExportSettings({
+                      ...exportSettings,
+                      fps: parseInt(value),
+                    })
+                  }
                 >
-                  <SelectTrigger id="fps" className="bg-gray-900/50 border-gray-700">
+                  <SelectTrigger
+                    id="fps"
+                    className="bg-gray-900/50 border-gray-700"
+                  >
                     <SelectValue placeholder="Select frame rate" />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-900/95 backdrop-blur-md border-gray-700">
-                    <SelectItem value="24" className="text-sm hover:bg-gray-800 focus:bg-gray-800">24 FPS (Cinematic)</SelectItem>
-                    <SelectItem value="30" className="text-sm hover:bg-gray-800 focus:bg-gray-800">30 FPS (Standard)</SelectItem>
-                    <SelectItem value="60" className="text-sm hover:bg-gray-800 focus:bg-gray-800">60 FPS (Smooth)</SelectItem>
+                    <SelectItem
+                      value="24"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      24 FPS (Cinematic)
+                    </SelectItem>
+                    <SelectItem
+                      value="30"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      30 FPS (Standard)
+                    </SelectItem>
+                    <SelectItem
+                      value="60"
+                      className="text-sm hover:bg-gray-800 focus:bg-gray-800"
+                    >
+                      60 FPS (Smooth)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-400">Higher frame rate means smoother motion</p>
+                <p className="text-xs text-gray-400">
+                  Higher frame rate means smoother motion
+                </p>
               </div>
             </div>
-            
+
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mt-6">
               <div className="flex items-start gap-3">
                 <div className="p-2 bg-blue-500/20 rounded-full">
                   <FilmIcon className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-blue-400">Export Preview</h4>
+                  <h4 className="text-sm font-medium text-blue-400">
+                    Export Preview
+                  </h4>
                   <p className="text-xs text-gray-300 mt-1">
-                    {aspectRatio === "16:9" ? "Landscape" : aspectRatio === "9:16" ? "Portrait" : "Square"} video at {exportSettings.resolution} resolution, 
-                    {exportSettings.fps} FPS, {exportSettings.quality} quality, {exportSettings.format.toUpperCase()} format
+                    {aspectRatio === "16:9"
+                      ? "Landscape"
+                      : aspectRatio === "9:16"
+                        ? "Portrait"
+                        : "Square"}{" "}
+                    video at {exportSettings.resolution} resolution,
+                    {exportSettings.fps} FPS, {exportSettings.quality} quality,{" "}
+                    {exportSettings.format.toUpperCase()} format
                   </p>
                 </div>
               </div>
             </div>
-            
+
             <DialogFooter className="mt-6">
               <DialogClose asChild>
-                <Button variant="outline" className="border-gray-700 hover:bg-gray-800">
+                <Button
+                  variant="outline"
+                  className="border-gray-700 hover:bg-gray-800"
+                >
                   <XIcon className="w-4 h-4 mr-2" />
                   Cancel
                 </Button>
               </DialogClose>
-              <Button 
+              <Button
                 onClick={() => setActiveTab("export")}
                 className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-lg shadow-blue-500/20"
               >

@@ -132,6 +132,8 @@ const CameraMovement = ({
                 </span>
                 <div className="flex items-center gap-4">
                   <Slider
+                    id="camera-movement-slider"
+                    name="camera-movement-slider"
                     defaultValue={[value]}
                     value={[value]}
                     onValueChange={(value) => handleChange("value", value[0])}

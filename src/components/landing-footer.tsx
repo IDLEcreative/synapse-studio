@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Github, Twitter, DiscIcon as Discord, Mail, ArrowRight, Heart } from "lucide-react";
+import {
+  Github,
+  Twitter,
+  DiscIcon as Discord,
+  Mail,
+  ArrowRight,
+  Heart,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Footer() {
@@ -10,23 +17,26 @@ export default function Footer() {
       {/* Background elements */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl" />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         {/* Newsletter section */}
         <div className="max-w-5xl mx-auto mb-20">
           <div className="bg-gradient-to-r from-blue-900/20 to-cyan-900/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 md:p-12">
             <div className="grid md:grid-cols-5 gap-8 items-center">
               <div className="md:col-span-3">
-                <h3 className="text-2xl md:text-3xl font-bold mb-4">Stay updated with Synapse</h3>
+                <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                  Stay updated with Synapse
+                </h3>
                 <p className="text-gray-300 mb-0 md:pr-12">
-                  Get the latest news, updates, and tips for creating amazing videos with AI.
+                  Get the latest news, updates, and tips for creating amazing
+                  videos with AI.
                 </p>
               </div>
               <div className="md:col-span-2">
                 <form className="flex flex-col sm:flex-row gap-3">
-                  <input 
-                    type="email" 
-                    placeholder="Enter your email" 
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
                     className="flex-1 bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                   />
                   <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white border-none">
@@ -40,7 +50,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        
+
         {/* Main footer content */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-16 mb-16">
           <div className="col-span-2">
@@ -50,22 +60,39 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-gray-400 mb-6 max-w-xs">
-              Advanced AI-powered video editing platform for creators. Transform your creative vision into stunning videos with our intuitive tools.
+              Advanced AI-powered video editing platform for creators. Transform
+              your creative vision into stunning videos with our intuitive
+              tools.
             </p>
             <div className="flex space-x-4">
-              <Link href="https://github.com/fal-ai-community" target="_blank" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="https://github.com/fal-ai-community"
+                target="_blank"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </Link>
-              <Link href="https://discord.gg/fal-ai" target="_blank" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="https://discord.gg/fal-ai"
+                target="_blank"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Discord className="h-5 w-5" />
                 <span className="sr-only">Discord</span>
               </Link>
-              <Link href="https://x.com/fal" target="_blank" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="https://x.com/fal"
+                target="_blank"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Twitter className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
-              <Link href="mailto:info@synapsestudio.ai" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="mailto:info@synapsestudio.ai"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Mail className="h-5 w-5" />
                 <span className="sr-only">Email</span>
               </Link>
@@ -198,7 +225,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500 mb-4 md:mb-0">
             © {new Date().getFullYear()} Synapse Studio. All rights reserved.

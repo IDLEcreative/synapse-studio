@@ -79,32 +79,63 @@ export function resolveDuration(item: MediaItem): number | null {
 export function resolveMediaUrl(item: MediaItem | undefined): string | null {
   if (!item) return null;
 
+  let mediaUrl: string | null = null;
+
   if (item.kind === "uploaded") {
-    return item.url;
+    mediaUrl = item.url;
+  } else {
+    const data = item.output;
+    if (!data) return null;
+    if (
+      "images" in data &&
+      Array.isArray(data.images) &&
+      data.images.length > 0
+    ) {
+      mediaUrl = data.images[0].url;
+    } else {
+      const fileProperties = {
+        image: 1,
+        video: 1,
+        audio: 1,
+        audio_file: 1,
+        audio_url: 1,
+      };
+      const property = Object.keys(data).find(
+        (key) => key in fileProperties && "url" in data[key],
+      );
+      if (property) {
+        mediaUrl = data[property].url;
+      }
+    }
   }
-  const data = item.output;
-  if (!data) return null;
-  if (
-    "images" in data &&
-    Array.isArray(data.images) &&
-    data.images.length > 0
-  ) {
-    return data.images[0].url;
+
+  // If no URL was found, return null
+  if (!mediaUrl) return null;
+
+  // Check if the URL is from a domain that might cause CORS issues
+  const corsProblematicDomains = [
+    "fal.media",
+    "v2.fal.media",
+    "v3.fal.media",
+  ];
+
+  try {
+    const urlObj = new URL(mediaUrl);
+    const shouldProxy = corsProblematicDomains.some(domain => 
+      urlObj.hostname.includes(domain)
+    );
+
+    // If the URL is from a problematic domain, route it through our proxy
+    if (shouldProxy && typeof window !== "undefined") {
+      const proxyUrl = `/api/media-proxy?url=${encodeURIComponent(mediaUrl)}`;
+      console.log(`Routing media through proxy: ${mediaUrl} -> ${proxyUrl}`);
+      return proxyUrl;
+    }
+  } catch (error) {
+    console.error("Error parsing media URL:", error);
   }
-  const fileProperties = {
-    image: 1,
-    video: 1,
-    audio: 1,
-    audio_file: 1,
-    audio_url: 1,
-  };
-  const property = Object.keys(data).find(
-    (key) => key in fileProperties && "url" in data[key],
-  );
-  if (property) {
-    return data[property].url;
-  }
-  return null;
+
+  return mediaUrl;
 }
 
 export function getAssetType(asset: InputAsset): "image" | "video" | "audio" {

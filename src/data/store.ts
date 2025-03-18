@@ -17,22 +17,34 @@ export type GenerateData = {
   duration: number;
   voice: string;
   // Flux Pro tool parameters
-  edgeStrength?: number;    // For Canny models
-  depthStrength?: number;   // For Depth models
-  maskImage?: string | File | null;  // For Fill models (mask area)
+  edgeStrength?: number; // For Canny models
+  depthStrength?: number; // For Depth models
+  maskImage?: string | File | null; // For Fill models (mask area)
   variationStrength?: number; // For Redux models
   advanced_camera_control?: {
     movement: string;
     value: number;
   };
+  // Flux Pro Trainer parameters
+  data_url?: string; // URL to the training data
+  mode?: "character" | "product" | "style" | "general"; // Finetuning approach
+  finetune_comment?: string; // Descriptive note for the fine-tune
+  iterations?: number; // Training duration (default: 300)
+  learning_rate?: number; // Learning rate for training
+  priority?: "speed" | "quality" | "high_res_only"; // Speed priority
+  captioning?: boolean; // Enable/disable automatic image captioning
+  trigger_word?: string; // Unique word/phrase for captions
+  lora_rank?: number; // Choose between 32 and 16
+  finetune_type?: "full" | "lora"; // Type of finetuning
   [key: string]: any;
 };
 
 export type FluxProStudioState = {
   isOpen: boolean;
   initialImage: string | null;
-  activeTab: "fill" | "canny" | "depth" | "redux" | "batch";
+  activeTab: "flux-pro" | "fill" | "canny" | "depth" | "redux" | "finetune";
   projectId: string;
+  isToolPanelCollapsed: boolean;
 };
 
 interface VideoProjectProps {
@@ -67,10 +79,13 @@ interface VideoProjectState extends VideoProjectProps {
   setExportDialogOpen: (open: boolean) => void;
   setEndpointId: (endpointId: string) => void;
   onGenerate: () => void;
-  
+
   // Flux Pro Studio functions
   setFluxProStudio: (state: Partial<FluxProStudioState>) => void;
-  openFluxProStudio: (initialImage?: string | null, tab?: "fill" | "canny" | "depth" | "redux" | "batch") => void;
+  openFluxProStudio: (
+    initialImage?: string | null,
+    tab?: "flux-pro" | "fill" | "canny" | "depth" | "redux" | "finetune",
+  ) => void;
   closeFluxProStudio: () => void;
 }
 
@@ -97,8 +112,9 @@ const DEFAULT_PROPS: VideoProjectProps = {
   fluxProStudio: {
     isOpen: false,
     initialImage: null,
-    activeTab: "fill",
+    activeTab: "flux-pro",
     projectId: "",
+    isToolPanelCollapsed: false,
   },
 };
 
@@ -150,25 +166,28 @@ export const useVideoProjectStore = create<VideoProjectState>((set, get) => ({
       set({ selectedKeyframes: [...selected, frameId] });
     }
   },
-  setExportDialogOpen: (exportDialogOpen: boolean) =>
-    set({ exportDialogOpen }),
+  setExportDialogOpen: (exportDialogOpen: boolean) => set({ exportDialogOpen }),
   setEndpointId: (endpointId: string) => set({ endpointId }),
-  
+
   // Flux Pro Studio functions
-  setFluxProStudio: (state: Partial<FluxProStudioState>) => set({
-    fluxProStudio: { ...get().fluxProStudio, ...state }
-  }),
-  openFluxProStudio: (initialImage = null, tab = "fill") => set({
-    fluxProStudio: { 
-      isOpen: true, 
-      initialImage, 
-      activeTab: tab,
-      projectId: get().projectId
-    }
-  }),
-  closeFluxProStudio: () => set({
-    fluxProStudio: { ...get().fluxProStudio, isOpen: false }
-  }),
+  setFluxProStudio: (state: Partial<FluxProStudioState>) =>
+    set({
+      fluxProStudio: { ...get().fluxProStudio, ...state },
+    }),
+  openFluxProStudio: (initialImage = null, tab = "flux-pro") =>
+    set({
+      fluxProStudio: {
+        isOpen: true,
+        initialImage,
+        activeTab: tab,
+        projectId: get().projectId,
+        isToolPanelCollapsed: get().fluxProStudio.isToolPanelCollapsed,
+      },
+    }),
+  closeFluxProStudio: () =>
+    set({
+      fluxProStudio: { ...get().fluxProStudio, isOpen: false },
+    }),
 }));
 
 export function useProjectId() {

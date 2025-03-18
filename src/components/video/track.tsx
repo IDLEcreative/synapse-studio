@@ -12,17 +12,17 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { 
-  TrashIcon, 
-  CopyIcon, 
-  ScissorsIcon, 
-  LockIcon, 
+import {
+  TrashIcon,
+  CopyIcon,
+  ScissorsIcon,
+  LockIcon,
   UnlockIcon,
   Volume2,
   VolumeX,
   MoreHorizontalIcon,
   ChevronDownIcon,
-  ChevronUpIcon
+  ChevronUpIcon,
 } from "lucide-react";
 import {
   type HTMLAttributes,
@@ -36,12 +36,12 @@ import {
 import { WithTooltip } from "../ui/tooltip";
 import { useProjectId, useVideoProjectStore } from "@/data/store";
 import { fal } from "@/lib/fal";
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 
@@ -50,9 +50,10 @@ type VideoTrackRowProps = {
 } & HTMLAttributes<HTMLDivElement>;
 
 export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
-  const { data: keyframes = [] } = useQuery({
-    queryKey: ["frames", data],
+  const { data: keyframes = [], isLoading } = useQuery({
+    queryKey: ["frames", data.id],
     queryFn: () => db.keyFrames.keyFramesByTrack(data.id),
+    staleTime: 1000, // Reduce stale time to refresh more frequently
   });
   const queryClient = useQueryClient();
   const projectId = useProjectId();
@@ -61,186 +62,119 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
   const [isLocked, setIsLocked] = useState(data.locked || false);
 
   const mediaType = useMemo(() => keyframes[0]?.data.type, [keyframes]);
-  
+
   // Initialize locked state from data
   useEffect(() => {
     setIsLocked(data.locked || false);
   }, [data.locked]);
 
-  const trackLabel = data.label || data.type.charAt(0).toUpperCase() + data.type.slice(1);
-  
-  const trackColor = {
-    "video": "from-blue-600 to-blue-500",
-    "music": "from-green-600 to-green-500",
-    "voiceover": "from-purple-600 to-purple-500"
-  }[data.type] || "from-gray-600 to-gray-500";
+  const trackLabel =
+    data.label || data.type.charAt(0).toUpperCase() + data.type.slice(1);
+
+  const trackColor =
+    {
+      video: "bg-blue-500",
+      music: "bg-green-500",
+      voiceover: "bg-purple-500",
+    }[data.type] || "bg-gray-500";
 
   const handleToggleLock = () => {
     const newLockedState = !isLocked;
     setIsLocked(newLockedState);
-    
-    // Since tracks don't have an update method, we'll need to create a new track
-    db.tracks.find(data.id).then(track => {
+
+    // Update track locked state
+    db.tracks.find(data.id).then((track) => {
       if (track) {
-        // Create a new track with the same properties but updated locked state
         const { id, ...trackWithoutId } = track;
-        
-        // Delete the old track and create a new one with the same ID
-        // Note: This is a workaround since there's no update method
         db.tracks.create({
           ...trackWithoutId,
           locked: newLockedState,
           projectId: track.projectId,
           label: track.label,
-          type: track.type
+          type: track.type,
         });
-        
-        toast({
-          title: newLockedState ? "Track locked" : "Track unlocked",
-          description: newLockedState ? "Items cannot be moved or edited" : "Items can now be edited",
-        });
-        
         refreshVideoCache(queryClient, projectId);
       }
     });
   };
 
-  const handleResetTrackName = () => {
-    const defaultName = data.type === "video" ? "Video" : data.type === "music" ? "Music" : "Voiceover";
-    
-    // Since tracks don't have an update method, we'll need to create a new track
-    db.tracks.find(data.id).then(track => {
-      if (track) {
-        // Create a new track with the same properties but updated label
-        const { id, ...trackWithoutId } = track;
-        
-        // Delete the old track and create a new one with the same ID
-        // Note: This is a workaround since there's no update method
-        db.tracks.create({
-          ...trackWithoutId,
-          label: defaultName,
-          projectId: track.projectId,
-          locked: track.locked,
-          type: track.type
-        });
-        
-        refreshVideoCache(queryClient, projectId);
-      }
-    });
-  };
-
+  // Ultra-minimal track header
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col">
       <div className="flex items-center justify-between px-2 py-1">
-        <div className="flex items-center gap-2">
-          <button 
+        <div className="flex items-center gap-1">
+          <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 rounded-md hover:bg-gray-800/50 text-gray-400 hover:text-white transition-colors"
+            className="text-gray-400 hover:text-white"
+            title={isCollapsed ? "Expand track" : "Collapse track"}
           >
             {isCollapsed ? (
-              <ChevronUpIcon className="w-4 h-4" />
+              <ChevronUpIcon className="w-3 h-3" />
             ) : (
-              <ChevronDownIcon className="w-4 h-4" />
+              <ChevronDownIcon className="w-3 h-3" />
             )}
           </button>
+
+          <div className={`w-2 h-2 rounded-full ${trackColor}`} />
           
-          <div className="flex items-center gap-1.5">
-            {createElement(trackIcons[data.type], {
-              className: `w-4 h-4 ${data.type === 'video' ? 'text-blue-400' : data.type === 'music' ? 'text-green-400' : 'text-purple-400'}`,
-              "aria-hidden": true,
-              size: 16 // Adding size prop which is accepted by Lucide icons
-            } as React.SVGProps<SVGSVGElement>)}
-            <span className="text-sm font-medium text-gray-300">{trackLabel}</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-1">
-          <WithTooltip tooltip={isLocked ? "Unlock track" : "Lock track"}>
-            <button
-              onClick={handleToggleLock}
-              className={cn(
-                "p-1 rounded-md transition-colors",
-                isLocked 
-                  ? "text-amber-400 hover:bg-amber-500/20" 
-                  : "text-gray-400 hover:bg-gray-800/50 hover:text-white"
-              )}
-            >
-              {isLocked ? <LockIcon className="w-3.5 h-3.5" /> : <UnlockIcon className="w-3.5 h-3.5" />}
-            </button>
-          </WithTooltip>
+          <span className="text-xs text-gray-300">
+            {trackLabel}
+          </span>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="p-1 rounded-md hover:bg-gray-800/50 text-gray-400 hover:text-white transition-colors">
-                <MoreHorizontalIcon className="w-4 h-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-gray-900/95 backdrop-blur-md border-gray-700 shadow-xl">
-              <DropdownMenuItem 
-                className="text-sm hover:bg-gray-800 focus:bg-gray-800"
-                onClick={handleResetTrackName}
-              >
-                <CopyIcon className="w-4 h-4 mr-2 opacity-70" />
-                Reset track name
-              </DropdownMenuItem>
-              
-              {data.type === "music" || data.type === "voiceover" ? (
-                <>
-                  <DropdownMenuSeparator className="bg-gray-700/50" />
-                  <DropdownMenuItem className="text-sm hover:bg-gray-800 focus:bg-gray-800">
-                    <VolumeX className="w-4 h-4 mr-2 opacity-70" />
-                    Decrease volume
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-sm hover:bg-gray-800 focus:bg-gray-800">
-                    <Volume2 className="w-4 h-4 mr-2 opacity-70" />
-                    Increase volume
-                  </DropdownMenuItem>
-                </>
-              ) : null}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <span className="text-xs text-gray-500 ml-1">
+            {keyframes.length}
+          </span>
         </div>
+
+        <button
+          onClick={handleToggleLock}
+          className="text-gray-400 hover:text-white"
+          title={isLocked ? "Unlock track" : "Lock track"}
+        >
+          {isLocked ? (
+            <LockIcon className="w-3 h-3" />
+          ) : (
+            <UnlockIcon className="w-3 h-3" />
+          )}
+        </button>
       </div>
-      
+
       <div
         className={cn(
           "relative w-full timeline-container",
-          "flex flex-col select-none rounded-lg overflow-hidden shrink-0 transition-all duration-300",
+          "flex flex-col select-none overflow-hidden shrink-0 transition-all duration-300",
           {
-            "min-h-[64px]": mediaType && !isCollapsed,
-            "min-h-[56px]": !mediaType && !isCollapsed,
+            "min-h-[50px]": mediaType && !isCollapsed,
+            "min-h-[40px]": !mediaType && !isCollapsed,
             "min-h-[0px] h-0 opacity-50": isCollapsed,
-            "opacity-60 pointer-events-none": isLocked && !isCollapsed,
+            "opacity-85 pointer-events-none": isLocked && !isCollapsed,
           },
         )}
         {...props}
       >
-        {!isCollapsed && keyframes.map((frame) => (
-          <VideoTrackView
-            key={frame.id}
-            className="absolute top-0 bottom-0"
-          style={{
-            // Convert milliseconds to percentage of timeline
-            // frame.timestamp is in milliseconds, convert to seconds (/ 1000)
-            // then calculate percentage of 30 seconds (/ 30 * 100)
-            left: `${((frame.timestamp / 1000) / 30 * 100).toFixed(2)}%`,
-            // Same for duration
-            width: `${((frame.duration / 1000) / 30 * 100).toFixed(2)}%`,
-          }}
-            track={data}
-            frame={frame}
-            isLocked={isLocked}
-          />
-        ))}
-        
+        {!isCollapsed &&
+          keyframes.map((frame) => (
+            <VideoTrackView
+              key={frame.id}
+              className="absolute top-0 bottom-0"
+              style={{
+                left: `${((frame.timestamp / 1000 / 30) * 100).toFixed(2)}%`,
+                width: `${((frame.duration / 1000 / 30) * 100).toFixed(2)}%`,
+              }}
+              track={data}
+              frame={frame}
+              isLocked={isLocked}
+            />
+          ))}
+
         {!isCollapsed && keyframes.length === 0 && (
-          <div className="h-full w-full flex items-center justify-center text-sm text-gray-500 italic">
-            Drag media here
+          <div className="h-full w-full flex items-center justify-center text-xs text-gray-500 italic">
+            Empty
           </div>
         )}
-        
+
         {isCollapsed && (
-          <div className={`h-1 w-full bg-gradient-to-r ${trackColor} rounded-full opacity-70`}></div>
+          <div className={`h-px w-full ${trackColor} opacity-50`}></div>
         )}
       </div>
     </div>
@@ -264,8 +198,8 @@ function AudioWaveform({ data, volume = 1 }: AudioWaveformProps) {
         {
           input: {
             media_url: resolveMediaUrl(data),
-            points_per_second: 5,
-            precision: 3,
+            points_per_second: 3, // Reduced for more minimal look
+            precision: 2,
           },
         },
       );
@@ -282,47 +216,28 @@ function AudioWaveform({ data, volume = 1 }: AudioWaveformProps) {
     staleTime: Number.POSITIVE_INFINITY,
   });
 
-  const svgWidth = waveform.length * 3;
-  const svgHeight = 100;
+  // Sample the waveform to reduce visual complexity
+  const sampledWaveform = waveform.filter((_, i) => i % 2 === 0);
   
   // Apply volume scaling to waveform visualization
-  const scaledWaveform = waveform.map(v => v * volume);
+  const scaledWaveform = sampledWaveform.map((v) => v * volume);
 
   return (
     <div className="h-full flex items-center">
-      <svg
-        width="100%"
-        height="80%"
-        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-        preserveAspectRatio="none"
-      >
-        <title>Audio Waveform</title>
-        <defs>
-          <linearGradient id={`waveformGradient-${data.id}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.8)" />
-            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.3)" />
-          </linearGradient>
-        </defs>
+      <div className="w-full h-5 flex items-center">
         {scaledWaveform.map((v, index) => {
           const amplitude = Math.abs(v);
-          const height = Math.max(amplitude * svgHeight, 2);
-          const x = index * 3;
-          const y = (svgHeight - height) / 2;
-
+          const height = Math.max(amplitude * 15, 1); // Even smaller max height
+          
           return (
-            <rect
+            <div
               key={index}
-              x={x}
-              y={y}
-              width="2"
-              height={height}
-              fill={`url(#waveformGradient-${data.id})`}
-              rx="1"
-              className="drop-shadow-sm"
+              className="w-px bg-white/30 mx-px"
+              style={{ height: `${height}px` }}
             />
           );
         })}
-      </svg>
+      </div>
     </div>
   );
 }
@@ -342,7 +257,7 @@ export function VideoTrackView({
 }: VideoTrackViewProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  
+
   const deleteKeyframe = useMutation({
     mutationFn: () => db.keyFrames.delete(frame.id),
     onSuccess: () => {
@@ -353,13 +268,13 @@ export function VideoTrackView({
       });
     },
   });
-  
+
   const handleOnDelete = () => {
     if (isLocked) {
       toast({
         title: "Track is locked",
         description: "Unlock the track to make changes",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -433,68 +348,64 @@ export function VideoTrackView({
 
   // State to track if clip is being dragged outside the timeline
   const [isDraggingOutside, setIsDraggingOutside] = useState(false);
-  
+
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isLocked) {
       toast({
         title: "Track is locked",
         description: "Unlock the track to move clips",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
-    
+
     const trackElement = trackRef.current;
     if (!trackElement) return;
     const bounds = calculateBounds();
     const startX = e.clientX;
     const startLeft = trackElement.offsetLeft;
-    
-    // Create a ghost element for drag feedback
-    const ghostElement = document.createElement('div');
-    ghostElement.className = 'clip-ghost-element';
-    ghostElement.style.position = 'fixed';
-    ghostElement.style.zIndex = '9999';
-    ghostElement.style.pointerEvents = 'none';
-    ghostElement.style.opacity = '0.8';
+
+    // Create a minimal ghost element for drag feedback
+    const ghostElement = document.createElement("div");
+    ghostElement.className = "clip-ghost-element";
+    ghostElement.style.position = "fixed";
+    ghostElement.style.zIndex = "9999";
+    ghostElement.style.pointerEvents = "none";
+    ghostElement.style.opacity = "0.7";
     ghostElement.style.width = `${trackElement.offsetWidth}px`;
     ghostElement.style.height = `${trackElement.offsetHeight}px`;
-    ghostElement.style.borderRadius = '8px';
-    ghostElement.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
-    ghostElement.style.transition = 'transform 0.1s ease, opacity 0.2s ease';
+    ghostElement.style.borderRadius = "4px";
+    ghostElement.style.transition = "opacity 0.1s ease";
     
-    // Create a remove indicator
-    const removeIndicator = document.createElement('div');
-    removeIndicator.className = 'remove-indicator';
-    removeIndicator.style.position = 'fixed';
-    removeIndicator.style.zIndex = '10000';
-    removeIndicator.style.pointerEvents = 'none';
-    removeIndicator.style.opacity = '0';
-    removeIndicator.style.padding = '6px 12px';
-    removeIndicator.style.borderRadius = '4px';
-    removeIndicator.style.backgroundColor = 'rgba(220, 38, 38, 0.9)';
-    removeIndicator.style.color = 'white';
-    removeIndicator.style.fontWeight = 'bold';
-    removeIndicator.style.fontSize = '12px';
-    removeIndicator.style.transition = 'opacity 0.2s ease';
-    removeIndicator.textContent = 'Release to Remove';
-    
+    // Create a minimal remove indicator
+    const removeIndicator = document.createElement("div");
+    removeIndicator.className = "remove-indicator";
+    removeIndicator.style.position = "fixed";
+    removeIndicator.style.zIndex = "10000";
+    removeIndicator.style.pointerEvents = "none";
+    removeIndicator.style.opacity = "0";
+    removeIndicator.style.padding = "4px 8px";
+    removeIndicator.style.borderRadius = "2px";
+    removeIndicator.style.backgroundColor = "rgba(220, 38, 38, 0.8)";
+    removeIndicator.style.color = "white";
+    removeIndicator.style.fontSize = "10px";
+    removeIndicator.style.transition = "opacity 0.1s ease";
+    removeIndicator.textContent = "Remove";
+
     // Add elements to the document body
     document.body.appendChild(ghostElement);
     document.body.appendChild(removeIndicator);
-    
-    // Take a screenshot of the track element and use it as background for the ghost
+
+    // Set background color based on track type
     const trackRect = trackElement.getBoundingClientRect();
-    ghostElement.style.backgroundImage = `url(${imageUrl || ''})`;
-    ghostElement.style.backgroundSize = 'cover';
-    ghostElement.style.backgroundPosition = 'center';
-    ghostElement.style.backgroundColor = track.type === "video" 
-      ? 'rgba(59, 130, 246, 0.7)' 
-      : track.type === "music" 
-        ? 'rgba(34, 197, 94, 0.7)' 
-        : 'rgba(168, 85, 247, 0.7)';
-    ghostElement.style.border = '2px solid rgba(255, 255, 255, 0.3)';
-    
+    ghostElement.style.backgroundColor =
+      track.type === "video"
+        ? "rgba(59, 130, 246, 0.7)"
+        : track.type === "music"
+          ? "rgba(34, 197, 94, 0.7)"
+          : "rgba(168, 85, 247, 0.7)";
+    ghostElement.style.border = "1px solid rgba(255, 255, 255, 0.2)";
+
     // Position the ghost element at the initial position of the track
     ghostElement.style.left = `${trackRect.left}px`;
     ghostElement.style.top = `${trackRect.top}px`;
@@ -502,44 +413,42 @@ export function VideoTrackView({
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const deltaX = moveEvent.clientX - startX;
       let newLeft = startLeft + deltaX;
-      
+
       // Update ghost element position
-      ghostElement.style.left = `${moveEvent.clientX - (trackRect.width / 2)}px`;
-      ghostElement.style.top = `${moveEvent.clientY - (trackRect.height / 2)}px`;
-      
+      ghostElement.style.left = `${moveEvent.clientX - trackRect.width / 2}px`;
+      ghostElement.style.top = `${moveEvent.clientY - trackRect.height / 2}px`;
+
       // Position the remove indicator
-      removeIndicator.style.left = `${moveEvent.clientX - (removeIndicator.offsetWidth / 2)}px`;
+      removeIndicator.style.left = `${moveEvent.clientX - removeIndicator.offsetWidth / 2}px`;
       removeIndicator.style.top = `${moveEvent.clientY - trackRect.height - 20}px`;
-      
+
       // Check if dragging outside the timeline container
       const timelineElement = trackElement.closest(".timeline-container");
       if (!timelineElement) return;
-      
+
       const timelineRect = timelineElement.getBoundingClientRect();
-      const isOutside = 
-        moveEvent.clientY < timelineRect.top - 50 || 
+      const isOutside =
+        moveEvent.clientY < timelineRect.top - 50 ||
         moveEvent.clientY > timelineRect.bottom + 50 ||
         moveEvent.clientX < timelineRect.left - 100 ||
         moveEvent.clientX > timelineRect.right + 100;
-      
+
       if (isOutside) {
         setIsDraggingOutside(true);
-        ghostElement.style.transform = 'scale(0.9)';
-        ghostElement.style.opacity = '0.6';
-        ghostElement.style.border = '2px solid rgba(220, 38, 38, 0.7)';
-        removeIndicator.style.opacity = '1';
-        document.body.style.cursor = 'no-drop';
-        
+        ghostElement.style.opacity = "0.5";
+        ghostElement.style.border = "1px solid rgba(220, 38, 38, 0.5)";
+        removeIndicator.style.opacity = "1";
+        document.body.style.cursor = "no-drop";
+
         // Don't update the actual clip position when outside
         return;
       } else {
         setIsDraggingOutside(false);
-        ghostElement.style.transform = 'scale(1)';
-        ghostElement.style.opacity = '0.8';
-        ghostElement.style.border = '2px solid rgba(255, 255, 255, 0.3)';
-        removeIndicator.style.opacity = '0';
-        document.body.style.cursor = 'grabbing';
-        
+        ghostElement.style.opacity = "0.7";
+        ghostElement.style.border = "1px solid rgba(255, 255, 255, 0.2)";
+        removeIndicator.style.opacity = "0";
+        document.body.style.cursor = "grabbing";
+
         // Normal timeline positioning logic
         if (newLeft < bounds.left) {
           newLeft = bounds.left;
@@ -558,7 +467,7 @@ export function VideoTrackView({
         frame.timestamp = Math.max(0, newTimestamp);
 
         // Update position
-        trackElement.style.left = `${((frame.timestamp / 1000) / 30 * 100).toFixed(2)}%`;
+        trackElement.style.left = `${((frame.timestamp / 1000 / 30) * 100).toFixed(2)}%`;
         db.keyFrames.update(frame.id, { timestamp: frame.timestamp });
       }
     };
@@ -567,8 +476,8 @@ export function VideoTrackView({
       // Clean up ghost elements
       document.body.removeChild(ghostElement);
       document.body.removeChild(removeIndicator);
-      document.body.style.cursor = '';
-      
+      document.body.style.cursor = "";
+
       // If released outside the timeline, delete the clip
       if (isDraggingOutside) {
         deleteKeyframe.mutate();
@@ -582,7 +491,7 @@ export function VideoTrackView({
           queryKey: queryKeys.projectPreview(projectId),
         });
       }
-      
+
       setIsDraggingOutside(false);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -600,11 +509,11 @@ export function VideoTrackView({
       toast({
         title: "Track is locked",
         description: "Unlock the track to resize clips",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
-    
+
     e.stopPropagation();
     const trackElement = trackRef.current;
     if (!trackElement) return;
@@ -636,17 +545,17 @@ export function VideoTrackView({
 
       // Update duration
       frame.duration = newDuration;
-      
+
       // Update width
-      trackElement.style.width = `${((frame.duration / 1000) / 30 * 100).toFixed(2)}%`;
+      trackElement.style.width = `${((frame.duration / 1000 / 30) * 100).toFixed(2)}%`;
     };
 
     const handleMouseUp = () => {
       // Round duration to nearest 100ms for cleaner values
       frame.duration = Math.round(frame.duration / 100) * 100;
-      
+
       // Update width with rounded duration
-      trackElement.style.width = `${((frame.duration / 1000) / 30 * 100).toFixed(2)}%`;
+      trackElement.style.width = `${((frame.duration / 1000 / 30) * 100).toFixed(2)}%`;
       db.keyFrames.update(frame.id, { duration: frame.duration });
       queryClient.invalidateQueries({
         queryKey: queryKeys.projectPreview(projectId),
@@ -677,47 +586,28 @@ export function VideoTrackView({
         className={cn(
           "flex flex-col select-none rounded overflow-hidden group h-full cursor-grab active:cursor-grabbing",
           {
-            "bg-gradient-to-r from-blue-600 to-blue-500": track.type === "video",
-            "bg-gradient-to-r from-green-600 to-green-500": track.type === "music",
-            "bg-gradient-to-r from-purple-600 to-purple-500": track.type === "voiceover",
+            "bg-blue-500/90": track.type === "video",
+            "bg-green-500/90": track.type === "music",
+            "bg-purple-500/90": track.type === "voiceover",
           },
         )}
       >
-        <div className="p-1 pl-2 bg-black/20 flex flex-row items-center backdrop-blur-sm">
-          <div className="flex flex-row gap-1 text-sm items-center font-semibold text-white w-full">
-            <div className="flex flex-row truncate gap-1 items-center">
-              {createElement(trackIcons[track.type], {
-                className: "w-4 h-4 text-white drop-shadow-sm",
-                "aria-hidden": true,
-                size: 16 // Adding size prop which is accepted by Lucide icons
-              } as React.SVGProps<SVGSVGElement>)}
-              <span className="line-clamp-1 truncate text-sm font-medium w-full">
-                {media.input?.prompt || label}
-              </span>
-            </div>
-            <div className="flex flex-row shrink-0 flex-1 items-center justify-end">
-              <span className="text-xs bg-black/30 px-1.5 py-0.5 rounded-sm text-white/80 mr-1">
-                {(frame.duration / 1000).toFixed(1)}s
-              </span>
-              <WithTooltip tooltip="Remove content">
-                <button
-                  type="button"
-                  className="p-1 rounded-full hover:bg-black/30 group-hover:text-white transition-colors"
-                  onClick={handleOnDelete}
-                >
-                  <TrashIcon className="w-3 h-3 text-white" />
-                </button>
-              </WithTooltip>
-            </div>
-          </div>
+        <div className="px-2 py-0.5 flex items-center justify-between">
+          <span className="text-xs text-white truncate max-w-[80%] font-medium">
+            {media.input?.prompt || label}
+          </span>
+          <span className="text-xs text-white/70 bg-black/20 px-1 rounded-sm">
+            {(frame.duration / 1000).toFixed(1)}s
+          </span>
         </div>
         <div
-          className="p-px flex-1 items-center bg-repeat-x h-full max-h-full overflow-hidden relative"
+          className="flex-1 items-center h-full max-h-full overflow-hidden relative"
           style={
-            imageUrl
+            imageUrl && media.mediaType === "video"
               ? {
-                  background: `url(${imageUrl})`,
-                  backgroundSize: "auto 100%",
+                  background: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${imageUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }
               : undefined
           }
@@ -726,18 +616,10 @@ export function VideoTrackView({
             <AudioWaveform data={media} />
           )}
           <div
-            className={cn(
-              "absolute right-0 z-50 top-0 bg-black/20 group-hover:bg-black/40",
-              "rounded-md bottom-0 w-2 m-1 p-px cursor-ew-resize backdrop-blur-md text-white/40",
-              "transition-colors flex flex-col items-center justify-center text-xs tracking-tighter",
-            )}
+            className="absolute right-0 top-0 bottom-0 w-1 cursor-ew-resize opacity-0 hover:opacity-100 hover:bg-white/20 transition-opacity"
             onMouseDown={(e) => handleResize(e, "right")}
-          >
-            <span className="flex gap-[1px]">
-              <span className="w-px h-2 rounded bg-white/40" />
-              <span className="w-px h-2 rounded bg-white/40" />
-            </span>
-          </div>
+            title="Resize clip"
+          />
         </div>
       </div>
     </div>

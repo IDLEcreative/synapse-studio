@@ -54,11 +54,20 @@ function AudioPlayer({ media, ...props }: AudioPlayerProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="aspect-square bg-gray-800/50 border border-white/5 rounded-md shadow-lg text-muted-foreground flex flex-col items-center justify-center">
-        {media.mediaType === "music" && <MusicIcon className="w-1/2 h-1/2 text-green-400 opacity-70" />}
-        {media.mediaType === "voiceover" && <MicIcon className="w-1/2 h-1/2 text-yellow-400 opacity-70" />}
+        {media.mediaType === "music" && (
+          <MusicIcon className="w-1/2 h-1/2 text-green-400 opacity-70" />
+        )}
+        {media.mediaType === "voiceover" && (
+          <MicIcon className="w-1/2 h-1/2 text-yellow-400 opacity-70" />
+        )}
       </div>
       <div>
-        <audio src={src} {...props} controls className="rounded-md w-full bg-gray-800/50 border border-white/5" />
+        <audio
+          src={src}
+          {...props}
+          controls
+          className="rounded-md w-full bg-gray-800/50 border border-white/5"
+        />
       </div>
     </div>
   );
@@ -252,30 +261,31 @@ export function MediaGallerySheet({
             </div>
             <div className="flex flex-row gap-2">
               {selectedMedia?.mediaType === "image" && (
-              <>
-                <Button
-                  onClick={handleOpenGenerateDialog}
-                  variant="secondary"
-                  disabled={deleteMedia.isPending}
-                  className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 border-blue-500/30"
-                >
-                  <FilmIcon className="w-4 h-4 mr-1.5" />
-                  Make Video
-                </Button>
-                <Button
-                  onClick={() => {
-                    const openFluxProStudio = useVideoProjectStore.getState().openFluxProStudio;
-                    openFluxProStudio(mediaUrl, "fill");
-                    close();
-                  }}
-                  variant="secondary"
-                  disabled={deleteMedia.isPending}
-                  className="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 border-cyan-500/30"
-                >
-                  <SparklesIcon className="w-4 h-4 mr-1.5" />
-                  Flux Pro
-                </Button>
-              </>
+                <>
+                  <Button
+                    onClick={handleOpenGenerateDialog}
+                    variant="secondary"
+                    disabled={deleteMedia.isPending}
+                    className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 border-blue-500/30"
+                  >
+                    <FilmIcon className="w-4 h-4 mr-1.5" />
+                    Make Video
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      const openFluxProStudio =
+                        useVideoProjectStore.getState().openFluxProStudio;
+                      openFluxProStudio(mediaUrl, "fill");
+                      close();
+                    }}
+                    variant="secondary"
+                    disabled={deleteMedia.isPending}
+                    className="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 border-cyan-500/30"
+                  >
+                    <SparklesIcon className="w-4 h-4 mr-1.5" />
+                    Flux Pro
+                  </Button>
+                </>
               )}
               <Button
                 onClick={handleVary}

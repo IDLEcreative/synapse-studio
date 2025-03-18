@@ -21,13 +21,12 @@ type AppProps = {
 };
 
 export function App({ projectId }: AppProps) {
-
   const queryClient = useRef(new QueryClient()).current;
   // Initialize the project ID when the component mounts
   useEffect(() => {
     useVideoProjectStore.getState().setProjectId(projectId);
   }, [projectId]);
-  
+
   const projectDialogOpen = useVideoProjectStore((s) => s.projectDialogOpen);
   const selectedMediaId = useVideoProjectStore((s) => s.selectedMediaId);
   const setSelectedMediaId = useVideoProjectStore((s) => s.setSelectedMediaId);
@@ -37,7 +36,9 @@ export function App({ projectId }: AppProps) {
     }
   };
   const isExportDialogOpen = useVideoProjectStore((s) => s.exportDialogOpen);
-  const setExportDialogOpen = useVideoProjectStore((s) => s.setExportDialogOpen);
+  const setExportDialogOpen = useVideoProjectStore(
+    (s) => s.setExportDialogOpen,
+  );
   return (
     <ToastProvider>
       <QueryClientProvider client={queryClient}>

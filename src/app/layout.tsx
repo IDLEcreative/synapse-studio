@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Synapse Studio | Advanced AI Video Editor",
   description:
     "A powerful AI-driven video editing platform for creators and professionals.",
+  metadataBase: new URL("http://localhost:3000"),
 };
 
 export default function RootLayout({
@@ -17,7 +17,6 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased dark">
         {children}
-        <Analytics />
       </body>
     </html>
   );

@@ -13,12 +13,13 @@ export default function PricingPage() {
           <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent bg-clip-text">
             Choose Your Plan
           </h1>
-          
+
           <p className="text-gray-300 text-lg text-center mb-16 max-w-3xl mx-auto">
-            Select the perfect plan for your creative needs. From hobbyists to professionals, we have options for everyone.
-            All plans include a 14-day free trial with no credit card required.
+            Select the perfect plan for your creative needs. From hobbyists to
+            professionals, we have options for everyone. All plans include a
+            14-day free trial with no credit card required.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {/* Free Plan */}
             <div className="bg-card/30 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:translate-y-[-5px]">
@@ -152,12 +153,16 @@ export default function PricingPage() {
             {/* Enterprise Plan */}
             <div className="bg-card/30 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl hover:translate-y-[-5px]">
               <div className="p-6 border-b border-white/10">
-                <h3 className="text-xl font-bold text-white mb-2">Enterprise</h3>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Enterprise
+                </h3>
                 <div className="flex items-baseline mb-4">
                   <span className="text-3xl font-bold text-white">$49</span>
                   <span className="text-gray-400 ml-1">/month</span>
                 </div>
-                <p className="text-gray-400 text-sm">For teams and businesses</p>
+                <p className="text-gray-400 text-sm">
+                  For teams and businesses
+                </p>
               </div>
               <div className="p-6">
                 <ul className="space-y-3 mb-6">
@@ -191,7 +196,9 @@ export default function PricingPage() {
                   </li>
                   <li className="flex items-start">
                     <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-gray-300">Custom branding</span>
+                    <span className="text-sm text-gray-300">
+                      Custom branding
+                    </span>
                   </li>
                   <li className="flex items-start">
                     <Check className="w-5 h-5 text-cyan-400 mr-2 flex-shrink-0 mt-0.5" />
@@ -214,48 +221,69 @@ export default function PricingPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-8 text-center">Frequently Asked Questions</h2>
-            
+            <h2 className="text-2xl font-semibold mb-8 text-center">
+              Frequently Asked Questions
+            </h2>
+
             <div className="space-y-6">
               <div className="bg-card/30 backdrop-blur-sm border border-white/10 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Can I switch plans later?</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Can I switch plans later?
+                </h3>
                 <p className="text-gray-300">
-                  Yes, you can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to the new features.
-                  When downgrading, the change will take effect at the end of your current billing cycle.
+                  Yes, you can upgrade or downgrade your plan at any time. When
+                  upgrading, you'll get immediate access to the new features.
+                  When downgrading, the change will take effect at the end of
+                  your current billing cycle.
                 </p>
               </div>
-              
+
               <div className="bg-card/30 backdrop-blur-sm border border-white/10 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Is there a limit to how many videos I can create?</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Is there a limit to how many videos I can create?
+                </h3>
                 <p className="text-gray-300">
-                  There's no limit to the number of videos you can create on any plan. The Free plan limits you to 5 projects,
-                  but within those projects, you can create as many videos as you want. Pro and Enterprise plans offer unlimited projects.
+                  There's no limit to the number of videos you can create on any
+                  plan. The Free plan limits you to 5 projects, but within those
+                  projects, you can create as many videos as you want. Pro and
+                  Enterprise plans offer unlimited projects.
                 </p>
               </div>
-              
+
               <div className="bg-card/30 backdrop-blur-sm border border-white/10 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Do you offer educational or non-profit discounts?</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Do you offer educational or non-profit discounts?
+                </h3>
                 <p className="text-gray-300">
-                  Yes, we offer special pricing for educational institutions, non-profit organizations, and students.
-                  Please contact our sales team for more information and to verify your eligibility.
+                  Yes, we offer special pricing for educational institutions,
+                  non-profit organizations, and students. Please contact our
+                  sales team for more information and to verify your
+                  eligibility.
                 </p>
               </div>
-              
+
               <div className="bg-card/30 backdrop-blur-sm border border-white/10 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">What payment methods do you accept?</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  What payment methods do you accept?
+                </h3>
                 <p className="text-gray-300">
-                  We accept all major credit cards (Visa, Mastercard, American Express, Discover),
-                  PayPal, and for Enterprise customers, we can also arrange invoicing for bank transfers.
+                  We accept all major credit cards (Visa, Mastercard, American
+                  Express, Discover), PayPal, and for Enterprise customers, we
+                  can also arrange invoicing for bank transfers.
                 </p>
               </div>
-              
+
               <div className="bg-card/30 backdrop-blur-sm border border-white/10 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Can I cancel my subscription at any time?</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Can I cancel my subscription at any time?
+                </h3>
                 <p className="text-gray-300">
-                  Yes, you can cancel your subscription at any time from your account settings.
-                  When you cancel, you'll still have access to your paid features until the end of your current billing cycle.
+                  Yes, you can cancel your subscription at any time from your
+                  account settings. When you cancel, you'll still have access to
+                  your paid features until the end of your current billing
+                  cycle.
                 </p>
               </div>
             </div>

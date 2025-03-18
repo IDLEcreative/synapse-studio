@@ -55,6 +55,15 @@ const config: Config = withUt({
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        // Flora-inspired colors
+        flora: {
+          card: "rgba(0, 0, 0, 0.8)",
+          border: "rgba(255, 255, 255, 0.05)",
+          hover: "rgba(255, 255, 255, 0.1)",
+          accent: "rgba(60, 60, 255, 0.15)",
+          "accent-hover": "rgba(60, 60, 255, 0.2)",
+          "accent-text": "rgb(120, 120, 255)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

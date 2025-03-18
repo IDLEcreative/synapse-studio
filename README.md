@@ -76,6 +76,7 @@ Comprehensive documentation is available in the [docs](./docs) directory:
 - [Video Models Implementation](./docs/video-models-implementation.md) - Technical details about how video models are implemented
 - [Adding New Models](./docs/adding-new-models.md) - Step-by-step guide on implementing new fal.ai models
 - [Video Model Usage Examples](./docs/examples/video-model-usage.md) - Code examples for using video models programmatically
+- [Fill & Inpaint Feature Guide](./docs/fill-inpaint-feature.md) - Comprehensive guide to using the Fill & Inpaint feature
 
 ## Deployment
 

@@ -7,7 +7,7 @@ import { useState } from "react";
 
 export default function Pricing() {
   const [annual, setAnnual] = useState(true);
-  
+
   const plans = [
     {
       name: "Free",
@@ -69,7 +69,7 @@ export default function Pricing() {
       <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/20 to-black"></div>
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl"></div>
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
           <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm mb-6 backdrop-blur-sm">
@@ -82,14 +82,14 @@ export default function Pricing() {
             Select the perfect plan for your creative needs. From hobbyists to
             professionals, we have options for everyone.
           </p>
-          
+
           {/* Billing toggle */}
           <div className="inline-flex items-center bg-black/30 p-1 rounded-full border border-white/10 backdrop-blur-sm mb-12">
             <button
               onClick={() => setAnnual(false)}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                !annual 
-                  ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg" 
+                !annual
+                  ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -98,12 +98,15 @@ export default function Pricing() {
             <button
               onClick={() => setAnnual(true)}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all flex items-center ${
-                annual 
-                  ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg" 
+                annual
+                  ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
                   : "text-gray-400 hover:text-white"
               }`}
             >
-              Annual <span className="ml-2 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">Save 20%</span>
+              Annual{" "}
+              <span className="ml-2 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                Save 20%
+              </span>
             </button>
           </div>
         </div>
@@ -123,22 +126,24 @@ export default function Pricing() {
                   {plan.badge}
                 </div>
               )}
-              
+
               <div className="p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  {plan.name}
+                </h3>
                 <div className="flex items-baseline mb-4">
-                  <span className="text-4xl font-bold text-white">${annual ? plan.price.annual : plan.price.monthly}</span>
+                  <span className="text-4xl font-bold text-white">
+                    ${annual ? plan.price.annual : plan.price.monthly}
+                  </span>
                   <span className="text-gray-400 ml-1.5">/month</span>
                 </div>
-                <p className="text-gray-400 text-sm mb-6">
-                  {plan.description}
-                </p>
-                
+                <p className="text-gray-400 text-sm mb-6">{plan.description}</p>
+
                 <Link href={plan.ctaLink}>
-                  <Button 
+                  <Button
                     className={`w-full mb-8 ${
-                      plan.popular 
-                        ? "bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white border-none shadow-lg shadow-blue-500/20" 
+                      plan.popular
+                        ? "bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white border-none shadow-lg shadow-blue-500/20"
                         : ""
                     }`}
                     variant={plan.variant as any}
@@ -147,7 +152,7 @@ export default function Pricing() {
                     {plan.popular && <ArrowRight className="ml-2 h-4 w-4" />}
                   </Button>
                 </Link>
-                
+
                 <div className="space-y-4">
                   {plan.features.map((feature, i) => (
                     <div key={i} className="flex items-start">
@@ -160,7 +165,9 @@ export default function Pricing() {
                           <X className="h-3 w-3 text-gray-500" />
                         </div>
                       )}
-                      <span className={`text-sm ${feature.included ? "text-gray-200" : "text-gray-500"}`}>
+                      <span
+                        className={`text-sm ${feature.included ? "text-gray-200" : "text-gray-500"}`}
+                      >
                         {feature.text}
                       </span>
                     </div>
@@ -178,31 +185,46 @@ export default function Pricing() {
               <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-4">
                 <Shield className="h-6 w-6 text-blue-400" />
               </div>
-              <h4 className="text-lg font-medium text-white mb-2">100% Secure</h4>
-              <p className="text-gray-400 text-sm">Your data is always protected and never shared.</p>
+              <h4 className="text-lg font-medium text-white mb-2">
+                100% Secure
+              </h4>
+              <p className="text-gray-400 text-sm">
+                Your data is always protected and never shared.
+              </p>
             </div>
             <div className="flex flex-col items-center">
               <div className="h-12 w-12 rounded-full bg-cyan-500/10 flex items-center justify-center mb-4">
                 <Clock className="h-6 w-6 text-cyan-400" />
               </div>
-              <h4 className="text-lg font-medium text-white mb-2">14-Day Trial</h4>
-              <p className="text-gray-400 text-sm">Try any paid plan free for 14 days.</p>
+              <h4 className="text-lg font-medium text-white mb-2">
+                14-Day Trial
+              </h4>
+              <p className="text-gray-400 text-sm">
+                Try any paid plan free for 14 days.
+              </p>
             </div>
             <div className="flex flex-col items-center">
               <div className="h-12 w-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-4">
                 <Zap className="h-6 w-6 text-blue-400" />
               </div>
-              <h4 className="text-lg font-medium text-white mb-2">Cancel Anytime</h4>
-              <p className="text-gray-400 text-sm">No long-term contracts or commitments.</p>
+              <h4 className="text-lg font-medium text-white mb-2">
+                Cancel Anytime
+              </h4>
+              <p className="text-gray-400 text-sm">
+                No long-term contracts or commitments.
+              </p>
             </div>
           </div>
         </div>
 
         <div className="mt-16 text-center">
           <p className="text-gray-400 text-sm max-w-2xl mx-auto">
-            All plans include a 14-day free trial. No credit card required.
-            Need a custom solution?{" "}
-            <a href="#" className="text-blue-400 hover:text-blue-300 transition-colors">
+            All plans include a 14-day free trial. No credit card required. Need
+            a custom solution?{" "}
+            <a
+              href="#"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
               Contact us
             </a>{" "}
             for custom pricing.

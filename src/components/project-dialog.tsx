@@ -54,7 +54,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
     (project) =>
       project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (project.description &&
-        project.description.toLowerCase().includes(searchQuery.toLowerCase()))
+        project.description.toLowerCase().includes(searchQuery.toLowerCase())),
   );
 
   // Seed data with template project if empty
@@ -87,7 +87,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
     setProjectId(project.id);
     setProjectDialogOpen(false);
     rememberLastProjectId(project.id);
-    
+
     toast({
       title: "Project opened",
       description: `Successfully opened "${project.title}"`,
@@ -128,10 +128,13 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
               <FileVideoIcon className="w-6 h-6 text-blue-400 stroke-1" />
               Create New Project
             </h2>
-            
+
             <div className="flex flex-col gap-4">
               <div className="space-y-1">
-                <label htmlFor="project-title" className="text-xs text-gray-300 font-medium">
+                <label
+                  htmlFor="project-title"
+                  className="text-xs text-gray-300 font-medium"
+                >
                   Project Title:
                 </label>
                 <Input
@@ -144,9 +147,12 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                   aria-required="true"
                 />
               </div>
-              
+
               <div className="space-y-1">
-                <label htmlFor="project-description" className="text-xs text-gray-300 font-medium">
+                <label
+                  htmlFor="project-description"
+                  className="text-xs text-gray-300 font-medium"
+                >
                   Description:
                 </label>
                 <Textarea
@@ -158,7 +164,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                   className="resize-none focus:ring-2 focus:ring-blue-500/30"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <h4 className="text-xs text-gray-300 font-medium">
                   Aspect Ratio:
@@ -169,14 +175,21 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                     onClick={() => setAspect("16:9")}
                     className={cn(
                       "flex flex-col items-center relative h-auto py-3 px-4 transition-all duration-200",
-                      aspect === "16:9" 
-                        ? "bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]" 
-                        : "glass-button hover:bg-white/5"
+                      aspect === "16:9"
+                        ? "bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                        : "glass-button hover:bg-white/5",
                     )}
                     aria-pressed={aspect === "16:9"}
                   >
-                    <div className="w-12 h-[27px] border-2 rounded mb-1 flex items-center justify-center"
-                         style={{ borderColor: aspect === "16:9" ? "rgb(147, 197, 253)" : "rgb(107, 114, 128)" }}>
+                    <div
+                      className="w-12 h-[27px] border-2 rounded mb-1 flex items-center justify-center"
+                      style={{
+                        borderColor:
+                          aspect === "16:9"
+                            ? "rgb(147, 197, 253)"
+                            : "rgb(107, 114, 128)",
+                      }}
+                    >
                       <span className="text-[10px]">16:9</span>
                     </div>
                     <span className="text-xs">Landscape</span>
@@ -186,20 +199,27 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                       </div>
                     )}
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     onClick={() => setAspect("9:16")}
                     className={cn(
                       "flex flex-col items-center relative h-auto py-3 px-4 transition-all duration-200",
-                      aspect === "9:16" 
-                        ? "bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]" 
-                        : "glass-button hover:bg-white/5"
+                      aspect === "9:16"
+                        ? "bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                        : "glass-button hover:bg-white/5",
                     )}
                     aria-pressed={aspect === "9:16"}
                   >
-                    <div className="w-[27px] h-12 border-2 rounded mb-1 flex items-center justify-center"
-                         style={{ borderColor: aspect === "9:16" ? "rgb(147, 197, 253)" : "rgb(107, 114, 128)" }}>
+                    <div
+                      className="w-[27px] h-12 border-2 rounded mb-1 flex items-center justify-center"
+                      style={{
+                        borderColor:
+                          aspect === "9:16"
+                            ? "rgb(147, 197, 253)"
+                            : "rgb(107, 114, 128)",
+                      }}
+                    >
                       <span className="text-[10px]">9:16</span>
                     </div>
                     <span className="text-xs">Portrait</span>
@@ -209,20 +229,27 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                       </div>
                     )}
                   </Button>
-                  
+
                   <Button
                     variant="outline"
                     onClick={() => setAspect("1:1")}
                     className={cn(
                       "flex flex-col items-center relative h-auto py-3 px-4 transition-all duration-200",
-                      aspect === "1:1" 
-                        ? "bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]" 
-                        : "glass-button hover:bg-white/5"
+                      aspect === "1:1"
+                        ? "bg-blue-500/20 text-blue-300 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                        : "glass-button hover:bg-white/5",
                     )}
                     aria-pressed={aspect === "1:1"}
                   >
-                    <div className="w-10 h-10 border-2 rounded mb-1 flex items-center justify-center"
-                         style={{ borderColor: aspect === "1:1" ? "rgb(147, 197, 253)" : "rgb(107, 114, 128)" }}>
+                    <div
+                      className="w-10 h-10 border-2 rounded mb-1 flex items-center justify-center"
+                      style={{
+                        borderColor:
+                          aspect === "1:1"
+                            ? "rgb(147, 197, 253)"
+                            : "rgb(107, 114, 128)",
+                      }}
+                    >
                       <span className="text-[10px]">1:1</span>
                     </div>
                     <span className="text-xs">Square</span>
@@ -235,7 +262,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex-1 flex flex-row items-end justify-end gap-3 mt-2">
               <Button
                 onClick={() =>
@@ -260,7 +287,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                 className={cn(
                   "bg-blue-600 hover:bg-blue-700 text-white transition-all duration-200",
                   "shadow-[0_0_15px_rgba(37,99,235,0.5)]",
-                  "border border-blue-500"
+                  "border border-blue-500",
                 )}
               >
                 {createProject.isPending ? (
@@ -290,7 +317,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
               <FolderOpenIcon className="w-6 h-6 text-blue-400 stroke-1" />
               Open Existing Project
             </h2>
-            
+
             {/* Search projects */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -301,7 +328,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                 className="pl-9 bg-black/30 border-gray-700 focus:ring-2 focus:ring-blue-500/30"
               />
             </div>
-            
+
             <div className="flex flex-col gap-3 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar">
               {isLoading ? (
                 // Loading skeletons
@@ -312,7 +339,9 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                 </>
               ) : filteredProjects.length === 0 ? (
                 <div className="text-center text-sm text-gray-400 py-8 bg-black/30 rounded-lg border border-gray-800">
-                  {searchQuery ? "No matching projects found" : "No projects found"}
+                  {searchQuery
+                    ? "No matching projects found"
+                    : "No projects found"}
                 </div>
               ) : (
                 // Project list
@@ -326,7 +355,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                       "bg-black/40 hover:bg-blue-900/20 transition-all duration-200",
                       "border border-gray-800 hover:border-blue-500/30",
                       "focus:outline-none focus:ring-2 focus:ring-blue-500/50",
-                      "group"
+                      "group",
                     )}
                   >
                     <div className="flex justify-between items-start">
@@ -337,13 +366,13 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                         {project.aspectRatio || "16:9"}
                       </span>
                     </div>
-                    
+
                     {project.description && (
                       <p className="text-sm text-gray-400 line-clamp-2 mt-1 group-hover:text-gray-300 transition-colors">
                         {project.description}
                       </p>
                     )}
-                    
+
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
