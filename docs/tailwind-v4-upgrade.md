@@ -424,6 +424,18 @@ export default function IndexPage() {
 | JavaScript Bundle Size | ~1.2MB | ~0.9MB |
 | Initial Page Load | ~3.5s | ~2.6s |
 
+## Post-Upgrade Theme Fine-Tuning
+
+After the initial upgrade, we noticed some visual differences in the application's appearance. To address these issues, we performed additional theme fine-tuning to enhance the visual appearance of the application.
+
+See [Tailwind Theme Fine-Tuning](./tailwind-theme-fine-tuning.md) for detailed information about the changes made to improve the visual appearance of the application.
+
+Key improvements include:
+- Enhanced dark mode color palette for better contrast and visibility
+- Improved button styles for better visibility and interactivity
+- Enhanced card and panel styles for better visibility and depth
+- Added subtle shadows and more visible borders for better visual hierarchy
+
 ## Resources
 
 - [Tailwind CSS v4.0 Documentation](https://tailwindcss.com/docs)
@@ -432,3 +444,4 @@ export default function IndexPage() {
 - [Next.js with Tailwind CSS](https://nextjs.org/docs/app/building-your-application/styling/tailwind-css)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Next.js Performance Optimization](https://nextjs.org/docs/app/building-your-application/optimizing)
+- [Tailwind Theme Fine-Tuning](./tailwind-theme-fine-tuning.md)
