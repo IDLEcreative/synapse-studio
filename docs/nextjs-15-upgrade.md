@@ -56,6 +56,22 @@ Additional manual adjustments that were needed:
    - The `cookies()` function is now asynchronous and needs to be awaited
    - The component function needs to be marked as `async`
 
+2. **Page Props Type Changes**
+   ```tsx
+   // Before
+   type PageProps = {
+     params: PageParams;
+   };
+
+   // After
+   type PageProps = {
+     params: PageParams;
+     searchParams?: { [key: string]: string | string[] | undefined };
+   };
+   ```
+   - The `PageProps` type now requires the `searchParams` property
+   - This is needed for proper type compatibility with Next.js 15
+
 ### Phase 4: Testing
 
 1. **Development server testing**

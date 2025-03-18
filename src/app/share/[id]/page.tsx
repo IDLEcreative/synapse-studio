@@ -12,6 +12,7 @@ type PageParams = {
 
 type PageProps = {
   params: PageParams;
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateMetadata(
