@@ -149,7 +149,7 @@ export default function FinetuneEditor() {
     setIsSubmitting(true);
 
     try {
-      await createJob.mutateAsync({} as any);
+      await createJob.mutateAsync();
       toast({
         title: "Finetuning started",
         description:

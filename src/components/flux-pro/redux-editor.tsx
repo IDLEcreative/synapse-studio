@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { fal } from "@/lib/fal";
+import { fal, type QueueUpdate } from "@/lib/fal";
 import {
   UndoIcon,
   RedoIcon,
@@ -25,7 +25,10 @@ type Layer = {
 
 interface ReduxEditorProps {
   initialImage?: string | null;
-  onComplete: (result: { url: string; metadata: any }) => void;
+  onComplete: (result: {
+    url: string;
+    metadata: Record<string, unknown>;
+  }) => void;
   supportLayers?: boolean;
 }
 
@@ -280,9 +283,9 @@ export default function ReduxEditor({
           aspect_ratio: "1:1", // Default square aspect ratio
         },
         logs: true,
-        onQueueUpdate: (update: any) => {
+        onQueueUpdate: (update: QueueUpdate) => {
           if (update.status === "IN_PROGRESS") {
-            update.logs?.map((log: any) => log.message).forEach(console.log);
+            update.logs?.forEach((log) => console.log(log.message));
           }
         },
       });

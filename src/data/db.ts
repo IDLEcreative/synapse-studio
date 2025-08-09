@@ -75,6 +75,16 @@ export const db = {
         ...track,
       });
     },
+    async update(id: string, track: Partial<VideoTrack>) {
+      const db = await open();
+      const existing = await db.get("tracks", id);
+      if (!existing) return;
+      return db.put("tracks", {
+        ...existing,
+        ...track,
+        id,
+      });
+    },
   },
 
   keyFrames: {

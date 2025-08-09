@@ -1,0 +1,831 @@
+{
+  "config": {
+    "configFile": "/Users/jamesguy/synapse-studio/playwright.config.ts",
+    "rootDir": "/Users/jamesguy/synapse-studio/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 600000,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      ["html", null],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/jamesguy/synapse-studio/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/jamesguy/synapse-studio/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jamesguy/synapse-studio/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/jamesguy/synapse-studio/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jamesguy/synapse-studio/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/jamesguy/synapse-studio/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jamesguy/synapse-studio/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/jamesguy/synapse-studio/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jamesguy/synapse-studio/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/jamesguy/synapse-studio/e2e",
+        "testIgnore": [],
+        "testMatch": ["**/*.@(spec|test).?(c|m)[jt]s?(x)"],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "main-user-journey.spec.ts",
+      "file": "main-user-journey.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Main User Journey",
+          "file": "main-user-journey.spec.ts",
+          "line": 86,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should complete full video creation workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-31908a9873656829f3a7",
+              "file": "main-user-journey.spec.ts",
+              "line": 94,
+              "column": 7
+            },
+            {
+              "title": "should handle video upload workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-fc0bf908554608f8d940",
+              "file": "main-user-journey.spec.ts",
+              "line": 193,
+              "column": 7
+            },
+            {
+              "title": "should handle error states gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-1cff29faf860660d442a",
+              "file": "main-user-journey.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "should handle responsive design on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-35d0f0f0c611cf33a2ba",
+              "file": "main-user-journey.spec.ts",
+              "line": 266,
+              "column": 7
+            },
+            {
+              "title": "should handle page navigation and state persistence",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-cebdd14616e516b0bfb1",
+              "file": "main-user-journey.spec.ts",
+              "line": 297,
+              "column": 7
+            },
+            {
+              "title": "should handle keyboard shortcuts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-aedb93770bd0e6d1135f",
+              "file": "main-user-journey.spec.ts",
+              "line": 331,
+              "column": 7
+            },
+            {
+              "title": "should handle accessibility features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-25846b92812d239d288b",
+              "file": "main-user-journey.spec.ts",
+              "line": 353,
+              "column": 7
+            },
+            {
+              "title": "should complete full video creation workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-3d6ac8f59ec63c28e19f",
+              "file": "main-user-journey.spec.ts",
+              "line": 94,
+              "column": 7
+            },
+            {
+              "title": "should handle video upload workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-70f8a291c2641a812e3c",
+              "file": "main-user-journey.spec.ts",
+              "line": 193,
+              "column": 7
+            },
+            {
+              "title": "should handle error states gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-2aea9dbe8070fe44327f",
+              "file": "main-user-journey.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "should handle responsive design on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-d7a7c7d05c9577b3a763",
+              "file": "main-user-journey.spec.ts",
+              "line": 266,
+              "column": 7
+            },
+            {
+              "title": "should handle page navigation and state persistence",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-2b9d8dabac0eb845a0be",
+              "file": "main-user-journey.spec.ts",
+              "line": 297,
+              "column": 7
+            },
+            {
+              "title": "should handle keyboard shortcuts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-578f9cc8b435b9b63b91",
+              "file": "main-user-journey.spec.ts",
+              "line": 331,
+              "column": 7
+            },
+            {
+              "title": "should handle accessibility features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-c7b4a9b7c40c442255c4",
+              "file": "main-user-journey.spec.ts",
+              "line": 353,
+              "column": 7
+            },
+            {
+              "title": "should complete full video creation workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-0cce6a2c5b78d7f99144",
+              "file": "main-user-journey.spec.ts",
+              "line": 94,
+              "column": 7
+            },
+            {
+              "title": "should handle video upload workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-6e98f1ebdcac6536f77c",
+              "file": "main-user-journey.spec.ts",
+              "line": 193,
+              "column": 7
+            },
+            {
+              "title": "should handle error states gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-e51f0c43900ce4af8991",
+              "file": "main-user-journey.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "should handle responsive design on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-7bdc024da6577c02a5dc",
+              "file": "main-user-journey.spec.ts",
+              "line": 266,
+              "column": 7
+            },
+            {
+              "title": "should handle page navigation and state persistence",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-b9fc46cc253ceb254750",
+              "file": "main-user-journey.spec.ts",
+              "line": 297,
+              "column": 7
+            },
+            {
+              "title": "should handle keyboard shortcuts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-8d1d83cd9e6568605a07",
+              "file": "main-user-journey.spec.ts",
+              "line": 331,
+              "column": 7
+            },
+            {
+              "title": "should handle accessibility features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-031d8c1882ff9fc1d819",
+              "file": "main-user-journey.spec.ts",
+              "line": 353,
+              "column": 7
+            },
+            {
+              "title": "should complete full video creation workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-29899daa0461ee35898c",
+              "file": "main-user-journey.spec.ts",
+              "line": 94,
+              "column": 7
+            },
+            {
+              "title": "should handle video upload workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-74359c89b4d1796cd8dc",
+              "file": "main-user-journey.spec.ts",
+              "line": 193,
+              "column": 7
+            },
+            {
+              "title": "should handle error states gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-2cbee49bb9e9a306f5a6",
+              "file": "main-user-journey.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "should handle responsive design on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-d1b042db8899b22baf73",
+              "file": "main-user-journey.spec.ts",
+              "line": 266,
+              "column": 7
+            },
+            {
+              "title": "should handle page navigation and state persistence",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-5b4e8035d7ecd98105cb",
+              "file": "main-user-journey.spec.ts",
+              "line": 297,
+              "column": 7
+            },
+            {
+              "title": "should handle keyboard shortcuts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-3001de887fcbf260cad4",
+              "file": "main-user-journey.spec.ts",
+              "line": 331,
+              "column": 7
+            },
+            {
+              "title": "should handle accessibility features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-b843cd929cb8f6975a13",
+              "file": "main-user-journey.spec.ts",
+              "line": 353,
+              "column": 7
+            },
+            {
+              "title": "should complete full video creation workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-4fc4d94cbcf1c4b97ecb",
+              "file": "main-user-journey.spec.ts",
+              "line": 94,
+              "column": 7
+            },
+            {
+              "title": "should handle video upload workflow",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-19def01a732d1680a7a6",
+              "file": "main-user-journey.spec.ts",
+              "line": 193,
+              "column": 7
+            },
+            {
+              "title": "should handle error states gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-94a1adaf9063cc73ab19",
+              "file": "main-user-journey.spec.ts",
+              "line": 228,
+              "column": 7
+            },
+            {
+              "title": "should handle responsive design on mobile",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-7326623f3d6499b49732",
+              "file": "main-user-journey.spec.ts",
+              "line": 266,
+              "column": 7
+            },
+            {
+              "title": "should handle page navigation and state persistence",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-1e9e4269c4e73e9f5f1f",
+              "file": "main-user-journey.spec.ts",
+              "line": 297,
+              "column": 7
+            },
+            {
+              "title": "should handle keyboard shortcuts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-67c4d90982a440e1a283",
+              "file": "main-user-journey.spec.ts",
+              "line": 331,
+              "column": 7
+            },
+            {
+              "title": "should handle accessibility features",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ceb513e2ffb7cc5b2e39-7c2b6295284def32a177",
+              "file": "main-user-journey.spec.ts",
+              "line": 353,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-09T08:50:57.672Z",
+    "duration": 62.15499999999997,
+    "expected": 0,
+    "skipped": 35,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

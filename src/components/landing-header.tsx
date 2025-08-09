@@ -42,24 +42,24 @@ export default function Header() {
         <nav className="hidden md:flex items-center justify-center space-x-6">
           <Link
             href="#features"
-            className="px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="px-3 py-2 text-sm text-gray-200 hover:text-white transition-colors"
           >
             Features
           </Link>
           <Link
             href="#pricing"
-            className="px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="px-3 py-2 text-sm text-gray-200 hover:text-white transition-colors"
           >
             Pricing
           </Link>
           <Link
             href="#community"
-            className="px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+            className="px-3 py-2 text-sm text-gray-200 hover:text-white transition-colors"
           >
             Community
           </Link>
           <div className="relative group">
-            <button className="px-3 py-2 text-sm text-gray-400 hover:text-white transition-colors flex items-center">
+            <button className="px-3 py-2 text-sm text-gray-200 hover:text-white transition-colors flex items-center">
               Resources
               <ChevronDown className="ml-1 h-4 w-4 opacity-70 group-hover:opacity-100 transition-opacity" />
             </button>
@@ -67,25 +67,25 @@ export default function Header() {
               <div className="py-1 rounded-xl overflow-hidden">
                 <Link
                   href="/about"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5"
+                  className="block px-4 py-2 text-sm text-gray-100 hover:text-white hover:bg-white/5"
                 >
                   About
                 </Link>
                 <Link
                   href="#"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5"
+                  className="block px-4 py-2 text-sm text-gray-100 hover:text-white hover:bg-white/5"
                 >
                   Documentation
                 </Link>
                 <Link
                   href="#"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5"
+                  className="block px-4 py-2 text-sm text-gray-100 hover:text-white hover:bg-white/5"
                 >
                   Tutorials
                 </Link>
                 <Link
                   href="#"
-                  className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5"
+                  className="block px-4 py-2 text-sm text-gray-100 hover:text-white hover:bg-white/5"
                 >
                   Blog
                 </Link>
@@ -125,35 +125,35 @@ export default function Header() {
           <nav className="flex flex-col space-y-6 mt-8">
             <Link
               href="#features"
-              className="px-4 py-3 text-lg text-gray-300 hover:text-white"
+              className="px-4 py-3 text-lg text-gray-100 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Features
             </Link>
             <Link
               href="#pricing"
-              className="px-4 py-3 text-lg text-gray-300 hover:text-white"
+              className="px-4 py-3 text-lg text-gray-100 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Pricing
             </Link>
             <Link
               href="#community"
-              className="px-4 py-3 text-lg text-gray-300 hover:text-white"
+              className="px-4 py-3 text-lg text-gray-100 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Community
             </Link>
             <Link
               href="/about"
-              className="px-4 py-3 text-lg text-gray-300 hover:text-white"
+              className="px-4 py-3 text-lg text-gray-100 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               About
             </Link>
             <Link
               href="#"
-              className="px-4 py-3 text-lg text-gray-300 hover:text-white"
+              className="px-4 py-3 text-lg text-gray-100 hover:text-white"
               onClick={() => setMobileMenuOpen(false)}
             >
               Documentation

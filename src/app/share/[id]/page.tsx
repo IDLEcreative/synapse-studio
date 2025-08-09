@@ -6,21 +6,20 @@ import { Suspense } from "react";
 import VideoContent from "./video-content";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// This interface works in development but has type mismatches in production build with Next.js 15
-// The production build expects params to be a Promise, but this is the correct type for development
-// @ts-ignore - Suppress TypeScript error during production build
+// Next.js 15 dynamic route params interface
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateMetadata(
   { params }: PageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const video = await fetchSharedVideo(params.id);
+  const { id } = await params;
+  const video = await fetchSharedVideo(id);
   if (!video) {
     return {
       title: "Video Not Found",
@@ -101,7 +100,7 @@ function VideoContentSkeleton() {
 }
 
 export default async function SharePage({ params }: PageProps) {
-  const shareId = params.id;
+  const { id: shareId } = await params;
   const shareData = await fetchSharedVideo(shareId);
 
   if (!shareData) {

@@ -83,18 +83,8 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
     setIsLocked(newLockedState);
 
     // Update track locked state
-    db.tracks.find(data.id).then((track) => {
-      if (track) {
-        const { id, ...trackWithoutId } = track;
-        db.tracks.create({
-          ...trackWithoutId,
-          locked: newLockedState,
-          projectId: track.projectId,
-          label: track.label,
-          type: track.type,
-        });
-        refreshVideoCache(queryClient, projectId);
-      }
+    db.tracks.update(data.id, { locked: newLockedState }).then(() => {
+      refreshVideoCache(queryClient, projectId);
     });
   };
 
@@ -124,7 +114,11 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
 
         <button
           onClick={handleToggleLock}
-          className="text-gray-400 hover:text-white"
+          className={`flex items-center justify-center rounded-sm p-0.5 transition-colors ${
+            isLocked
+              ? "bg-gray-800/80 text-white hover:bg-gray-700"
+              : "text-gray-400 hover:text-white hover:bg-gray-700/50"
+          }`}
           title={isLocked ? "Unlock track" : "Lock track"}
         >
           {isLocked ? (
@@ -132,6 +126,9 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
           ) : (
             <UnlockIcon className="w-3 h-3" />
           )}
+          <span className="text-xs ml-1">
+            {isLocked ? "Locked" : "Unlocked"}
+          </span>
         </button>
       </div>
 
@@ -144,6 +141,8 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
             "min-h-[40px]": !mediaType && !isCollapsed,
             "min-h-[0px] h-0 opacity-50": isCollapsed,
             "opacity-85 pointer-events-none": isLocked && !isCollapsed,
+            "after:absolute after:inset-0 after:bg-gray-900/30 after:backdrop-blur-[1px] after:z-10":
+              isLocked && !isCollapsed,
           },
         )}
         {...props}
@@ -162,6 +161,15 @@ export function VideoTrackRow({ data, ...props }: VideoTrackRowProps) {
               isLocked={isLocked}
             />
           ))}
+
+        {/* Lock overlay indicator */}
+        {isLocked && !isCollapsed && (
+          <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+            <div className="bg-gray-800/50 rounded-full p-1.5">
+              <LockIcon className="w-5 h-5 text-white" />
+            </div>
+          </div>
+        )}
 
         {!isCollapsed && keyframes.length === 0 && (
           <div className="h-full w-full flex items-center justify-center text-xs text-gray-500 italic">
@@ -318,27 +326,12 @@ export function VideoTrackView({
   const calculateBounds = () => {
     const timelineElement = document.querySelector(".timeline-container");
     const timelineRect = timelineElement?.getBoundingClientRect();
-    const trackElement = trackRef.current;
-    const trackRect = trackElement?.getBoundingClientRect();
 
-    if (!timelineRect || !trackRect || !trackElement)
-      return { left: 0, right: 0 };
-
-    const previousTrack = trackElement?.previousElementSibling;
-    const nextTrack = trackElement?.nextElementSibling;
-
-    const leftBound = previousTrack
-      ? previousTrack.getBoundingClientRect().right - (timelineRect?.left || 0)
-      : 0;
-    const rightBound = nextTrack
-      ? nextTrack.getBoundingClientRect().left -
-        (timelineRect?.left || 0) -
-        trackRect.width
-      : timelineRect.width - trackRect.width;
+    if (!timelineRect) return { left: 0, right: 0 };
 
     return {
-      left: leftBound,
-      right: rightBound,
+      left: 0,
+      right: timelineRect.width,
     };
   };
 
@@ -435,8 +428,6 @@ export function VideoTrackView({
         ghostElement.style.border = "1px solid rgba(220, 38, 38, 0.5)";
         removeIndicator.style.opacity = "1";
         document.body.style.cursor = "no-drop";
-
-        // Don't update the actual clip position when outside
         return;
       } else {
         setIsDraggingOutside(false);
@@ -455,16 +446,45 @@ export function VideoTrackView({
         const parentWidth = timelineElement
           ? (timelineElement as HTMLElement).offsetWidth
           : 1;
-        // Calculate new timestamp in milliseconds
-        // Convert position (pixels) to percentage of parent width
-        // Then convert percentage to seconds (30 seconds total)
-        // Then convert seconds to milliseconds (* 1000)
-        const newTimestamp = (newLeft / parentWidth) * 30 * 1000;
-        frame.timestamp = Math.max(0, newTimestamp);
 
-        // Update position
-        trackElement.style.left = `${((frame.timestamp / 1000 / 30) * 100).toFixed(2)}%`;
-        db.keyFrames.update(frame.id, { timestamp: frame.timestamp });
+        // Calculate new timestamp
+        const newTimestamp = (newLeft / parentWidth) * 30 * 1000;
+
+        // Prevent overlapping with other clips
+        const allClips =
+          trackElement.parentElement?.querySelectorAll(".absolute");
+        let allowPosition = true;
+
+        if (allClips) {
+          for (const clip of allClips) {
+            if (clip === trackElement) continue;
+
+            const clipRect = clip.getBoundingClientRect();
+            const clipLeft = parseFloat(window.getComputedStyle(clip).left);
+            const clipWidth = parseFloat(window.getComputedStyle(clip).width);
+
+            const currentLeft = newLeft;
+            const currentRight = newLeft + trackRect.width;
+            const otherLeft = clipLeft;
+            const otherRight = clipLeft + clipWidth;
+
+            // Check for overlap
+            if (currentLeft < otherRight && currentRight > otherLeft) {
+              allowPosition = false;
+              break;
+            }
+          }
+        }
+
+        if (allowPosition) {
+          frame.timestamp = Math.max(0, newTimestamp);
+          trackElement.style.left = `${((frame.timestamp / 1000 / 30) * 100).toFixed(2)}%`;
+          db.keyFrames.update(frame.id, { timestamp: frame.timestamp });
+        } else {
+          // Visual feedback for overlap
+          ghostElement.style.opacity = "0.5";
+          ghostElement.style.border = "1px solid rgba(255, 200, 0, 0.5)";
+        }
       }
     };
 
@@ -590,7 +610,7 @@ export function VideoTrackView({
       >
         <div className="px-2 py-0.5 flex items-center justify-between">
           <span className="text-xs text-white truncate max-w-[80%] font-medium">
-            {media.input?.prompt || label}
+            {String((media.input as any)?.prompt || label)}
           </span>
           <span className="text-xs text-white/70 bg-black/20 px-1 rounded-sm">
             {(frame.duration / 1000).toFixed(1)}s
@@ -599,7 +619,8 @@ export function VideoTrackView({
         <div
           className="flex-1 items-center h-full max-h-full overflow-hidden relative"
           style={
-            imageUrl && media.mediaType === "video"
+            imageUrl &&
+            (media.mediaType === "video" || media.mediaType === "image")
               ? {
                   background: `linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url(${imageUrl})`,
                   backgroundSize: "cover",

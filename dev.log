@@ -1,0 +1,374 @@
+
+> synapse-studio@1.0.0 dev
+> next dev
+
+   ▲ Next.js 15.2.3
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.111:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1118ms
+ ○ Compiling / ...
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled / in 2.2s (971 modules)
+ GET / 200 in 2475ms
+ ✓ Compiled in 417ms (427 modules)
+ ○ Compiling /app ...
+ ✓ Compiled /app in 2.2s (1908 modules)
+(node:37379) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ GET / 200 in 122ms
+ GET /app 200 in 10ms
+ GET /app 200 in 8ms
+ ○ Compiling /api/media-proxy ...
+ ✓ Compiled /api/media-proxy in 1819ms (2712 modules)
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/uploadthing 200 in 2224ms
+ GET /api/uploadthing 200 in 15ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 3002ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1096ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1021ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1019ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1001ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1005ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1076ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1014ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1033ms
+ ✓ Compiled in 260ms (889 modules)
+ GET /app 200 in 68ms
+ ✓ Compiled in 190ms (889 modules)
+ GET /app 200 in 11ms
+ ✓ Compiled in 164ms (889 modules)
+ GET /app 200 in 10ms
+ ✓ Compiled in 192ms (889 modules)
+ GET /app 200 in 17ms
+ ✓ Compiled in 244ms (889 modules)
+ GET /app 200 in 19ms
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.3
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.111:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1192ms
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.3
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.111:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1084ms
+ ○ Compiling /app ...
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled /app in 4.4s (1870 modules)
+(node:42790) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ GET /app 200 in 5135ms
+ ✓ Compiled in 1048ms (863 modules)
+ ○ Compiling /api/media-proxy ...
+ ✓ Compiled /api/media-proxy in 2.8s (2651 modules)
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/uploadthing 200 in 3242ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 4158ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1077ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1112ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1166ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1036ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1034ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1102ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ ⨯ ./src/components/video-preview.tsx
+Error:   [31mx[0m Unexpected eof
+     ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/components/video-preview.tsx[0m:740:3]
+ [2m738[0m |     </div>
+ [2m739[0m |   );
+ [2m740[0m | }
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/video-preview.tsx
+./src/components/main.tsx
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1101ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1048ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1059ms
+ ✓ Compiled in 1043ms (2474 modules)
+ GET /app 200 in 63ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /app 200 in 325ms
+ ✓ Compiled /favicon.ico in 207ms (1625 modules)
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/uploadthing 200 in 613ms
+ GET /favicon.ico 200 in 869ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1492ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1074ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1039ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1026ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1056ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1021ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1015ms
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1001ms
+Proxying media from: https://v3.fal.media/files/tiger/RZwLyNokCxx9unV9x6wHS_output.mp4
+ GET /api/media-proxy?url=https%3A%2F%2Fv3.fal.media%2Ffiles%2Ftiger%2FRZwLyNokCxx9unV9x6wHS_output.mp4 200 in 1014ms
+ ✓ Compiled in 212ms (863 modules)
+ GET /app 200 in 49ms
+ GET /favicon.ico 200 in 207ms
+ ✓ Compiled in 330ms (2488 modules)
+ GET /app 200 in 64ms
+ GET /favicon.ico 200 in 213ms
+ ✓ Compiled in 183ms (863 modules)
+ GET /app 200 in 13ms
+ ✓ Compiled in 215ms (863 modules)
+ GET /app 200 in 144ms
+ GET /app 200 in 44ms
+ ✓ Compiled in 518ms (2665 modules)
+ GET /app 200 in 56ms
+ ✓ Compiled in 286ms (1877 modules)
+ GET /app 200 in 45ms
+ ✓ Compiled in 192ms (863 modules)
+ GET /app 200 in 24ms
+ ✓ Compiled in 175ms (863 modules)
+ GET /app 200 in 150ms
+ GET /app 200 in 41ms
+ ✓ Compiled in 334ms (1847 modules)
+ GET /app 200 in 102ms
+ ✓ Compiled in 232ms (863 modules)
+ ✓ Compiled /middleware in 437ms (200 modules)
+ ○ Compiling /auth/signin ...
+ ✓ Compiled /auth/signin in 4.8s (1916 modules)
+ GET /auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fapp 200 in 4968ms
+ ✓ Compiled in 562ms (896 modules)
+ GET /auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fapp 200 in 37ms
+ ✓ Compiled in 772ms (1933 modules)
+ GET /auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fapp 200 in 42ms
+ ○ Compiling /api/auth/[...nextauth] ...
+ ✓ Compiled /api/auth/[...nextauth] in 4.4s (2232 modules)
+ GET /auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fapp 200 in 116ms
+[next-auth][warn][NEXTAUTH_URL] 
+https://next-auth.js.org/warnings#nextauth_url
+[next-auth][warn][NO_SECRET] 
+https://next-auth.js.org/warnings#no_secret
+ GET /api/auth/session 200 in 5925ms
+ GET /api/auth/session 200 in 13ms
+ ✓ Compiled in 206ms (897 modules)
+ GET /auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fapp 200 in 12ms
+ GET /api/auth/providers 200 in 8ms
+ GET /api/auth/csrf 200 in 5ms
+ POST /api/auth/callback/credentials 401 in 5ms
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createBrowserClient } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createBrowserClient } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+Warning: useLayoutEffect does nothing on the server, because its effect cannot be encoded into the server renderer's output format. This will lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at ShadowPortal (/Users/jamesguy/synapse-studio/node_modules/next/src/client/components/react-dev-overlay/ui/components/shadow-portal.tsx:5:32)
+    at DevOverlay (/Users/jamesguy/synapse-studio/node_modules/next/src/client/components/react-dev-overlay/ui/dev-overlay.tsx:14:3)
+    at ReactDevOverlay (/Users/jamesguy/synapse-studio/node_modules/next/src/server/dev/next-dev-server.ts:82:10)
+    at div
+    at Body (/Users/jamesguy/synapse-studio/node_modules/next/src/server/render.tsx:1263:19)
+Warning: useLayoutEffect does nothing on the server, because its effect cannot be encoded into the server renderer's output format. This will lead to a mismatch between the initial, non-hydrated UI and the intended UI. To avoid this, useLayoutEffect should only be used in components that render exclusively on the client. See https://reactjs.org/link/uselayouteffect-ssr for common fixes.
+    at ShadowPortal (/Users/jamesguy/synapse-studio/node_modules/next/src/client/components/react-dev-overlay/ui/components/shadow-portal.tsx:5:32)
+    at DevOverlay (/Users/jamesguy/synapse-studio/node_modules/next/src/client/components/react-dev-overlay/ui/dev-overlay.tsx:14:3)
+    at ReactDevOverlay (/Users/jamesguy/synapse-studio/node_modules/next/src/server/dev/next-dev-server.ts:82:10)
+    at div
+    at Body (/Users/jamesguy/synapse-studio/node_modules/next/src/server/render.tsx:1263:19)
+ GET /auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fapp 500 in 7663ms
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx
+ ⨯ ./src/lib/supabase.ts
+Error:   [31mx[0m You're importing a component that needs "next/headers". That only works in a Server Component which is not supported in the pages/ directory. Read more: https://nextjs.org/docs/app/building-
+  [31m|[0m your-application/rendering/server-components
+  [31m|[0m 
+  [31m|[0m 
+   ,-[[36;1;4m/Users/jamesguy/synapse-studio/src/lib/supabase.ts[0m:3:1]
+ [2m1[0m | import { createClient } from '@supabase/supabase-js';
+ [2m2[0m | import { createServerClient as createSupabaseServerClient, createBrowserClient, type CookieOptions } from '@supabase/ssr';
+ [2m3[0m | import { cookies } from 'next/headers';
+   : [35;1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+ [2m4[0m | 
+ [2m5[0m | // Initialize the Supabase client
+ [2m6[0m | const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+   `----
+
+Import trace for requested module:
+./src/lib/supabase.ts
+./src/components/left-panel.tsx
+./src/components/main.tsx

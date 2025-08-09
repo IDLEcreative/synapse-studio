@@ -25,7 +25,10 @@ type Layer = {
 
 interface DepthEditorProps {
   initialImage?: string | null;
-  onComplete: (result: { url: string; metadata: any }) => void;
+  onComplete: (result: {
+    url: string;
+    metadata: Record<string, unknown>;
+  }) => void;
   supportLayers?: boolean;
 }
 
@@ -270,12 +273,13 @@ export default function DepthEditor({
     try {
       // Call the API with type assertion to bypass TypeScript errors
       const result = (await fal.subscribe("fal-ai/flux-pro/v1/depth", {
-        prompt,
-        image_url: imageUrl,
-        depth_strength: depthStrength,
-      } as any)) as unknown as { image: string };
+        input: {
+          prompt,
+          control_image_url: imageUrl,
+        } as any,
+      })) as unknown as { data: { image: string } };
 
-      if (result.image) {
+      if (result.data.image) {
         if (supportLayers) {
           // Update the base layer with the result
           const baseLayer = layers.find((layer) => layer.id === "base-layer");
@@ -302,11 +306,11 @@ export default function DepthEditor({
                 compositeLayersToDisplay();
 
                 // Add to history
-                addToHistory(result.image);
+                addToHistory(result.data.image);
 
                 // Call onComplete with the result
                 onComplete({
-                  url: result.image,
+                  url: result.data.image,
                   metadata: {
                     prompt: prompt,
                     model: "fal-ai/flux-pro/v1/depth",
@@ -314,7 +318,7 @@ export default function DepthEditor({
                   },
                 });
               };
-              img.src = result.image;
+              img.src = result.data.image;
             }
           }
         } else {
@@ -340,11 +344,11 @@ export default function DepthEditor({
                 );
 
                 // Add to history
-                addToHistory(result.image);
+                addToHistory(result.data.image);
 
                 // Call onComplete with the result
                 onComplete({
-                  url: result.image,
+                  url: result.data.image,
                   metadata: {
                     prompt: prompt,
                     model: "fal-ai/flux-pro/v1/depth",
@@ -352,7 +356,7 @@ export default function DepthEditor({
                   },
                 });
               };
-              img.src = result.image;
+              img.src = result.data.image;
             }
           }
         }

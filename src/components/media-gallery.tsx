@@ -4,6 +4,7 @@ import {
   MouseEventHandler,
   PropsWithChildren,
   useMemo,
+  memo,
 } from "react";
 import Image from "next/image";
 import {
@@ -126,7 +127,7 @@ const MEDIA_PLACEHOLDER: MediaItem = {
   requestId: "",
 };
 
-export function MediaGallerySheet({
+export const MediaGallerySheet = memo(function MediaGallerySheet({
   selectedMediaId,
   ...props
 }: MediaGallerySheetProps) {
@@ -146,7 +147,8 @@ export function MediaGallerySheet({
 
   const handleOpenGenerateDialog = () => {
     setGenerateMediaType("video");
-    const image = selectedMedia.output?.images?.[0]?.url;
+    const image = (selectedMedia.output as { images?: Array<{ url: string }> })
+      ?.images?.[0]?.url;
 
     const endpoint = AVAILABLE_ENDPOINTS.find(
       (endpoint) => endpoint.category === "video",
@@ -183,7 +185,10 @@ export function MediaGallerySheet({
     () => resolveMediaUrl(selectedMedia),
     [selectedMedia],
   );
-  const prompt = selectedMedia?.input?.prompt;
+  const prompt =
+    typeof selectedMedia?.input?.prompt === "string"
+      ? selectedMedia.input.prompt
+      : undefined;
 
   const queryClient = useQueryClient();
   const deleteMedia = useMutation({
@@ -258,100 +263,143 @@ export function MediaGallerySheet({
         </div>
         <SheetPanel
           className="flex h-screen max-h-screen min-h-screen flex-col overflow-hidden sm:max-w-2xl"
-          onPointerDownOutside={preventClose as any}
+          onPointerDownOutside={
+            preventClose as unknown as (event: Event) => void
+          }
         >
-          <SheetHeader>
-            <SheetTitle>Media Gallery</SheetTitle>
-            <SheetDescription className="sr-only">
-              The b-roll for your video composition
-            </SheetDescription>
-          </SheetHeader>
-          <div className="flex h-full max-h-full flex-1 flex-col gap-8 overflow-y-hidden">
-            <div className="flex flex-col gap-4">
-              <p className="text-muted-foreground">
-                {prompt ?? <span className="italic">No description</span>}
-              </p>
-              <div></div>
-            </div>
-            <div className="flex flex-row gap-2">
-              {selectedMedia?.mediaType === "image" && (
-                <>
-                  <Button
-                    onClick={handleOpenGenerateDialog}
-                    variant="secondary"
-                    disabled={deleteMedia.isPending}
-                    className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 border-blue-500/30"
-                  >
-                    <FilmIcon className="w-4 h-4 mr-1.5" />
-                    Make Video
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      const openFluxProStudio =
-                        useVideoProjectStore.getState().openFluxProStudio;
-                      openFluxProStudio(mediaUrl, "fill");
-                      close();
-                    }}
-                    variant="secondary"
-                    disabled={deleteMedia.isPending}
-                    className="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 border-cyan-500/30"
-                  >
-                    <SparklesIcon className="w-4 h-4 mr-1.5" />
-                    Flux Pro
-                  </Button>
-                </>
+          <div className="flex h-full max-h-full flex-1 flex-col overflow-y-auto px-6">
+            {/* Header with media info */}
+            <div className="mb-6 border-b border-white/5 pb-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  {selectedMedia.mediaType === "image" && (
+                    <ImagesIcon className="w-5 h-5 text-gray-400" />
+                  )}
+                  {selectedMedia.mediaType === "video" && (
+                    <FilmIcon className="w-5 h-5 text-gray-400" />
+                  )}
+                  {selectedMedia.mediaType === "music" && (
+                    <MusicIcon className="w-5 h-5 text-gray-400" />
+                  )}
+                  <h2 className="text-lg font-semibold text-white">
+                    {(typeof selectedMedia.metadata?.title === "string"
+                      ? selectedMedia.metadata.title
+                      : null) || "Media Details"}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Prompt/Description */}
+              {prompt && (
+                <div className="mt-4">
+                  <div className="text-xs text-gray-500 mb-1 font-medium">
+                    Prompt
+                  </div>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    {prompt}
+                  </p>
+                </div>
               )}
-              <Button
-                onClick={handleVary}
-                variant="secondary"
-                disabled={deleteMedia.isPending}
-                className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 hover:text-purple-300 border-purple-500/30"
-              >
-                <ImagesIcon className="w-4 h-4 mr-1.5" />
-                Re-run
-              </Button>
-              <Button
-                variant="secondary"
-                disabled={deleteMedia.isPending}
-                onClick={() => deleteMedia.mutate()}
-                className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border-rose-500/30"
-              >
-                {deleteMedia.isPending ? (
-                  <LoadingIcon className="mr-1.5" />
-                ) : (
-                  <TrashIcon className="w-4 h-4 mr-1.5" />
-                )}
-                Delete
-              </Button>
             </div>
-            <div className="flex-1 flex flex-col gap-2 justify-end">
-              <MediaPropertyItem label="Media URL" value={mediaUrl ?? "n/a"} />
-              <MediaPropertyItem
-                label="Model (fal endpoint)"
-                value={selectedMedia.endpointId ?? "n/a"}
-              >
-                <a
-                  href={`https://fal.ai/models/${selectedMedia.endpointId}`}
-                  target="_blank"
-                  className="underline underline-offset-4 decoration-muted-foreground/70 decoration-dotted"
+            {/* Actions section */}
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className="text-sm font-medium text-gray-400">Actions</h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                {selectedMedia?.mediaType === "image" && (
+                  <>
+                    <Button
+                      onClick={handleOpenGenerateDialog}
+                      variant="ghost"
+                      disabled={deleteMedia.isPending}
+                      className="text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md py-3 h-auto"
+                    >
+                      <div className="flex flex-col items-center gap-1 w-full">
+                        <FilmIcon className="w-5 h-5" />
+                        <span className="text-xs font-medium">Make Video</span>
+                      </div>
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        const openFluxProStudio =
+                          useVideoProjectStore.getState().openFluxProStudio;
+                        openFluxProStudio(mediaUrl, "fill");
+                        close();
+                      }}
+                      variant="ghost"
+                      disabled={deleteMedia.isPending}
+                      className="text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md py-3 h-auto"
+                    >
+                      <div className="flex flex-col items-center gap-1 w-full">
+                        <SparklesIcon className="w-5 h-5" />
+                        <span className="text-xs font-medium">Flux Pro</span>
+                      </div>
+                    </Button>
+                  </>
+                )}
+                <Button
+                  onClick={handleVary}
+                  variant="ghost"
+                  disabled={deleteMedia.isPending}
+                  className="text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md py-3 h-auto"
                 >
-                  <code>{selectedMedia.endpointId}</code>
-                </a>
-              </MediaPropertyItem>
-              <MediaPropertyItem
-                label="Status"
-                value={selectedMedia.status ?? "n/a"}
-              />
-              <MediaPropertyItem
-                label="Request ID"
-                value={selectedMedia.requestId ?? "n/a"}
-              >
-                <code>{selectedMedia.requestId}</code>
-              </MediaPropertyItem>
+                  <div className="flex flex-col items-center gap-1 w-full">
+                    <ImagesIcon className="w-5 h-5" />
+                    <span className="text-xs font-medium">Re-run</span>
+                  </div>
+                </Button>
+                <Button
+                  variant="ghost"
+                  disabled={deleteMedia.isPending}
+                  onClick={() => deleteMedia.mutate()}
+                  className="text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md py-3 h-auto"
+                >
+                  <div className="flex flex-col items-center gap-1 w-full">
+                    {deleteMedia.isPending ? (
+                      <LoadingIcon className="w-5 h-5" />
+                    ) : (
+                      <TrashIcon className="w-5 h-5 text-rose-400" />
+                    )}
+                    <span className="text-xs font-medium">Delete</span>
+                  </div>
+                </Button>
+              </div>
+            </div>
+            {/* Additional actions and metadata */}
+            <div className="flex-1 flex flex-col justify-end">
+              {/* Created date */}
+              {selectedMedia.createdAt && (
+                <div className="text-xs text-gray-400 mb-2">
+                  Created{" "}
+                  {new Date(selectedMedia.createdAt).toLocaleDateString()} at{" "}
+                  {new Date(selectedMedia.createdAt).toLocaleTimeString()}
+                </div>
+              )}
+
+              {/* Tags section - placeholder for future feature */}
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-sm font-medium text-gray-400">Tags</h3>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="px-2 py-0.5 text-gray-300 text-xs">
+                    {selectedMedia.mediaType}
+                  </span>
+                  <span className="px-2 py-0.5 text-gray-300 text-xs">
+                    {selectedMedia.endpointId?.split("/").pop() ||
+                      "AI generated"}
+                  </span>
+                  <button className="px-2 py-0.5 text-gray-400 text-xs hover:text-gray-300 transition-colors">
+                    + Add Tag
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </SheetPanel>
       </SheetPortal>
     </Sheet>
   );
-}
+});

@@ -101,7 +101,8 @@ section {
 /* Flora-inspired component styles */
 .float-card {
   @apply bg-black/80 backdrop-blur-md border border-white/10 rounded-xl shadow-xl; /* More visible border */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08); /* Enhanced shadow and border */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px
+    rgba(255, 255, 255, 0.08); /* Enhanced shadow and border */
 }
 
 .float-panel {
@@ -258,29 +259,29 @@ section {
     --background: 0 0% 0%; /* Pure black background */
     --background-dark: 0 0% 0%;
     --background-light: 0 0% 3%;
-    --foreground: 0 0% 98%; /* Increased brightness for better contrast */
+    --foreground: 0 0% 100%; /* Maximum brightness for best contrast */
     --card: 0 0% 0%;
-    --card-foreground: 0 0% 98%; /* Increased brightness for better contrast */
+    --card-foreground: 0 0% 100%; /* Maximum brightness for best contrast */
     --popover: 0 0% 0%;
-    --popover-foreground: 0 0% 98%; /* Increased brightness for better contrast */
-    --primary: 220 80% 50%; /* Increased saturation and brightness */
+    --popover-foreground: 0 0% 100%; /* Maximum brightness for best contrast */
+    --primary: 220 80% 55%; /* Increased saturation and brightness */
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 70% 50%; /* Increased saturation and brightness */
+    --secondary: 220 70% 55%; /* Increased saturation and brightness */
     --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 15%; /* Slightly lighter for better visibility */
-    --muted-foreground: 0 0% 75%; /* Increased brightness for better contrast */
-    --accent: 220 70% 50%; /* Increased saturation and brightness */
+    --muted: 0 0% 18%; /* Lighter for better visibility */
+    --muted-foreground: 0 0% 85%; /* Significantly increased brightness for better contrast */
+    --accent: 220 70% 55%; /* Increased saturation and brightness */
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 40%; /* Increased saturation */
+    --destructive: 0 70% 45%; /* Increased saturation and brightness */
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 15%; /* Slightly more visible borders */
-    --input: 0 0% 12%; /* Slightly lighter for better visibility */
-    --ring: 220 80% 50%; /* Increased saturation and brightness */
-    --chart-1: 220 80% 50%; /* Increased saturation and brightness */
-    --chart-2: 220 70% 50%; /* Increased saturation and brightness */
-    --chart-3: 220 60% 45%; /* Increased saturation and brightness */
-    --chart-4: 220 50% 40%; /* Increased saturation and brightness */
-    --chart-5: 220 60% 35%; /* Increased saturation and brightness */
+    --border: 0 0% 20%; /* More visible borders */
+    --input: 0 0% 15%; /* Lighter for better visibility */
+    --ring: 220 80% 55%; /* Increased saturation and brightness */
+    --chart-1: 220 80% 55%; /* Increased saturation and brightness */
+    --chart-2: 220 70% 55%; /* Increased saturation and brightness */
+    --chart-3: 220 60% 50%; /* Increased saturation and brightness */
+    --chart-4: 220 50% 45%; /* Increased saturation and brightness */
+    --chart-5: 220 60% 40%; /* Increased saturation and brightness */
   }
 }
 

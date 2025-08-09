@@ -108,7 +108,10 @@ export function FluxProStudio() {
   };
 
   // Handle result from any editor
-  const handleComplete = (result: { url: string; metadata: any }) => {
+  const handleComplete = (result: {
+    url: string;
+    metadata: Record<string, unknown>;
+  }) => {
     // Update the initial image with the latest result
     setFluxProStudio({
       initialImage: result.url,

@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { fal } from "@/lib/fal";
 import { db } from "@/data/db";
-import { useVideoProjectStore } from "@/data/store";
+import { useVideoProjectStore, type MediaType } from "@/data/store";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys, useProjectMediaItems } from "@/data/queries";
-import { useUploadThing } from "@/lib/uploadthing";
+import { uploadFile } from "@/lib/supabase";
+import { getMediaMetadata } from "@/lib/ffmpeg";
 import { MediaItem } from "@/data/schema";
 import { LoadingIcon } from "@/components/ui/icons";
 import {
@@ -25,9 +26,17 @@ import {
   ImageIcon,
 } from "lucide-react";
 
+// Constants
+const CANVAS_WIDTH = 512;
+const CANVAS_HEIGHT = 512;
+const MAX_HISTORY_LENGTH = 20;
+
 interface FillEditorProps {
   initialImage?: string | null;
-  onComplete: (result: { url: string; metadata: any }) => void;
+  onComplete: (result: {
+    url: string;
+    metadata: Record<string, unknown>;
+  }) => void;
   supportLayers?: boolean;
 }
 
@@ -36,8 +45,6 @@ export default function FillEditor({
   onComplete,
   supportLayers = false,
 }: FillEditorProps) {
-  console.log("FillEditor RENDERING with initialImage:", initialImage);
-
   // Core state
   const [image, setImage] = useState<string | null>(initialImage || null);
   const [prompt, setPrompt] = useState("");
@@ -47,8 +54,9 @@ export default function FillEditor({
   const [isGenerating, setIsGenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [showMediaGallery, setShowMediaGallery] = useState(false);
+  const [canvasesInitialized, setCanvasesInitialized] = useState(false);
 
-  // History management
+  // History management - limit history size to prevent memory issues
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [maskHistory, setMaskHistory] = useState<string[]>([]);
@@ -63,90 +71,53 @@ export default function FillEditor({
   const imageCanvasRef = useRef<HTMLCanvasElement>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement>(null);
   const displayCanvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasInitializedRef = useRef(false);
 
-  // Upload functionality
-  const { startUpload } = useUploadThing("fileUploader");
+  // Upload functionality is now handled by Supabase
 
-  // Initialize canvases
-  useEffect(() => {
-    console.log("FillEditor useEffect - initializing canvases");
+  // History management with size limits to prevent memory issues
+  const addToHistory = useCallback(
+    (dataUrl: string) => {
+      setHistory((prevHistory) => {
+        const newHistory = prevHistory.slice(0, historyIndex + 1);
+        newHistory.push(dataUrl);
 
-    // Wait for next tick to ensure refs are available
-    const timer = setTimeout(() => {
-      if (
-        !imageCanvasRef.current ||
-        !maskCanvasRef.current ||
-        !displayCanvasRef.current
-      ) {
-        console.error("Canvas refs not available");
-        return;
-      }
-
-      console.log("Canvas refs available, initializing...");
-
-      const imageCanvas = imageCanvasRef.current;
-      const maskCanvas = maskCanvasRef.current;
-      const displayCanvas = displayCanvasRef.current;
-
-      // Set canvas dimensions
-      const canvasWidth = 512;
-      const canvasHeight = 512;
-
-      imageCanvas.width = canvasWidth;
-      imageCanvas.height = canvasHeight;
-      maskCanvas.width = canvasWidth;
-      maskCanvas.height = canvasHeight;
-      displayCanvas.width = canvasWidth;
-      displayCanvas.height = canvasHeight;
-
-      // Initialize image canvas
-      const imageCtx = imageCanvas.getContext("2d");
-      if (imageCtx) {
-        if (image) {
-          console.log("Loading image into canvas:", image);
-          // Load initial image
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.onload = () => {
-            console.log("Image loaded successfully");
-            imageCtx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-            updateDisplayCanvas();
-            addToHistory(imageCanvas.toDataURL());
-          };
-          img.onerror = (e) => {
-            console.error(
-              "Error loading image, possibly due to CORS restrictions:",
-              e,
-            );
-            imageCtx.fillStyle = "#333333";
-            imageCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-            updateDisplayCanvas();
-            addToHistory(imageCanvas.toDataURL());
-          };
-          img.src = image;
-        } else {
-          console.log("No image provided, creating default background");
-          // Create a default gray background
-          imageCtx.fillStyle = "#333333";
-          imageCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-          updateDisplayCanvas();
-          addToHistory(imageCanvas.toDataURL());
+        // Limit history size
+        if (newHistory.length > MAX_HISTORY_LENGTH) {
+          newHistory.shift();
         }
-      }
 
-      // Initialize mask canvas
-      const maskCtx = maskCanvas.getContext("2d");
-      if (maskCtx) {
-        maskCtx.clearRect(0, 0, canvasWidth, canvasHeight);
-        addToMaskHistory(maskCanvas.toDataURL());
-      }
-    }, 100);
+        setHistoryIndex(
+          Math.min(newHistory.length - 1, MAX_HISTORY_LENGTH - 1),
+        );
+        return newHistory;
+      });
+    },
+    [historyIndex],
+  );
 
-    return () => clearTimeout(timer);
-  }, [image]);
+  const addToMaskHistory = useCallback(
+    (dataUrl: string) => {
+      setMaskHistory((prevHistory) => {
+        const newHistory = prevHistory.slice(0, maskHistoryIndex + 1);
+        newHistory.push(dataUrl);
 
-  // Update display canvas by compositing image and mask
-  const updateDisplayCanvas = () => {
+        // Limit history size
+        if (newHistory.length > MAX_HISTORY_LENGTH) {
+          newHistory.shift();
+        }
+
+        setMaskHistoryIndex(
+          Math.min(newHistory.length - 1, MAX_HISTORY_LENGTH - 1),
+        );
+        return newHistory;
+      });
+    },
+    [maskHistoryIndex],
+  );
+
+  // Update display canvas by compositing image and mask - memoized to prevent unnecessary recreations
+  const updateDisplayCanvas = useCallback(() => {
     if (
       !imageCanvasRef.current ||
       !maskCanvasRef.current ||
@@ -172,126 +143,208 @@ export default function FillEditor({
     displayCtx.globalAlpha = 0.5;
     displayCtx.drawImage(maskCanvasRef.current, 0, 0);
     displayCtx.globalAlpha = 1.0;
-  };
+  }, [imageCanvasRef, maskCanvasRef, displayCanvasRef]); // Adjusted dependencies
 
-  // History management
-  const addToHistory = (dataUrl: string) => {
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(dataUrl);
-    setHistory(newHistory);
-    setHistoryIndex(newHistory.length - 1);
-  };
+  // Initialize canvases when component mounts and refs are available
+  useEffect(() => {
+    // Only proceed if not already initialized
+    if (canvasInitializedRef.current) return;
 
-  const addToMaskHistory = (dataUrl: string) => {
-    const newHistory = maskHistory.slice(0, maskHistoryIndex + 1);
-    newHistory.push(dataUrl);
-    setMaskHistory(newHistory);
-    setMaskHistoryIndex(newHistory.length - 1);
-  };
+    // Ensure all canvas refs are available
+    if (
+      !imageCanvasRef.current ||
+      !maskCanvasRef.current ||
+      !displayCanvasRef.current
+    ) {
+      return; // Exit if any ref is not available yet
+    }
 
-  const undo = () => {
+    // All refs are available, proceed with initialization
+    const imageCanvas = imageCanvasRef.current;
+    const maskCanvas = maskCanvasRef.current;
+    const displayCanvas = displayCanvasRef.current;
+
+    // Set canvas dimensions
+    imageCanvas.width = CANVAS_WIDTH;
+    imageCanvas.height = CANVAS_HEIGHT;
+    maskCanvas.width = CANVAS_WIDTH;
+    maskCanvas.height = CANVAS_HEIGHT;
+    displayCanvas.width = CANVAS_WIDTH;
+    displayCanvas.height = CANVAS_HEIGHT;
+
+    // Initialize mask canvas
+    const maskCtx = maskCanvas.getContext("2d");
+    if (maskCtx) {
+      maskCtx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      // Add initial mask state to history
+      addToMaskHistory(maskCanvas.toDataURL());
+    }
+
+    // Mark as initialized
+    canvasInitializedRef.current = true;
+    setCanvasesInitialized(true);
+
+    // If we have an image, it will be loaded in the next effect
+  }, [imageCanvasRef, maskCanvasRef, displayCanvasRef, addToMaskHistory]);
+
+  // Load image when image state changes or canvases are initialized
+  useEffect(() => {
+    if (!canvasesInitialized || !imageCanvasRef.current) return;
+
+    const imageCanvas = imageCanvasRef.current;
+    const imageCtx = imageCanvas.getContext("2d");
+
+    if (!imageCtx) return;
+
+    const loadImage = () => {
+      if (image) {
+        // Load initial image
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+
+        img.onload = () => {
+          imageCtx.drawImage(img, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+          updateDisplayCanvas();
+          addToHistory(imageCanvas.toDataURL());
+        };
+
+        img.onerror = () => {
+          // Create a default gray background on error
+          imageCtx.fillStyle = "#333333";
+          imageCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+          updateDisplayCanvas();
+          addToHistory(imageCanvas.toDataURL());
+
+          toast({
+            title: "Image Load Error",
+            description:
+              "Could not load the image. Using default background instead.",
+          });
+        };
+
+        img.src = image;
+      } else {
+        // Create a default gray background
+        imageCtx.fillStyle = "#333333";
+        imageCtx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        updateDisplayCanvas();
+        addToHistory(imageCanvas.toDataURL());
+      }
+    };
+
+    loadImage();
+  }, [image, canvasesInitialized, toast, addToHistory, updateDisplayCanvas]);
+
+  const undo = useCallback(() => {
     if (historyIndex > 0) {
       setHistoryIndex(historyIndex - 1);
       loadImageFromHistory(historyIndex - 1);
     }
-  };
+  }, [historyIndex]);
 
-  const redo = () => {
+  const redo = useCallback(() => {
     if (historyIndex < history.length - 1) {
       setHistoryIndex(historyIndex + 1);
       loadImageFromHistory(historyIndex + 1);
     }
-  };
+  }, [historyIndex, history.length]);
 
-  const loadImageFromHistory = (index: number) => {
-    if (!imageCanvasRef.current) return;
+  const loadImageFromHistory = useCallback(
+    (index: number) => {
+      if (!imageCanvasRef.current) return;
 
-    const ctx = imageCanvasRef.current.getContext("2d");
-    if (!ctx) return;
+      const ctx = imageCanvasRef.current.getContext("2d");
+      if (!ctx) return;
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      ctx.clearRect(
-        0,
-        0,
-        imageCanvasRef.current!.width,
-        imageCanvasRef.current!.height,
-      );
-      ctx.drawImage(img, 0, 0);
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        ctx.clearRect(
+          0,
+          0,
+          imageCanvasRef.current!.width,
+          imageCanvasRef.current!.height,
+        );
+        ctx.drawImage(img, 0, 0);
+        updateDisplayCanvas();
+      };
+      img.onerror = () => {
+        toast({
+          title: "History Error",
+          description: "Could not load image from history",
+        });
+      };
+      img.src = history[index];
+    },
+    [history, updateDisplayCanvas, toast],
+  );
+
+  // Drawing functions - memoized to prevent unnecessary recreations
+  const startDrawing = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      setIsDrawing(true);
+
+      if (!maskCanvasRef.current) return;
+
+      const canvas = maskCanvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+      // Set drawing style
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      if (isErasing) {
+        ctx.globalCompositeOperation = "destination-out";
+      } else {
+        ctx.globalCompositeOperation = "source-over";
+        ctx.strokeStyle = "#ffffff";
+      }
+
+      // Draw a dot at the starting point
+      ctx.lineTo(x + 0.1, y + 0.1);
+      ctx.stroke();
+
       updateDisplayCanvas();
-    };
-    img.onerror = () => {
-      console.error("Error loading image from history");
-    };
-    img.src = history[index];
-  };
+    },
+    [isErasing, brushSize, updateDisplayCanvas],
+  );
 
-  // Drawing functions
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    console.log("startDrawing called");
-    setIsDrawing(true);
+  const draw = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!isDrawing || !maskCanvasRef.current) return;
 
-    if (!maskCanvasRef.current) return;
+      const canvas = maskCanvasRef.current;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    const canvas = maskCanvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
 
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+      ctx.lineTo(x, y);
+      ctx.stroke();
 
-    // Set drawing style
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+      updateDisplayCanvas();
+    },
+    [isDrawing, updateDisplayCanvas],
+  );
 
-    if (isErasing) {
-      ctx.globalCompositeOperation = "destination-out";
-    } else {
-      ctx.globalCompositeOperation = "source-over";
-      ctx.strokeStyle = "#ffffff";
-    }
+  const endDrawing = useCallback(() => {
+    if (!isDrawing || !maskCanvasRef.current) return;
 
-    // Draw a dot at the starting point
-    ctx.lineTo(x + 0.1, y + 0.1);
-    ctx.stroke();
-
-    updateDisplayCanvas();
-  };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
-
-    if (!maskCanvasRef.current) return;
-
-    const canvas = maskCanvasRef.current;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-
-    ctx.lineTo(x, y);
-    ctx.stroke();
-
-    updateDisplayCanvas();
-  };
-
-  const endDrawing = () => {
     setIsDrawing(false);
-
-    if (!maskCanvasRef.current) return;
-
-    // Add to mask history
     addToMaskHistory(maskCanvasRef.current.toDataURL());
-  };
+  }, [isDrawing, addToMaskHistory]);
 
-  const clearMask = () => {
+  const clearMask = useCallback(() => {
     if (!maskCanvasRef.current) return;
 
     const ctx = maskCanvasRef.current.getContext("2d");
@@ -306,12 +359,109 @@ export default function FillEditor({
 
     // Add to mask history
     addToMaskHistory(maskCanvasRef.current.toDataURL());
-
     updateDisplayCanvas();
-  };
+
+    toast({
+      title: "Mask Cleared",
+      description: "The mask has been cleared",
+    });
+  }, [addToMaskHistory, updateDisplayCanvas, toast]);
+
+  // Validate that a mask has been drawn
+  const validateMaskExists = useCallback(async (): Promise<boolean> => {
+    if (!maskCanvasRef.current) return false;
+
+    const ctx = maskCanvasRef.current.getContext("2d");
+    if (!ctx) return false;
+
+    // Get image data to check if any non-transparent pixels exist
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      maskCanvasRef.current.width,
+      maskCanvasRef.current.height,
+    );
+    const data = imageData.data;
+
+    // Check if there are any non-transparent pixels (alpha > 0)
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }, []);
+
+  // Load result image
+  const loadResultImage = useCallback(
+    async (resultImageUrl: string): Promise<void> => {
+      return new Promise((resolve, reject) => {
+        if (!imageCanvasRef.current) {
+          reject(new Error("Canvas ref not found"));
+          return;
+        }
+
+        const ctx = imageCanvasRef.current.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Could not get canvas context"));
+          return;
+        }
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+
+        img.onload = () => {
+          // Clear the canvas and draw the new image
+          ctx.clearRect(
+            0,
+            0,
+            imageCanvasRef.current!.width,
+            imageCanvasRef.current!.height,
+          );
+          ctx.drawImage(
+            img,
+            0,
+            0,
+            imageCanvasRef.current!.width,
+            imageCanvasRef.current!.height,
+          );
+
+          // Clear the mask canvas
+          if (maskCanvasRef.current) {
+            const maskCtx = maskCanvasRef.current.getContext("2d");
+            if (maskCtx) {
+              maskCtx.clearRect(
+                0,
+                0,
+                maskCanvasRef.current.width,
+                maskCanvasRef.current.height,
+              );
+              addToMaskHistory(maskCanvasRef.current.toDataURL());
+            }
+          }
+
+          // Update display
+          updateDisplayCanvas();
+
+          // Add to history
+          addToHistory(resultImageUrl);
+
+          resolve();
+        };
+
+        img.onerror = () => {
+          reject(new Error("Error loading result image"));
+        };
+
+        img.src = resultImageUrl;
+      });
+    },
+    [updateDisplayCanvas, addToMaskHistory, addToHistory],
+  );
 
   // Generate with Flux Pro Fill
-  const generateWithFluxProFill = async () => {
+  const generateWithFluxProFill = useCallback(async () => {
     if (!prompt) {
       toast({
         title: "Prompt Required",
@@ -341,28 +491,20 @@ export default function FillEditor({
         throw new Error("Failed to get image or mask data");
       }
 
-      console.log("Calling fal API with:", {
-        prompt,
-        imageUrl: imageDataUrl ? "present" : "missing",
-        maskUrl: maskDataUrl ? "present" : "missing",
-      });
-
       // Call the API
-      const result = await fal.subscribe("fal-ai/flux-pro/v1/fill", {
+      const result = (await fal.subscribe("fal-ai/flux-pro/v1/fill", {
         input: {
           prompt,
           image_url: imageDataUrl,
           mask_url: maskDataUrl,
-        },
-      } as any);
-
-      console.log("API call successful");
+        } as any,
+      })) as unknown as { data: { images: Array<{ url: string }> } };
 
       // Process the result
       let resultImageUrl: string | null = null;
 
       if (result && "data" in result && result.data) {
-        const data = result.data as any;
+        const data = result.data as { images: Array<{ url: string }> };
 
         if (data.images && data.images.length > 0 && data.images[0].url) {
           resultImageUrl = data.images[0].url;
@@ -398,99 +540,9 @@ export default function FillEditor({
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [prompt, validateMaskExists, loadResultImage, onComplete, toast]);
 
-  // Validate that a mask has been drawn
-  const validateMaskExists = async (): Promise<boolean> => {
-    if (!maskCanvasRef.current) return false;
-
-    const ctx = maskCanvasRef.current.getContext("2d");
-    if (!ctx) return false;
-
-    // Get image data to check if any non-transparent pixels exist
-    const imageData = ctx.getImageData(
-      0,
-      0,
-      maskCanvasRef.current.width,
-      maskCanvasRef.current.height,
-    );
-    const data = imageData.data;
-
-    // Check if there are any non-transparent pixels (alpha > 0)
-    for (let i = 3; i < data.length; i += 4) {
-      if (data[i] > 0) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  // Load result image
-  const loadResultImage = async (resultImageUrl: string): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      if (!imageCanvasRef.current) {
-        reject(new Error("Canvas ref not found"));
-        return;
-      }
-
-      const ctx = imageCanvasRef.current.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Could not get canvas context"));
-        return;
-      }
-
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-
-      img.onload = () => {
-        // Clear the canvas and draw the new image
-        ctx.clearRect(
-          0,
-          0,
-          imageCanvasRef.current!.width,
-          imageCanvasRef.current!.height,
-        );
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          imageCanvasRef.current!.width,
-          imageCanvasRef.current!.height,
-        );
-
-        // Clear the mask canvas
-        if (maskCanvasRef.current) {
-          const maskCtx = maskCanvasRef.current.getContext("2d");
-          if (maskCtx) {
-            maskCtx.clearRect(
-              0,
-              0,
-              maskCanvasRef.current.width,
-              maskCanvasRef.current.height,
-            );
-            addToMaskHistory(maskCanvasRef.current.toDataURL());
-          }
-        }
-
-        // Update display
-        updateDisplayCanvas();
-
-        // Add to history
-        addToHistory(resultImageUrl);
-
-        resolve();
-      };
-
-      img.onerror = (e) => {
-        reject(new Error("Error loading result image"));
-      };
-
-      img.src = resultImageUrl;
-    });
-  };
-
-  // File upload handler
+  // File upload handler using Supabase
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -498,16 +550,54 @@ export default function FillEditor({
     setIsUploading(true);
 
     try {
-      const uploadedFiles = await startUpload(Array.from(files));
-      if (uploadedFiles && uploadedFiles.length > 0) {
-        const file = uploadedFiles[0];
+      // Upload the file to Supabase
+      const file = files[0];
+      const fileUrl = await uploadFile(file);
 
-        // Set the image to the uploaded file URL
-        setImage(file.url);
+      // Set the image to the uploaded file URL
+      setImage(fileUrl);
+
+      // Add to database for persistence
+      const mediaType = file.type.split("/")[0];
+      const outputType = mediaType === "audio" ? "music" : mediaType;
+
+      const data: Omit<MediaItem, "id"> = {
+        projectId,
+        kind: "uploaded",
+        createdAt: Date.now(),
+        mediaType: outputType as MediaType,
+        status: "completed",
+        url: fileUrl,
+      };
+
+      try {
+        const mediaId = await db.media.create(data);
+        const media = await db.media.find(mediaId as string);
+
+        if (media) {
+          const mediaMetadata = await getMediaMetadata(media as MediaItem);
+          await db.media
+            .update(media.id, {
+              ...media,
+              metadata: mediaMetadata?.media || {},
+            })
+            .finally(() => {
+              queryClient.invalidateQueries({
+                queryKey: queryKeys.projectMediaItems(projectId),
+              });
+            });
+        }
 
         toast({
           title: "Image uploaded successfully",
           description: "Your image is ready for editing.",
+        });
+      } catch (dbError) {
+        console.error("Error saving media to database:", dbError);
+        // Still set the image even if database save fails
+        toast({
+          title: "Image uploaded",
+          description: "Image loaded but may not be saved to your gallery.",
         });
       }
     } catch (err) {
@@ -540,7 +630,9 @@ export default function FillEditor({
     return (
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
-          <h2 className="text-xl font-semibold mb-4">Select an Image</h2>
+          <DialogTitle className="text-xl font-semibold mb-4">
+            Select an Image
+          </DialogTitle>
 
           {imageMediaItems.length === 0 ? (
             <div className="text-center py-8 text-gray-400">
@@ -607,20 +699,21 @@ export default function FillEditor({
             </p>
 
             <div className="flex flex-col gap-4">
-              <div className="relative">
-                <input
-                  type="file"
-                  id="file-upload"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={handleFileUpload}
-                  accept=".jpg,.jpeg,.png,.webp"
-                  disabled={isUploading}
-                />
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  disabled={isUploading}
-                >
+              <Button
+                variant="outline"
+                className="w-full cursor-pointer"
+                disabled={isUploading}
+                asChild
+              >
+                <label htmlFor="fill-editor-file-upload">
+                  <input
+                    id="fill-editor-file-upload"
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                    accept=".jpg,.jpeg,.png,.webp"
+                    disabled={isUploading}
+                  />
                   {isUploading ? (
                     <>
                       <LoadingIcon className="w-4 h-4 mr-2 animate-spin" />
@@ -632,8 +725,8 @@ export default function FillEditor({
                       Upload Image
                     </>
                   )}
-                </Button>
-              </div>
+                </label>
+              </Button>
 
               <Button
                 variant="outline"

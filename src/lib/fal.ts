@@ -18,7 +18,7 @@ export const fal = createFalClient({
 
 // Direct client for use with the @fal-ai/client package
 export const falClient = {
-  subscribe: async (endpointId: string, options: any) => {
+  subscribe: async (endpointId: string, options: FalSubscribeOptions) => {
     // Log the request for debugging
     console.log("falClient.subscribe request:", {
       endpoint: endpointId,
@@ -49,7 +49,7 @@ export const falClient = {
     return { data, requestId: data.requestId || "local-request-id" };
   },
   queue: {
-    submit: async (endpointId: string, options: any) => {
+    submit: async (endpointId: string, options: FalQueueOptions) => {
       // Log the request for debugging
       console.log("falClient.queue.submit request:", {
         endpoint: endpointId,
@@ -80,7 +80,7 @@ export const falClient = {
       console.log("falClient.queue.submit response:", data);
       return { request_id: data.requestId || "local-request-id" };
     },
-    status: async (endpointId: string, options: any) => {
+    status: async (endpointId: string, options: FalStatusOptions) => {
       const response = await fetch(`/api/fal?requestId=${options.requestId}`, {
         method: "GET",
       });
@@ -91,7 +91,7 @@ export const falClient = {
 
       return await response.json();
     },
-    result: async (endpointId: string, options: any) => {
+    result: async (endpointId: string, options: FalResultOptions) => {
       const response = await fetch(`/api/fal?requestId=${options.requestId}`, {
         method: "GET",
       });
@@ -143,6 +143,44 @@ export type InputAsset =
       type: "video" | "image" | "audio";
       key: string;
     };
+
+// FAL API types
+export interface FalSubscribeOptions {
+  input: Record<string, unknown>;
+  logs?: boolean;
+  onQueueUpdate?: (update: QueueUpdate) => void;
+  pollInterval?: number;
+  timeout?: number;
+}
+
+export interface FalQueueOptions {
+  input: Record<string, unknown>;
+  webhookUrl?: string;
+}
+
+export interface FalStatusOptions {
+  requestId: string;
+}
+
+export interface FalResultOptions {
+  requestId: string;
+}
+
+export interface QueueUpdate {
+  status: string;
+  logs?: Array<{ message: string; timestamp?: string }>;
+  completed_at?: string;
+  started_at?: string;
+}
+
+export interface FalResponse<T = unknown> {
+  data: T;
+  requestId: string;
+}
+
+export interface FalQueueResponse {
+  request_id: string;
+}
 
 export type ApiInfo = {
   endpointId: string;
@@ -250,164 +288,12 @@ export const FLUX_PRO_TOOLS: ApiInfo[] = [
 // Regular endpoints available in the right panel
 export const AVAILABLE_ENDPOINTS: ApiInfo[] = [
   {
-    endpointId: "fal-ai/recraft-20b",
-    label: "Recraft 20B",
-    description: "State of the art Recraft 20B model by recraft.ai",
-    cost: "",
-    category: "image",
-    initialInput: {
-      image_size: "square_hd",
-      style: "realistic_image",
-    },
-  },
-  {
     endpointId: "fal-ai/flux-pro/v1.1-ultra",
     label: "Flux Pro 1.1 Ultra",
     description:
       "Premium image quality with enhanced detail, superior text rendering, better composition, and advanced prompt understanding. Produces more realistic outputs with improved lighting and reduced artifacts.",
     cost: "",
     category: "image",
-  },
-  {
-    endpointId: "fal-ai/stable-diffusion-v35-large",
-    label: "Stable Diffusion 3.5 Large",
-    description: "Image quality, typography, complex prompt understanding",
-    cost: "",
-    category: "image",
-  },
-  {
-    endpointId: "fal-ai/minimax/video-01-live",
-    label: "Minimax Video 01 Live",
-    description: "High quality video, realistic motion and physics",
-    cost: "",
-    category: "video",
-    inputAsset: ["image"],
-  },
-  {
-    endpointId: "fal-ai/hunyuan-video",
-    label: "Hunyuan",
-    description: "High visual quality, motion diversity and text alignment",
-    cost: "",
-    category: "video",
-  },
-  {
-    endpointId: "fal-ai/kling-video/v1.5/pro",
-    label: "Kling 1.5 Pro",
-    description: "High quality video",
-    cost: "",
-    category: "video",
-    inputAsset: ["image"],
-  },
-  {
-    endpointId: "fal-ai/kling-video/v1/standard/text-to-video",
-    label: "Kling 1.0 Standard",
-    description: "High quality video",
-    cost: "",
-    category: "video",
-    inputAsset: [],
-    cameraControl: true,
-  },
-  {
-    endpointId: "fal-ai/luma-dream-machine",
-    label: "Luma Dream Machine 1.5",
-    description: "High quality video",
-    cost: "",
-    category: "video",
-    inputAsset: ["image"],
-  },
-  {
-    endpointId: "fal-ai/minimax-music",
-    label: "Minimax Music",
-    description:
-      "Advanced AI techniques to create high-quality, diverse musical compositions",
-    cost: "",
-    category: "music",
-    inputAsset: [
-      {
-        type: "audio",
-        key: "reference_audio_url",
-      },
-    ],
-  },
-  {
-    endpointId: "fal-ai/mmaudio-v2",
-    label: "MMAudio V2",
-    description:
-      "MMAudio generates synchronized audio given video and/or text inputs. It can be combined with video models to get videos with audio.",
-    cost: "",
-    inputAsset: ["video"],
-    category: "video",
-  },
-  {
-    endpointId: "fal-ai/sync-lipsync",
-    label: "sync.so -- lipsync 1.8.0",
-    description:
-      "Generate realistic lipsync animations from audio using advanced algorithms for high-quality synchronization.",
-    cost: "",
-    inputAsset: ["video", "audio"],
-    category: "video",
-  },
-  {
-    endpointId: "fal-ai/stable-audio",
-    label: "Stable Audio",
-    description: "Stable Diffusion music creation with high-quality tracks",
-    cost: "",
-    category: "music",
-  },
-  {
-    endpointId: "fal-ai/playht/tts/v3",
-    label: "PlayHT TTS v3",
-    description: "Fluent and faithful speech with flow matching",
-    cost: "",
-    category: "voiceover",
-    initialInput: {
-      voice: "Dexter (English (US)/American)",
-    },
-  },
-  {
-    endpointId: "fal-ai/playai/tts/dialog",
-    label: "PlayAI Text-to-Speech Dialog",
-    description:
-      "Generate natural-sounding multi-speaker dialogues. Perfect for expressive outputs, storytelling, games, animations, and interactive media.",
-    cost: "",
-    category: "voiceover",
-    inputMap: {
-      prompt: "input",
-    },
-    initialInput: {
-      voices: [
-        {
-          voice: "Jennifer (English (US)/American)",
-          turn_prefix: "Speaker 1: ",
-        },
-        {
-          voice: "Furio (English (IT)/Italian)",
-          turn_prefix: "Speaker 2: ",
-        },
-      ],
-    },
-  },
-  {
-    endpointId: "fal-ai/f5-tts",
-    label: "F5 TTS",
-    description: "Fluent and faithful speech with flow matching",
-    cost: "",
-    category: "voiceover",
-    initialInput: {
-      ref_audio_url:
-        "https://github.com/SWivid/F5-TTS/raw/21900ba97d5020a5a70bcc9a0575dc7dec5021cb/tests/ref_audio/test_en_1_ref_short.wav",
-      ref_text: "Some call me nature, others call me mother nature.",
-      model_type: "F5-TTS",
-      remove_silence: true,
-    },
-  },
-  {
-    endpointId: "fal-ai/veo2",
-    label: "Veo 2",
-    description:
-      "Veo creates videos with realistic motion and high quality output, up to 4K.",
-    cost: "",
-    category: "video",
   },
 ];
 

@@ -120,7 +120,7 @@ export function VideoControls() {
       {/* Ultra-minimal controls */}
       <button
         onClick={onSeekBackward}
-        className="text-gray-400 hover:text-white p-1"
+        className="text-gray-200 hover:text-white p-1"
         title="Previous frame (←)"
       >
         <ChevronLeftIcon className="h-3 w-3" />
@@ -145,7 +145,7 @@ export function VideoControls() {
 
       <button
         onClick={onSeekForward}
-        className="text-gray-400 hover:text-white p-1"
+        className="text-gray-200 hover:text-white p-1"
         title="Next frame (→)"
       >
         <ChevronRightIcon className="h-3 w-3" />
@@ -155,7 +155,7 @@ export function VideoControls() {
 
       <button
         onClick={toggleMute}
-        className="text-gray-400 hover:text-white p-1"
+        className="text-gray-200 hover:text-white p-1"
         title={isMuted ? "Unmute (M)" : "Mute (M)"}
       >
         {isMuted ? (
@@ -171,7 +171,7 @@ export function VideoControls() {
           setPlaybackRate(newRate);
           (player as any).setPlaybackRate?.(newRate);
         }}
-        className="text-gray-400 hover:text-white p-1"
+        className="text-gray-200 hover:text-white p-1"
         title="Toggle playback speed (1/2)"
       >
         <span className="text-xs">{playbackRate}x</span>

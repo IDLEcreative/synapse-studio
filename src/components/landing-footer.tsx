@@ -27,7 +27,7 @@ export default function Footer() {
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">
                   Stay updated with Synapse
                 </h3>
-                <p className="text-gray-300 mb-0 md:pr-12">
+                <p className="text-gray-100 mb-0 md:pr-12">
                   Get the latest news, updates, and tips for creating amazing
                   videos with AI.
                 </p>
@@ -43,7 +43,7 @@ export default function Footer() {
                     Subscribe
                   </Button>
                 </form>
-                <p className="text-xs text-gray-500 mt-3">
+                <p className="text-xs text-gray-300 mt-3">
                   We respect your privacy. Unsubscribe at any time.
                 </p>
               </div>
@@ -59,7 +59,7 @@ export default function Footer() {
                 SYNAPSE STUDIO
               </span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-xs">
+            <p className="text-gray-200 mb-6 max-w-xs">
               Advanced AI-powered video editing platform for creators. Transform
               your creative vision into stunning videos with our intuitive
               tools.
@@ -68,7 +68,7 @@ export default function Footer() {
               <Link
                 href="https://github.com/fal-ai-community"
                 target="_blank"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-200 hover:text-white transition-colors"
               >
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
@@ -76,7 +76,7 @@ export default function Footer() {
               <Link
                 href="https://discord.gg/fal-ai"
                 target="_blank"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-200 hover:text-white transition-colors"
               >
                 <Discord className="h-5 w-5" />
                 <span className="sr-only">Discord</span>
@@ -84,14 +84,14 @@ export default function Footer() {
               <Link
                 href="https://x.com/fal"
                 target="_blank"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-200 hover:text-white transition-colors"
               >
                 <Twitter className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
               <Link
                 href="mailto:info@synapsestudio.ai"
-                className="text-gray-400 hover:text-white transition-colors"
+                className="text-gray-200 hover:text-white transition-colors"
               >
                 <Mail className="h-5 w-5" />
                 <span className="sr-only">Email</span>
@@ -105,7 +105,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#features"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Features
@@ -114,7 +114,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#pricing"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Pricing
@@ -123,7 +123,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   About
@@ -132,7 +132,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Roadmap
@@ -147,7 +147,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Documentation
@@ -156,7 +156,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Tutorials
@@ -165,7 +165,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Blog
@@ -174,7 +174,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Support
@@ -189,7 +189,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Privacy Policy
@@ -198,7 +198,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Terms of Service
@@ -207,7 +207,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Cookie Policy
@@ -216,7 +216,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors flex items-center"
+                  className="text-gray-200 hover:text-white transition-colors flex items-center"
                 >
                   <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                   Licenses
@@ -227,10 +227,10 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-500 mb-4 md:mb-0">
+          <p className="text-sm text-gray-300 mb-4 md:mb-0">
             © {new Date().getFullYear()} Synapse Studio. All rights reserved.
           </p>
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-gray-300">
             <span>Made with</span>
             <Heart className="h-4 w-4 mx-1 text-red-500" />
             <span>by the Synapse team</span>

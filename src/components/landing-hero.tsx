@@ -23,7 +23,7 @@ export default function Hero() {
             <span className="mx-3 h-4 w-px bg-white/10" />
             <a
               href="#features"
-              className="flex items-center text-white/70 hover:text-white transition-colors"
+              className="flex items-center text-white/90 hover:text-white transition-colors"
             >
               See What's New <ArrowRight className="ml-1.5 h-4 w-4" />
             </a>
@@ -37,14 +37,14 @@ export default function Hero() {
             </span>
           </h1>
 
-          <p className="text-white/70 text-lg @md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-white/90 text-lg @md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
             Transform your creative vision into stunning videos with our
             advanced AI tools. Effortlessly create professional-quality content
             in minutes, not hours.
           </p>
 
           {/* More minimal social proof */}
-          <div className="flex items-center justify-center mb-16 text-sm text-gray-400 py-3 px-6 rounded-full inline-flex">
+          <div className="flex items-center justify-center mb-16 text-sm text-gray-200 py-3 px-6 rounded-full inline-flex">
             <div className="flex -space-x-2 mr-4">
               {[...Array(5)].map((_, i) => (
                 <div

@@ -76,7 +76,7 @@ export default function Features() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
             Powerful tools for modern creators
           </h2>
-          <p className="text-gray-300 text-lg leading-relaxed">
+          <p className="text-gray-100 text-lg leading-relaxed">
             Everything you need to create professional-quality videos in
             minutes, not hours. Our AI-powered tools make professional editing
             accessible to everyone.
@@ -100,7 +100,7 @@ export default function Features() {
                 <h3 className="text-2xl md:text-3xl font-bold mb-4">
                   AI Scene Detection & Enhancement
                 </h3>
-                <p className="text-gray-300 mb-6 leading-relaxed">
+                <p className="text-gray-100 mb-6 leading-relaxed">
                   Our advanced AI automatically identifies scenes, suggests
                   optimal cuts, and enhances visual quality—reducing hours of
                   manual work to just minutes. Perfect for creators who want
@@ -117,7 +117,7 @@ export default function Features() {
                       <div className="mr-3 h-6 w-6 shrink-0 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex items-center justify-center">
                         <Sparkles className="h-3.5 w-3.5 text-white" />
                       </div>
-                      <span className="text-gray-200">{item}</span>
+                      <span className="text-white">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -159,7 +159,7 @@ export default function Features() {
               <h3 className="text-xl font-semibold mb-3 group-hover:text-white transition-colors">
                 {feature.title}
               </h3>
-              <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
+              <p className="text-gray-200 group-hover:text-gray-100 transition-colors">
                 {feature.description}
               </p>
             </div>

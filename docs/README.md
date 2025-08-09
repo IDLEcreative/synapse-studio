@@ -12,6 +12,14 @@ This directory contains documentation for the Synapse Studio application, an AI-
 
 - [Adding New Models](./adding-new-models.md) - Step-by-step guide on how to implement new AI models from the fal.ai platform into Synapse Studio.
 
+### FAL API Models
+
+- [FAL API Models Documentation](./fal-api-models.md) - Comprehensive documentation of the AI models hosted on FAL.ai that are integrated with our application, including capabilities, parameters, and usage examples.
+
+- [Veo 2 Image-to-Video](./veo2-image-to-video.md) - Detailed guide for the Veo 2 Image-to-Video model, which allows animating existing images with natural motion and realistic animations.
+
+- [Implementing Veo 2 Models](./implementing-veo2-models.md) - Technical guide for implementing Google's Veo 2 models (text-to-video and image-to-video) in our Next.js application.
+
 ### Examples
 
 - [Video Model Usage Examples](./examples/video-model-usage.md) - Code examples demonstrating how to use the video models programmatically, including basic and advanced usage, integration with React components, error handling, and best practices.

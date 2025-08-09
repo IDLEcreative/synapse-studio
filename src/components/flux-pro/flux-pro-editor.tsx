@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,7 +22,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { fal, ApiInfo } from "@/lib/fal";
+import { fal, ApiInfo, type QueueUpdate } from "@/lib/fal";
+import type { FluxProInput } from "@/data/mutations";
 import {
   SparklesIcon,
   ImageIcon,
@@ -354,12 +355,23 @@ interface PromptHistoryItem {
   thumbnail?: string;
 }
 
+export interface FluxProMetadata {
+  prompt?: string;
+  model?: string;
+  seed?: number;
+  width?: number;
+  height?: number;
+  steps?: number;
+  guidance?: number;
+  [key: string]: unknown;
+}
+
 interface FluxProEditorProps {
-  onComplete: (result: { url: string; metadata: any }) => void;
+  onComplete: (result: { url: string; metadata: FluxProMetadata }) => void;
   proTools?: ApiInfo[];
 }
 
-export default function FluxProEditor({
+const FluxProEditor = memo(function FluxProEditor({
   onComplete,
   proTools,
 }: FluxProEditorProps) {
@@ -555,14 +567,14 @@ export default function FluxProEditor({
         (option) => option.value === resolution,
       );
 
-      const input: any = {
+      const input: Record<string, unknown> = {
         prompt: prompt.trim(),
         image_size: resolution,
         aspect_ratio: selectedResolution?.aspectRatio || "16:9",
         num_images: numImages,
         enable_safety_checker: enableSafetyChecker,
-        safety_tolerance: safetyTolerance,
-        output_format: outputFormat,
+        safety_tolerance: Number(safetyTolerance),
+        output_format: outputFormat as "jpeg" | "png" | "webp",
         raw: rawMode,
       };
 
@@ -583,18 +595,20 @@ export default function FluxProEditor({
 
       // Call the API using the falClient - using the Ultra model
       const result = await fal.subscribe("fal-ai/flux-pro/v1.1-ultra", {
-        input,
+        input: input as any,
         logs: true,
-        onQueueUpdate: (update: any) => {
+        onQueueUpdate: (update: QueueUpdate) => {
           if (update.status === "IN_PROGRESS") {
-            update.logs?.map((log: any) => log.message).forEach(console.log);
+            update.logs?.forEach((log) => console.log(log.message));
           }
         },
       });
 
       // Process the result
       if (result.data?.images && result.data.images.length > 0) {
-        const images = result.data.images.map((img: any) => img.url);
+        const images = (
+          result.data as { images: Array<{ url: string }> }
+        ).images.map((img) => img.url);
         setGeneratedImages(images);
         setSelectedImageIndex(0);
 
@@ -639,7 +653,7 @@ export default function FluxProEditor({
           prompt: prompt,
           negativePrompt: negativePrompt,
           model: "fal-ai/flux-pro/v1.1-ultra",
-          seed: seed,
+          seed: seed ?? undefined,
         },
       });
     }
@@ -1401,4 +1415,6 @@ export default function FluxProEditor({
       )}
     </div>
   );
-}
+});
+
+export default FluxProEditor;

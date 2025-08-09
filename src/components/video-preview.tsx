@@ -16,7 +16,7 @@ import { useProjectId, useVideoProjectStore } from "@/data/store";
 import { cn, resolveDuration, resolveMediaUrl } from "@/lib/utils";
 import { Player, type PlayerRef } from "@remotion/player";
 import { preloadVideo, preloadAudio } from "@remotion/preload";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import {
   AbsoluteFill,
   Audio,
@@ -47,73 +47,68 @@ const videoSizeMap = {
   "1:1": { width: 1024, height: 1024 },
 };
 
-export const VideoComposition: React.FC<VideoCompositionProps> = ({
-  project,
-  tracks,
-  frames,
-  mediaItems,
-}) => {
-  const sortedTracks = [...tracks].sort((a, b) => {
-    return TRACK_TYPE_ORDER[a.type] - TRACK_TYPE_ORDER[b.type];
-  });
+export const VideoComposition: React.FC<VideoCompositionProps> = memo(
+  ({ project, tracks, frames, mediaItems }) => {
+    const sortedTracks = [...tracks].sort((a, b) => {
+      return TRACK_TYPE_ORDER[a.type] - TRACK_TYPE_ORDER[b.type];
+    });
 
-  let width = VIDEO_WIDTH;
-  let height = VIDEO_HEIGHT;
+    let width = VIDEO_WIDTH;
+    let height = VIDEO_HEIGHT;
 
-  if (project.aspectRatio) {
-    const size = videoSizeMap[project.aspectRatio];
-    if (size) {
-      width = size.width;
-      height = size.height;
+    if (project.aspectRatio) {
+      const size = videoSizeMap[project.aspectRatio];
+      if (size) {
+        width = size.width;
+        height = size.height;
+      }
     }
-  }
 
-  return (
-    <Composition
-      id={project.id}
-      component={MainComposition as any}
-      durationInFrames={DEFAULT_DURATION * FPS}
-      fps={FPS}
-      width={width}
-      height={height}
-      defaultProps={{
-        project,
-        tracks: sortedTracks,
-        frames,
-        mediaItems,
-      }}
-    />
-  );
-};
+    return (
+      <Composition
+        id={project.id}
+        component={MainComposition as any}
+        durationInFrames={DEFAULT_DURATION * FPS}
+        fps={FPS}
+        width={width}
+        height={height}
+        defaultProps={{
+          project,
+          tracks: sortedTracks,
+          frames,
+          mediaItems,
+        }}
+      />
+    );
+  },
+);
 
-const MainComposition: React.FC<VideoCompositionProps> = ({
-  tracks,
-  frames,
-  mediaItems,
-}) => {
-  return (
-    <AbsoluteFill>
-      {tracks.map((track) => (
-        <Sequence key={track.id}>
-          {track.type === "video" && (
-            <VideoTrackSequence
-              track={track}
-              frames={frames[track.id] || []}
-              mediaItems={mediaItems}
-            />
-          )}
-          {(track.type === "music" || track.type === "voiceover") && (
-            <AudioTrackSequence
-              track={track}
-              frames={frames[track.id] || []}
-              mediaItems={mediaItems}
-            />
-          )}
-        </Sequence>
-      ))}
-    </AbsoluteFill>
-  );
-};
+const MainComposition: React.FC<VideoCompositionProps> = memo(
+  ({ tracks, frames, mediaItems }) => {
+    return (
+      <AbsoluteFill>
+        {tracks.map((track) => (
+          <Sequence key={track.id}>
+            {track.type === "video" && (
+              <VideoTrackSequence
+                track={track}
+                frames={frames[track.id] || []}
+                mediaItems={mediaItems}
+              />
+            )}
+            {(track.type === "music" || track.type === "voiceover") && (
+              <AudioTrackSequence
+                track={track}
+                frames={frames[track.id] || []}
+                mediaItems={mediaItems}
+              />
+            )}
+          </Sequence>
+        ))}
+      </AbsoluteFill>
+    );
+  },
+);
 
 interface TrackSequenceProps {
   track: VideoTrack;
@@ -121,56 +116,61 @@ interface TrackSequenceProps {
   mediaItems: Record<string, MediaItem>;
 }
 
-const VideoTrackSequence: React.FC<TrackSequenceProps> = ({
-  frames,
-  mediaItems,
-}) => {
-  return (
-    <AbsoluteFill>
-      {frames.map((frame) => {
-        const media = mediaItems[frame.data.mediaId];
-        if (!media || media.status !== "completed") return null;
+const VideoTrackSequence: React.FC<TrackSequenceProps> = memo(
+  ({ frames, mediaItems }) => {
+    return (
+      <AbsoluteFill>
+        {frames.map((frame) => {
+          const media = mediaItems[frame.data.mediaId];
+          if (!media || media.status !== "completed") return null;
 
-        const mediaUrl = resolveMediaUrl(media);
-        if (!mediaUrl) return null;
+          const mediaUrl = resolveMediaUrl(media);
+          if (!mediaUrl) return null;
 
-        const duration = frame.duration || resolveDuration(media) || 5000;
-        const durationInFrames = Math.floor(duration / (1000 / FPS));
+          const duration = frame.duration || resolveDuration(media) || 5000;
+          const durationInFrames = Math.floor(duration / (1000 / FPS));
 
-        // Use fallback image if available
-        const fallbackImageUrl =
-          media.metadata?.start_frame_url ||
-          media.metadata?.end_frame_url ||
-          media.input?.image_url;
+          // Use fallback image if available
+          const fallbackImageUrl =
+            (typeof media.metadata?.start_frame_url === "string"
+              ? media.metadata.start_frame_url
+              : undefined) ||
+            (typeof media.metadata?.end_frame_url === "string"
+              ? media.metadata.end_frame_url
+              : undefined) ||
+            (typeof media.input?.image_url === "string"
+              ? media.input.image_url
+              : undefined);
 
-        return (
-          <Sequence
-            key={frame.id}
-            from={Math.floor(frame.timestamp / (1000 / FPS))}
-            durationInFrames={durationInFrames}
-            premountFor={3000}
-          >
-            {media.mediaType === "video" && (
-              <ErrorBoundaryVideo
-                src={mediaUrl}
-                fallbackImageUrl={fallbackImageUrl}
-              />
-            )}
-            {media.mediaType === "image" && (
-              <Img src={mediaUrl} style={{ objectFit: "cover" }} />
-            )}
-          </Sequence>
-        );
-      })}
-    </AbsoluteFill>
-  );
-};
+          return (
+            <Sequence
+              key={frame.id}
+              from={Math.floor(frame.timestamp / (1000 / FPS))}
+              durationInFrames={durationInFrames}
+              premountFor={3000}
+            >
+              {media.mediaType === "video" && (
+                <ErrorBoundaryVideo
+                  src={mediaUrl}
+                  fallbackImageUrl={fallbackImageUrl}
+                />
+              )}
+              {media.mediaType === "image" && (
+                <Img src={mediaUrl} style={{ objectFit: "cover" }} />
+              )}
+            </Sequence>
+          );
+        })}
+      </AbsoluteFill>
+    );
+  },
+);
 
 // Custom video component with error handling
 const ErrorBoundaryVideo: React.FC<{
   src: string;
   fallbackImageUrl?: string;
-}> = ({ src, fallbackImageUrl }) => {
+}> = memo(({ src, fallbackImageUrl }) => {
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -310,43 +310,42 @@ const ErrorBoundaryVideo: React.FC<{
       />
     </>
   );
-};
+});
 
-const AudioTrackSequence: React.FC<TrackSequenceProps> = ({
-  frames,
-  mediaItems,
-}) => {
-  return (
-    <>
-      {frames.map((frame) => {
-        const media = mediaItems[frame.data.mediaId];
-        if (!media || media.status !== "completed") return null;
+const AudioTrackSequence: React.FC<TrackSequenceProps> = memo(
+  ({ frames, mediaItems }) => {
+    return (
+      <>
+        {frames.map((frame) => {
+          const media = mediaItems[frame.data.mediaId];
+          if (!media || media.status !== "completed") return null;
 
-        const audioUrl = resolveMediaUrl(media);
-        if (!audioUrl) return null;
+          const audioUrl = resolveMediaUrl(media);
+          if (!audioUrl) return null;
 
-        const duration = frame.duration || resolveDuration(media) || 5000;
-        const durationInFrames = Math.floor(duration / (1000 / FPS));
+          const duration = frame.duration || resolveDuration(media) || 5000;
+          const durationInFrames = Math.floor(duration / (1000 / FPS));
 
-        return (
-          <Sequence
-            key={frame.id}
-            from={Math.floor(frame.timestamp / (1000 / FPS))}
-            durationInFrames={durationInFrames}
-            premountFor={3000}
-          >
-            <ErrorBoundaryAudio src={audioUrl} />
-          </Sequence>
-        );
-      })}
-    </>
-  );
-};
+          return (
+            <Sequence
+              key={frame.id}
+              from={Math.floor(frame.timestamp / (1000 / FPS))}
+              durationInFrames={durationInFrames}
+              premountFor={3000}
+            >
+              <ErrorBoundaryAudio src={audioUrl} />
+            </Sequence>
+          );
+        })}
+      </>
+    );
+  },
+);
 
 // Custom audio component with error handling
 const ErrorBoundaryAudio: React.FC<{
   src: string;
-}> = ({ src }) => {
+}> = memo(({ src }) => {
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -432,9 +431,9 @@ const ErrorBoundaryAudio: React.FC<{
       }}
     />
   );
-};
+});
 
-export default function VideoPreview() {
+const VideoPreview = memo(function VideoPreview() {
   const projectId = useProjectId();
   const setPlayer = useVideoProjectStore((s) => s.setPlayer);
 
@@ -737,4 +736,6 @@ export default function VideoPreview() {
       </div>
     </div>
   );
-}
+});
+
+export default VideoPreview;

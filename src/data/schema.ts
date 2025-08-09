@@ -75,17 +75,17 @@ export type MediaItem = {
   mediaType: "image" | "video" | "music" | "voiceover";
   status: "pending" | "running" | "completed" | "failed";
   createdAt: number;
-  input?: Record<string, any>;
-  output?: Record<string, any>;
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
   url?: string;
-  metadata?: Record<string, any>; // TODO: Define the metadata schema
+  metadata?: Record<string, unknown>;
 } & (
   | {
       kind: "generated";
       endpointId: string;
       requestId: string;
-      input: Record<string, any>;
-      output?: Record<string, any>;
+      input: Record<string, unknown>;
+      output?: Record<string, unknown>;
     }
   | {
       kind: "uploaded";

@@ -57,7 +57,7 @@ export default function Community() {
             <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               Loved by creators worldwide
             </h2>
-            <p className="text-gray-300 text-lg">
+            <p className="text-gray-100 text-lg">
               Join thousands of content creators who have transformed their
               video editing workflow.
             </p>
@@ -80,7 +80,7 @@ export default function Community() {
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-300 mb-6 italic">
+                <p className="text-gray-100 mb-6 italic">
                   "{testimonial.quote}"
                 </p>
                 <div className="flex items-center">
@@ -95,7 +95,7 @@ export default function Community() {
                     <h4 className="font-medium text-white">
                       {testimonial.author}
                     </h4>
-                    <p className="text-sm text-gray-400">{testimonial.role}</p>
+                    <p className="text-sm text-gray-200">{testimonial.role}</p>
                   </div>
                 </div>
               </div>
@@ -115,7 +115,7 @@ export default function Community() {
                 <h2 className="text-3xl font-bold mb-6">
                   Join our growing community
                 </h2>
-                <p className="text-gray-300 mb-8 leading-relaxed">
+                <p className="text-gray-100 mb-8 leading-relaxed">
                   Synapse Studio is built by creators, for creators. Join our
                   thriving community to share your work, get feedback, and help
                   shape the future of AI-powered video editing.
@@ -216,7 +216,7 @@ export default function Community() {
                         +2k
                       </div>
                     </div>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-200">
                       Join 2,000+ members
                     </span>
                   </div>

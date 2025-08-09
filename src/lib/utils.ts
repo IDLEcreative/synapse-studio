@@ -5,6 +5,7 @@ import { ImageIcon, MicIcon, MusicIcon, VideoIcon } from "lucide-react";
 import type { FunctionComponent } from "react";
 import { twMerge } from "tailwind-merge";
 import type { InputAsset } from "./fal";
+import { logger } from "@/lib/logger";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -62,10 +63,16 @@ export function resolveDuration(item: MediaItem): number | null {
 
   const data = item.output;
   if (!data) return null;
-  if ("seconds_total" in data) {
+  if ("seconds_total" in data && typeof data.seconds_total === "number") {
     return data.seconds_total * 1000;
   }
-  if ("audio" in data && "duration" in data.audio) {
+  if (
+    "audio" in data &&
+    typeof data.audio === "object" &&
+    data.audio &&
+    "duration" in data.audio &&
+    typeof data.audio.duration === "number"
+  ) {
     return data.audio.duration * 1000;
   }
   return null;
@@ -100,11 +107,17 @@ export function resolveMediaUrl(item: MediaItem | undefined): string | null {
         audio_file: 1,
         audio_url: 1,
       };
-      const property = Object.keys(data).find(
-        (key) => key in fileProperties && "url" in data[key],
-      );
+      const property = Object.keys(data).find((key) => {
+        const value = (data as any)[key];
+        return (
+          key in fileProperties &&
+          value &&
+          typeof value === "object" &&
+          "url" in value
+        );
+      });
       if (property) {
-        mediaUrl = data[property].url;
+        mediaUrl = ((data as any)[property] as any).url;
       }
     }
   }
@@ -124,11 +137,17 @@ export function resolveMediaUrl(item: MediaItem | undefined): string | null {
     // If the URL is from a problematic domain, route it through our proxy
     if (shouldProxy && typeof window !== "undefined") {
       const proxyUrl = `/api/media-proxy?url=${encodeURIComponent(mediaUrl)}`;
-      console.log(`Routing media through proxy: ${mediaUrl} -> ${proxyUrl}`);
+      logger.debug("Routing media through proxy", {
+        mediaUrl,
+        proxyUrl,
+        operation: "media_url_resolution",
+      });
       return proxyUrl;
     }
   } catch (error) {
-    console.error("Error parsing media URL:", error);
+    logger.error("Error parsing media URL", error, {
+      operation: "media_url_resolution",
+    });
   }
 
   return mediaUrl;

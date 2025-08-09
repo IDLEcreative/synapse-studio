@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   metadataBase: new URL("http://localhost:3000"),
 };
 
+import AuthSessionProvider from "@/components/providers/session-provider";
+import { PerformanceOverlay } from "@/components/performance-monitor";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,7 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="antialiased dark">{children}</body>
+      <body className="antialiased dark">
+        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <PerformanceOverlay />
+      </body>
     </html>
   );
 }

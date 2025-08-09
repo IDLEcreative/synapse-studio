@@ -78,7 +78,7 @@ export default function Pricing() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
             Choose Your Perfect Plan
           </h2>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-10">
+          <p className="text-gray-100 text-lg max-w-2xl mx-auto mb-10">
             Select the perfect plan for your creative needs. From hobbyists to
             professionals, we have options for everyone.
           </p>
@@ -90,7 +90,7 @@ export default function Pricing() {
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                 !annual
                   ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
-                  : "text-gray-400 hover:text-white"
+                  : "text-gray-200 hover:text-white"
               }`}
             >
               Monthly
@@ -100,7 +100,7 @@ export default function Pricing() {
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all flex items-center ${
                 annual
                   ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg"
-                  : "text-gray-400 hover:text-white"
+                  : "text-gray-200 hover:text-white"
               }`}
             >
               Annual{" "}
@@ -135,9 +135,9 @@ export default function Pricing() {
                   <span className="text-4xl font-bold text-white">
                     ${annual ? plan.price.annual : plan.price.monthly}
                   </span>
-                  <span className="text-gray-400 ml-1.5">/month</span>
+                  <span className="text-gray-200 ml-1.5">/month</span>
                 </div>
-                <p className="text-gray-400 text-sm mb-6">{plan.description}</p>
+                <p className="text-gray-200 text-sm mb-6">{plan.description}</p>
 
                 <Link href={plan.ctaLink}>
                   <Button
@@ -146,7 +146,15 @@ export default function Pricing() {
                         ? "bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white border-none shadow-lg shadow-blue-500/20"
                         : ""
                     }`}
-                    variant={plan.variant as any}
+                    variant={
+                      plan.variant as
+                        | "default"
+                        | "outline"
+                        | "destructive"
+                        | "secondary"
+                        | "ghost"
+                        | "link"
+                    }
                   >
                     {plan.cta}
                     {plan.popular && <ArrowRight className="ml-2 h-4 w-4" />}
@@ -188,7 +196,7 @@ export default function Pricing() {
               <h4 className="text-lg font-medium text-white mb-2">
                 100% Secure
               </h4>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-200 text-sm">
                 Your data is always protected and never shared.
               </p>
             </div>
@@ -199,7 +207,7 @@ export default function Pricing() {
               <h4 className="text-lg font-medium text-white mb-2">
                 14-Day Trial
               </h4>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-200 text-sm">
                 Try any paid plan free for 14 days.
               </p>
             </div>
@@ -210,7 +218,7 @@ export default function Pricing() {
               <h4 className="text-lg font-medium text-white mb-2">
                 Cancel Anytime
               </h4>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-200 text-sm">
                 No long-term contracts or commitments.
               </p>
             </div>
@@ -218,7 +226,7 @@ export default function Pricing() {
         </div>
 
         <div className="mt-16 text-center">
-          <p className="text-gray-400 text-sm max-w-2xl mx-auto">
+          <p className="text-gray-200 text-sm max-w-2xl mx-auto">
             All plans include a 14-day free trial. No credit card required. Need
             a custom solution?{" "}
             <a

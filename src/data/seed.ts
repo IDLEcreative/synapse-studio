@@ -395,20 +395,22 @@ const TEMPLATE_PROJECT_SEED: ProjectSeed = {
       trackId: "700049df-22c3-4419-b886-c9b200851ac8",
       data: {
         mediaId: "89e9a2f8-a6a7-445d-bf45-f489395db200",
-        type: "image",
+        type: "image" as const,
         prompt: "Coffee beans grinding on a morning setting",
+        url: "/placeholder-coffee.jpg", // Add missing URL field
       },
       timestamp: 1,
       duration: 5640,
       id: "e0ad9534-267d-47fb-b512-a723e7ac04c6",
-    } as any,
+    },
     {
       trackId: "700049df-22c3-4419-b886-c9b200851ac8",
       data: {
         mediaId: "40cec777-9f45-465a-ace4-4fdc4000fa9e",
-        type: "image",
+        type: "image" as const,
         prompt:
           "Image of a steaming cup of coffee in a quiet morning setting, showcasing the morning brew process, using the Coffee machine as a central feature",
+        url: "/placeholder-coffee-cup.jpg",
       },
       timestamp: 5642,
       duration: 5640,
@@ -418,9 +420,10 @@ const TEMPLATE_PROJECT_SEED: ProjectSeed = {
       trackId: "700049df-22c3-4419-b886-c9b200851ac8",
       data: {
         mediaId: "4fc9a50b-6a3c-47ef-93e8-48341b4f050e",
-        type: "image",
+        type: "image" as const,
         prompt:
           "a steaming cup of coffee on a cozy morning scene, with the warm sunlight peeking through the blinds, as the sound of gentle brewing fills the air.",
+        url: "/placeholder-morning-coffee.jpg",
       },
       timestamp: 11283,
       duration: 5640,

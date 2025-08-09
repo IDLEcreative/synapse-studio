@@ -20,7 +20,10 @@ import {
   Fragment,
   type HTMLAttributes,
   createElement,
+  memo,
+  useMemo,
 } from "react";
+import { FixedSizeList as List } from "react-window";
 import { Badge } from "./ui/badge";
 import { LoadingIcon } from "./ui/icons";
 import { useToast } from "@/hooks/use-toast";
@@ -32,7 +35,7 @@ type MediaItemRowProps = {
   draggable?: boolean;
 } & HTMLAttributes<HTMLDivElement>;
 
-export function MediaItemRow({
+export const MediaItemRow = memo(function MediaItemRow({
   data,
   className,
   onOpen,
@@ -130,7 +133,12 @@ export function MediaItemRow({
 
   const coverImage =
     data.mediaType === "video"
-      ? data.metadata?.start_frame_url || data?.metadata?.end_frame_url
+      ? (typeof data.metadata?.start_frame_url === "string"
+          ? data.metadata.start_frame_url
+          : null) ||
+        (typeof data.metadata?.end_frame_url === "string"
+          ? data.metadata.end_frame_url
+          : null)
       : resolveMediaUrl(data);
 
   return (
@@ -237,7 +245,9 @@ export function MediaItemRow({
             )}
           </div>
           <p className="text-gray-400 text-xs line-clamp-1 mt-0.5">
-            {data.input?.prompt || "Uploaded media"}
+            {(typeof data.input?.prompt === "string"
+              ? data.input.prompt
+              : null) || "Uploaded media"}
           </p>
         </div>
         <div className="flex flex-row gap-2 justify-between mt-1">
@@ -248,10 +258,10 @@ export function MediaItemRow({
       </div>
     </div>
   );
-}
+});
 
 // New Grid Item component for the grid view
-export function MediaItemGrid({
+export const MediaItemGrid = memo(function MediaItemGrid({
   data,
   className,
   onOpen,
@@ -267,7 +277,12 @@ export function MediaItemGrid({
 
   const coverImage =
     data.mediaType === "video"
-      ? data.metadata?.start_frame_url || data?.metadata?.end_frame_url
+      ? (typeof data.metadata?.start_frame_url === "string"
+          ? data.metadata.start_frame_url
+          : null) ||
+        (typeof data.metadata?.end_frame_url === "string"
+          ? data.metadata.end_frame_url
+          : null)
       : resolveMediaUrl(data);
 
   return (
@@ -379,12 +394,14 @@ export function MediaItemGrid({
           </span>
         </div>
         <p className="text-gray-400 text-[10px] line-clamp-1 mt-0.5">
-          {data.input?.prompt || "Uploaded media"}
+          {(typeof data.input?.prompt === "string"
+            ? data.input.prompt
+            : null) || "Uploaded media"}
         </p>
       </div>
     </div>
   );
-}
+});
 
 type MediaItemsPanelProps = {
   data: MediaItem[];
@@ -392,41 +409,111 @@ type MediaItemsPanelProps = {
   viewMode?: "list" | "grid";
 } & HTMLAttributes<HTMLDivElement>;
 
-export function MediaItemPanel({
+// Virtualized list item component for performance
+type VirtualizedItemProps = {
+  index: number;
+  style: React.CSSProperties;
+  data: {
+    items: MediaItem[];
+    onOpen: (item: MediaItem) => void;
+    viewMode: "list" | "grid";
+  };
+};
+
+const VirtualizedItem = memo(function VirtualizedItem({
+  index,
+  style,
+  data,
+}: VirtualizedItemProps) {
+  const { items, onOpen, viewMode } = data;
+  const item = items[index];
+
+  if (!item) return null;
+
+  return (
+    <div style={style}>
+      {viewMode === "list" ? (
+        <MediaItemRow data={item} onOpen={onOpen} />
+      ) : (
+        <MediaItemGrid data={item} onOpen={onOpen} />
+      )}
+    </div>
+  );
+});
+
+export const MediaItemPanel = memo(function MediaItemPanel({
   className,
   data,
   mediaType,
   viewMode = "list",
 }: MediaItemsPanelProps) {
   const setSelectedMediaId = useVideoProjectStore((s) => s.setSelectedMediaId);
-  const handleOnOpen = (item: MediaItem) => {
-    setSelectedMediaId(item.id);
-  };
 
-  const filteredData = data.filter((media) => {
-    if (mediaType === "all") return true;
-    return media.mediaType === mediaType;
-  });
+  const handleOnOpen = useMemo(
+    () => (item: MediaItem) => {
+      setSelectedMediaId(item.id);
+    },
+    [setSelectedMediaId],
+  );
+
+  const filteredData = useMemo(() => {
+    return data.filter((media) => {
+      if (mediaType === "all") return true;
+      return media.mediaType === mediaType;
+    });
+  }, [data, mediaType]);
+
+  const itemData = useMemo(
+    () => ({
+      items: filteredData,
+      onOpen: handleOnOpen,
+      viewMode,
+    }),
+    [filteredData, handleOnOpen, viewMode],
+  );
+
+  // Use virtualization only for large lists (>20 items)
+  const shouldVirtualize = filteredData.length > 20;
+  const itemHeight = viewMode === "list" ? 80 : 200; // Approximate heights
+  const containerHeight = Math.min(600, filteredData.length * itemHeight); // Max 600px
+
+  if (!shouldVirtualize) {
+    // For small lists, render normally for better UX
+    return (
+      <div
+        className={cn(
+          "overflow-hidden",
+          viewMode === "list" ? "flex flex-col space-y-1" : "flex flex-wrap",
+          className,
+        )}
+      >
+        {viewMode === "list"
+          ? filteredData.map((media) => (
+              <MediaItemRow key={media.id} data={media} onOpen={handleOnOpen} />
+            ))
+          : filteredData.map((media) => (
+              <MediaItemGrid
+                key={media.id}
+                data={media}
+                onOpen={handleOnOpen}
+              />
+            ))}
+      </div>
+    );
+  }
 
   return (
-    <div
-      className={cn(
-        "overflow-hidden",
-        viewMode === "list" ? "flex flex-col space-y-1" : "flex flex-wrap",
-        className,
-      )}
-    >
-      {viewMode === "list"
-        ? // List view
-          filteredData.map((media) => (
-            <Fragment key={media.id}>
-              <MediaItemRow data={media} onOpen={handleOnOpen} />
-            </Fragment>
-          ))
-        : // Grid view
-          filteredData.map((media) => (
-            <MediaItemGrid key={media.id} data={media} onOpen={handleOnOpen} />
-          ))}
+    <div className={cn("overflow-hidden", className)}>
+      <List
+        height={containerHeight}
+        width="100%"
+        itemCount={filteredData.length}
+        itemSize={itemHeight}
+        itemData={itemData}
+        className="scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+      >
+        {VirtualizedItem}
+      </List>
     </div>
   );
-}
+});

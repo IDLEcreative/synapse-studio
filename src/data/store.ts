@@ -4,38 +4,40 @@ import { AVAILABLE_ENDPOINTS } from "@/lib/fal";
 import type { PlayerRef } from "@remotion/player";
 import { createContext, useContext } from "react";
 import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 
 export const LAST_PROJECT_ID_KEY = "__aivs_lastProjectId";
 
 export type MediaType = "image" | "video" | "voiceover" | "music";
 
+export type AspectRatio = "auto" | "16:9" | "9:16" | "1:1" | "4:3" | "3:4";
+export type DurationString = "5s" | "6s" | "7s" | "8s";
+export type FinetuneMode = "character" | "product" | "style" | "general";
+export type Priority = "speed" | "quality" | "high_res_only";
+export type FinetuneType = "full" | "lora";
+export type CameraMovement =
+  | "zoom_in"
+  | "zoom_out"
+  | "pan_left"
+  | "pan_right"
+  | "tilt_up"
+  | "tilt_down"
+  | "static";
+
+// Simplified: Core generation parameters only
+// Model-specific parameters should be handled at the component level
 export type GenerateData = {
   prompt: string;
   image?: File | string | null;
   video_url?: File | string | null;
   audio_url?: File | string | null;
-  duration: number;
-  voice: string;
-  // Flux Pro tool parameters
-  edgeStrength?: number; // For Canny models
-  depthStrength?: number; // For Depth models
-  maskImage?: string | File | null; // For Fill models (mask area)
-  variationStrength?: number; // For Redux models
-  advanced_camera_control?: {
-    movement: string;
-    value: number;
-  };
-  // Flux Pro Trainer parameters
-  data_url?: string; // URL to the training data
-  mode?: "character" | "product" | "style" | "general"; // Finetuning approach
-  finetune_comment?: string; // Descriptive note for the fine-tune
-  iterations?: number; // Training duration (default: 300)
-  learning_rate?: number; // Learning rate for training
-  priority?: "speed" | "quality" | "high_res_only"; // Speed priority
-  captioning?: boolean; // Enable/disable automatic image captioning
-  trigger_word?: string; // Unique word/phrase for captions
-  lora_rank?: number; // Choose between 32 and 16
-  finetune_type?: "full" | "lora"; // Type of finetuning
+  duration?: number;
+  voice?: string;
+  // Essential Veo 2 parameters only
+  aspect_ratio?: AspectRatio;
+  duration_string?: DurationString;
+  // Generic catch-all for model-specific params
+  // Components can add what they need without polluting the type
   [key: string]: any;
 };
 
@@ -79,6 +81,7 @@ interface VideoProjectState extends VideoProjectProps {
   setExportDialogOpen: (open: boolean) => void;
   setEndpointId: (endpointId: string) => void;
   onGenerate: () => void;
+  setOnGenerate: (fn: () => void) => void;
 
   // Flux Pro Studio functions
   setFluxProStudio: (state: Partial<FluxProStudioState>) => void;
@@ -102,11 +105,8 @@ const DEFAULT_PROPS: VideoProjectProps = {
   selectedKeyframes: [],
   generateData: {
     prompt: "",
-    image: null,
-    duration: 30,
-    voice: "",
-    video_url: null,
-    audio_url: null,
+    // Only include essentials in initial state
+    // Components can add what they need
   },
   exportDialogOpen: false,
   fluxProStudio: {
@@ -118,77 +118,98 @@ const DEFAULT_PROPS: VideoProjectProps = {
   },
 };
 
-// Create a store using Zustand's create function
-export const useVideoProjectStore = create<VideoProjectState>((set, get) => ({
-  ...DEFAULT_PROPS,
-  setProjectId: (projectId: string) => set({ projectId }),
-  setProjectDialogOpen: (projectDialogOpen: boolean) =>
-    set({ projectDialogOpen }),
-  setGenerateData: (generateData: Partial<GenerateData>) =>
-    set({
-      generateData: Object.assign({}, get().generateData, generateData),
-    }),
-  resetGenerateData: () =>
-    set({
-      generateData: {
-        ...get().generateData,
-        prompt: "",
-        duration: 30,
-        image: null,
-        video_url: null,
-        audio_url: null,
-        voice: "",
-      },
-    }),
-  // [NOTE]: This is a placeholder function
-  onGenerate: () => {},
-  setPlayer: (player: PlayerRef) => set({ player }),
-  setPlayerCurrentTimestamp: (playerCurrentTimestamp: number) =>
-    set({ playerCurrentTimestamp }),
-  setPlayerState: (playerState: "playing" | "paused") => set({ playerState }),
-  setGenerateMediaType: (generateMediaType: MediaType) =>
-    set({ generateMediaType }),
-  openGenerateDialog: (mediaType) =>
-    set({
-      generateDialogOpen: true,
-      generateMediaType: mediaType ?? get().generateMediaType,
-    }),
-  closeGenerateDialog: () => set({ generateDialogOpen: false }),
-  setSelectedMediaId: (selectedMediaId: string | null) =>
-    set({ selectedMediaId }),
-  selectKeyframe: (frameId: string) => {
-    const selected = get().selectedKeyframes;
-    if (selected.includes(frameId)) {
-      set({
-        selectedKeyframes: selected.filter((id) => id !== frameId),
-      });
-    } else {
-      set({ selectedKeyframes: [...selected, frameId] });
-    }
-  },
-  setExportDialogOpen: (exportDialogOpen: boolean) => set({ exportDialogOpen }),
-  setEndpointId: (endpointId: string) => set({ endpointId }),
+// Create a store using Zustand's create function with immer middleware
+export const useVideoProjectStore = create<VideoProjectState>()(
+  immer((set, get) => ({
+    ...DEFAULT_PROPS,
+    setProjectId: (projectId: string) =>
+      set((state) => {
+        state.projectId = projectId;
+      }),
+    setProjectDialogOpen: (projectDialogOpen: boolean) =>
+      set((state) => {
+        state.projectDialogOpen = projectDialogOpen;
+      }),
+    setGenerateData: (generateData: Partial<GenerateData>) =>
+      set((state) => {
+        Object.assign(state.generateData, generateData);
+      }),
+    resetGenerateData: () =>
+      set((state) => {
+        // Only reset the prompt, let components manage their own fields
+        state.generateData = { prompt: "" };
+      }),
+    // [NOTE]: This is a placeholder function
+    onGenerate: () => {},
+    setOnGenerate: (fn: () => void) =>
+      set((state) => {
+        state.onGenerate = fn;
+      }),
+    setPlayer: (player: PlayerRef) =>
+      set((state) => {
+        state.player = player;
+      }),
+    setPlayerCurrentTimestamp: (playerCurrentTimestamp: number) =>
+      set((state) => {
+        state.playerCurrentTimestamp = playerCurrentTimestamp;
+      }),
+    setPlayerState: (playerState: "playing" | "paused") =>
+      set((state) => {
+        state.playerState = playerState;
+      }),
+    setGenerateMediaType: (generateMediaType: MediaType) =>
+      set((state) => {
+        state.generateMediaType = generateMediaType;
+      }),
+    openGenerateDialog: (mediaType) =>
+      set((state) => {
+        state.generateDialogOpen = true;
+        state.generateMediaType = mediaType ?? state.generateMediaType;
+      }),
+    closeGenerateDialog: () =>
+      set((state) => {
+        state.generateDialogOpen = false;
+      }),
+    setSelectedMediaId: (selectedMediaId: string | null) =>
+      set((state) => {
+        state.selectedMediaId = selectedMediaId;
+      }),
+    selectKeyframe: (frameId: string) =>
+      set((state) => {
+        const index = state.selectedKeyframes.indexOf(frameId);
+        if (index !== -1) {
+          state.selectedKeyframes.splice(index, 1);
+        } else {
+          state.selectedKeyframes.push(frameId);
+        }
+      }),
+    setExportDialogOpen: (exportDialogOpen: boolean) =>
+      set((state) => {
+        state.exportDialogOpen = exportDialogOpen;
+      }),
+    setEndpointId: (endpointId: string) =>
+      set((state) => {
+        state.endpointId = endpointId;
+      }),
 
-  // Flux Pro Studio functions
-  setFluxProStudio: (state: Partial<FluxProStudioState>) =>
-    set({
-      fluxProStudio: { ...get().fluxProStudio, ...state },
-    }),
-  openFluxProStudio: (initialImage = null, tab = "flux-pro") =>
-    set({
-      fluxProStudio: {
-        isOpen: true,
-        initialImage,
-        activeTab: tab,
-        projectId: get().projectId,
-        isToolPanelCollapsed: get().fluxProStudio.isToolPanelCollapsed,
-      },
-    }),
-  closeFluxProStudio: () =>
-    set({
-      fluxProStudio: { ...get().fluxProStudio, isOpen: false },
-    }),
-}));
+    // Flux Pro Studio functions
+    setFluxProStudio: (newState: Partial<FluxProStudioState>) =>
+      set((state) => {
+        Object.assign(state.fluxProStudio, newState);
+      }),
+    openFluxProStudio: (initialImage = null, tab = "flux-pro") =>
+      set((state) => {
+        state.fluxProStudio.isOpen = true;
+        state.fluxProStudio.initialImage = initialImage;
+        state.fluxProStudio.activeTab = tab;
+        state.fluxProStudio.projectId = state.projectId;
+      }),
+    closeFluxProStudio: () =>
+      set((state) => {
+        state.fluxProStudio.isOpen = false;
+      }),
+  })),
+);
 
 export function useProjectId() {
   return useVideoProjectStore((s) => s.projectId);

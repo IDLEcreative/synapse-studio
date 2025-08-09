@@ -69,14 +69,27 @@ export default function BottomBar() {
 
       const duration = resolveDuration(media) ?? 5000;
 
+      const isImageType = Boolean(media.input?.image_url);
+      const prompt =
+        typeof media.input?.prompt === "string" ? media.input.prompt : "";
+
       const newId = await db.keyFrames.create({
         trackId: track.id,
-        data: {
-          mediaId: media.id,
-          type: media.input?.image_url ? "image" : "prompt",
-          prompt: media.input?.prompt || "",
-          url: media.input?.image_url?.url,
-        },
+        data: isImageType
+          ? {
+              mediaId: media.id,
+              type: "image" as const,
+              prompt,
+              url:
+                typeof media.input?.image_url === "string"
+                  ? media.input.image_url
+                  : "",
+            }
+          : {
+              mediaId: media.id,
+              type: "prompt" as const,
+              prompt,
+            },
         timestamp: lastKeyframe
           ? lastKeyframe.timestamp + 1 + lastKeyframe.duration
           : 0,
@@ -156,7 +169,7 @@ export default function BottomBar() {
   return (
     <div className="border-t pb-2 border-white/5 flex flex-col bg-black">
       <div className="border-b border-white/5 bg-black/80 px-6 flex flex-row gap-8 py-2 justify-between items-center flex-1">
-        <div className="font-mono text-xs text-gray-400 tabular-nums">
+        <div className="font-mono text-xs text-gray-200 tabular-nums">
           {formattedTimestamp}s
         </div>
         <VideoControls />
@@ -251,7 +264,7 @@ export default function BottomBar() {
                 <p className="text-gray-200 mb-2 font-medium">
                   Drag media from your gallery to add to the timeline
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-200">
                   Or use the Generate button to create new content
                 </p>
               </div>

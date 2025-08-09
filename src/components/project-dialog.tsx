@@ -133,7 +133,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
               <div className="space-y-1">
                 <label
                   htmlFor="project-title"
-                  className="text-xs text-gray-300 font-medium"
+                  className="text-xs text-gray-100 font-medium"
                 >
                   Project Title:
                 </label>
@@ -143,7 +143,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                   placeholder="Enter a title for your project"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="focus:ring-2 focus:ring-blue-500/30"
+                  className="focus:ring-1 focus:ring-blue-500/30"
                   aria-required="true"
                 />
               </div>
@@ -151,7 +151,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
               <div className="space-y-1">
                 <label
                   htmlFor="project-description"
-                  className="text-xs text-gray-300 font-medium"
+                  className="text-xs text-gray-100 font-medium"
                 >
                   Description:
                 </label>
@@ -161,7 +161,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
-                  className="resize-none focus:ring-2 focus:ring-blue-500/30"
+                  className="resize-none focus:ring-1 focus:ring-blue-500/30"
                 />
               </div>
 
@@ -325,7 +325,7 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                 placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-black/30 border-gray-700 focus:ring-2 focus:ring-blue-500/30"
+                className="pl-9 bg-transparent focus:ring-1 focus:ring-blue-500/30"
               />
             </div>
 
@@ -359,21 +359,21 @@ export function ProjectDialog({ onOpenChange, ...props }: ProjectDialogProps) {
                     )}
                   >
                     <div className="flex justify-between items-start">
-                      <h3 className="font-medium text-sm group-hover:text-blue-300 transition-colors">
+                      <h3 className="font-medium text-sm text-white group-hover:text-blue-300 transition-colors">
                         {project.title}
                       </h3>
-                      <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-full">
+                      <span className="text-xs px-2 py-0.5 bg-blue-500/30 text-blue-200 rounded-full">
                         {project.aspectRatio || "16:9"}
                       </span>
                     </div>
 
                     {project.description && (
-                      <p className="text-sm text-gray-400 line-clamp-2 mt-1 group-hover:text-gray-300 transition-colors">
+                      <p className="text-sm text-gray-300 line-clamp-2 mt-1 group-hover:text-gray-200 transition-colors">
                         {project.description}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         <span>Today</span>

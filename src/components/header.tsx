@@ -39,7 +39,7 @@ export default function Header() {
 
       {/* Mobile menu button */}
       <button
-        className="md:hidden flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white"
+        className="md:hidden flex items-center justify-center p-2 rounded-md text-gray-200 hover:text-white"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
       >
         <Menu className="h-6 w-6" />
@@ -50,7 +50,7 @@ export default function Header() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:text-white"
+          className="text-gray-200 hover:text-white"
           asChild
         >
           <Link href="/" prefetch={false}>
@@ -60,7 +60,7 @@ export default function Header() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:text-white"
+          className="text-gray-200 hover:text-white"
           asChild
         >
           <a href="/features" rel="noopener noreferrer">
@@ -71,7 +71,7 @@ export default function Header() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:text-white"
+          className="text-gray-200 hover:text-white"
           asChild
         >
           <a href="#" rel="noopener noreferrer">
@@ -107,7 +107,7 @@ export default function Header() {
           <Button
             variant="ghost"
             size="sm"
-            className="justify-start text-gray-400 hover:text-white"
+            className="justify-start text-gray-200 hover:text-white"
             asChild
           >
             <Link href="/" prefetch={false}>
@@ -117,7 +117,7 @@ export default function Header() {
           <Button
             variant="ghost"
             size="sm"
-            className="justify-start text-gray-400 hover:text-white"
+            className="justify-start text-gray-200 hover:text-white"
             asChild
           >
             <a href="/features" rel="noopener noreferrer">
@@ -128,7 +128,7 @@ export default function Header() {
           <Button
             variant="ghost"
             size="sm"
-            className="justify-start text-gray-400 hover:text-white"
+            className="justify-start text-gray-200 hover:text-white"
             asChild
           >
             <a href="#" rel="noopener noreferrer">

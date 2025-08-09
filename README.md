@@ -35,7 +35,8 @@ A powerful AI-driven video editing platform for creators and professionals. Syna
 - [Remotion 4](https://remotion.dev) - Browser-based video composition
 - [IndexedDB](https://developer.mozilla.org/docs/Web/API/IndexedDB_API) - Client-side data persistence
 - [fal.ai](https://fal.ai) - AI model access and processing
-- [UploadThing](https://uploadthing.com) - File upload
+- [Supabase](https://supabase.com) - Storage for file uploads
+- [UploadThing](https://uploadthing.com) - Alternative file upload solution
 
 ## Quick Start
 
@@ -81,6 +82,7 @@ Comprehensive documentation is available in the [docs](./docs) directory:
 - [Fill & Inpaint Feature Guide](./docs/fill-inpaint-feature.md) - Comprehensive guide to using the Fill & Inpaint feature
 - [Next.js 15 Upgrade](./docs/nextjs-15-upgrade.md) - Details about the upgrade from Next.js 14 to Next.js 15
 - [Tailwind CSS v4 Upgrade](./docs/tailwind-v4-upgrade.md) - Information about the Tailwind CSS v4 migration
+- [Supabase Setup Guide](./docs/supabase-setup.md) - Guide to setting up Supabase for file uploads
 
 ## Deployment
 

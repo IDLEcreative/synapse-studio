@@ -1,11 +1,13 @@
 "use client";
 
-import { useJobCreator } from "@/data/mutations";
+import { useJobCreator, type Veo2Input } from "@/data/mutations";
 import { queryKeys, useProject, useProjectMediaItems } from "@/data/queries";
 import type { MediaItem } from "@/data/schema";
 import {
   type GenerateData,
   type MediaType,
+  type AspectRatio,
+  type DurationString,
   useProjectId,
   useVideoProjectStore,
 } from "@/data/store";
@@ -34,7 +36,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Slider } from "./ui/slider";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, memo } from "react";
 import { useUploadThing } from "@/lib/uploadthing";
 import type { ClientUploadedFileData } from "uploadthing/types";
 import { db } from "@/data/db";
@@ -56,10 +58,15 @@ import {
   SelectValue,
 } from "./ui/select";
 import { enhancePrompt } from "@/lib/prompt";
-import { WithTooltip } from "./ui/tooltip";
+import {
+  WithTooltip,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
-import { VoiceSelector } from "./playht/voice-selector";
 import { LoadingIcon } from "./ui/icons";
 import { getMediaMetadata } from "@/lib/ffmpeg";
 import CameraMovement from "./camera-control";
@@ -90,11 +97,11 @@ function ModelEndpointPicker({
 
   return (
     <Select {...props} value={value}>
-      <SelectTrigger className="text-base w-full font-semibold bg-black/50 border-white/5 hover:border-blue-500/30 transition-colors rounded-xl">
+      <SelectTrigger className="text-base w-full font-semibold bg-black/30 border-white/10 hover:border-white/20 transition-colors rounded-xl">
         <div className="flex items-center gap-2">
           {selectedEndpoint ? (
             <>
-              <span>{selectedEndpoint.label}</span>
+              <span className="text-white">{selectedEndpoint.label}</span>
               {selectedEndpoint.endpointId.includes("v1.5") && (
                 <Badge
                   variant="outline"
@@ -105,7 +112,7 @@ function ModelEndpointPicker({
               )}
             </>
           ) : (
-            <span className="text-muted-foreground">Select a model</span>
+            <span className="text-white">Select a model</span>
           )}
         </div>
       </SelectTrigger>
@@ -120,27 +127,29 @@ function ModelEndpointPicker({
             {endpoint.description ? (
               <div className="flex flex-col gap-1 w-full overflow-hidden">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium truncate">{endpoint.label}</span>
+                  <span className="font-medium truncate text-white">
+                    {endpoint.label}
+                  </span>
                   {endpoint.endpointId.includes("v1.5") && (
                     <Badge
                       variant="outline"
-                      className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 shrink-0"
+                      className="bg-blue-500/20 text-blue-200 border-blue-500/30 text-[10px] px-1.5 py-0 shrink-0"
                     >
                       NEW
                     </Badge>
                   )}
                 </div>
-                <p className="text-xs text-gray-400 mt-0.5 truncate w-full">
+                <p className="text-xs text-gray-200 mt-0.5 truncate w-full">
                   {endpoint.description}
                 </p>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="font-medium">{endpoint.label}</span>
+                <span className="font-medium text-white">{endpoint.label}</span>
                 {endpoint.endpointId.includes("v1.5") && (
                   <Badge
                     variant="outline"
-                    className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] px-1.5 py-0 shrink-0"
+                    className="bg-blue-500/20 text-blue-200 border-blue-500/30 text-[10px] px-1.5 py-0 shrink-0"
                   >
                     NEW
                   </Badge>
@@ -238,7 +247,7 @@ function MediaTypeCard({
   );
 }
 
-export default function RightPanel({
+const RightPanel = memo(function RightPanel({
   onOpenChange,
 }: {
   onOpenChange?: (open: boolean) => void;
@@ -325,15 +334,7 @@ export default function RightPanel({
 
     const initialInput = endpoint?.initialInput || {};
 
-    if (
-      (mediaType === "video" &&
-        endpoint?.endpointId === "fal-ai/hunyuan-video") ||
-      mediaType !== "video"
-    ) {
-      setGenerateData({ image: null, ...initialInput });
-    } else {
-      setGenerateData({ ...initialInput });
-    }
+    setGenerateData({ ...initialInput });
 
     setEndpointId(
       endpoint?.endpointId ??
@@ -342,32 +343,106 @@ export default function RightPanel({
     );
   };
 
-  const createJob = useJobCreator({
-    projectId,
-    endpointId:
-      generateData.image && mediaType === "video"
-        ? `${endpointId}/image-to-video`
-        : endpointId,
-    mediaType,
-    input: {
+  // Prepare the input data for the job
+  const prepareJobInput = () => {
+    // Start with the initial input from the endpoint
+    const baseInput = {
       ...(endpoint?.initialInput || {}),
       ...mapInputKey(generateData, endpoint?.inputMap || {}),
-    },
+    };
+
+    // For Veo 2, handle the special case of image-to-video
+    if (endpointId === "fal-ai/veo2") {
+      // Create a new object with the base input
+      const veoInput: Veo2Input = {
+        prompt: generateData.prompt,
+        aspect_ratio: generateData.aspect_ratio || "auto",
+        duration: generateData.duration_string || "5s",
+      };
+
+      // Only include image_url if we have an image and it's a string URL
+      if (generateData.image && typeof generateData.image === "string") {
+        console.log("Using image URL for Veo 2:", generateData.image);
+        veoInput.image_url = generateData.image;
+      }
+
+      console.log("Final Veo 2 input:", veoInput);
+      return veoInput;
+    }
+
+    // For all other cases, return the base input
+    return baseInput;
+  };
+
+  // Determine the correct endpoint for Veo 2 based on whether an image is provided
+  const effectiveEndpointId = useMemo(() => {
+    if (
+      endpointId === "fal-ai/veo2" &&
+      generateData.image &&
+      typeof generateData.image === "string"
+    ) {
+      // Use the image-to-video endpoint when an image is provided
+      return "fal-ai/veo2/image-to-video";
+    }
+    // Otherwise use the standard endpoint
+    return endpointId;
+  }, [endpointId, generateData.image]);
+
+  const createJob = useJobCreator({
+    projectId,
+    endpointId: effectiveEndpointId,
+    mediaType,
+    input: prepareJobInput(),
   });
 
+  // Disable the generate button if prompt is empty
+  const isGenerateDisabled =
+    createJob.isPending || !generateData.prompt?.trim();
+
   const handleOnGenerate = async () => {
-    await createJob.mutateAsync({} as any, {
-      onSuccess: async () => {
+    // Log the input data for debugging
+    console.log("Generating with input:", prepareJobInput());
+    console.log("Base endpoint:", endpointId);
+    console.log("Effective endpoint:", effectiveEndpointId);
+    console.log("Image data:", generateData.image);
+
+    // Show a toast to indicate the mode being used
+    if (generateData.image && typeof generateData.image === "string") {
+      toast({
+        title: "Using Image-to-Video Mode",
+        description: "Animating your uploaded image based on the prompt.",
+      });
+    } else {
+      toast({
+        title: "Using Text-to-Video Mode",
+        description: "Generating video from your text prompt.",
+      });
+    }
+
+    await createJob.mutateAsync(undefined, {
+      onSuccess: async (data) => {
+        console.log("Job created successfully:", data);
         if (!createJob.isError) {
           handleOnOpenChange(false);
+          toast({
+            title: "Generation started",
+            description:
+              "Your video is being generated. It will appear in the media panel when ready.",
+          });
         }
+      },
+      onError: (error) => {
+        console.error("Job creation failed:", error);
+        toast({
+          title: "Generation failed",
+          description:
+            "There was an error generating your content. Please try again.",
+        });
       },
     });
   };
 
-  useEffect(() => {
-    videoProjectStore.onGenerate = handleOnGenerate;
-  }, [handleOnGenerate]);
+  // Remove the problematic useEffect - we'll call handleOnGenerate directly
 
   const handleSelectMedia = (media: MediaItem) => {
     const asset = endpoint?.inputAsset?.find((item) => {
@@ -539,7 +614,7 @@ export default function RightPanel({
                 // Open the Flux Pro Studio
                 openFluxProStudio(null, "flux-pro");
               }}
-              className="w-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 border-blue-500/30 hover:border-blue-500/50 text-blue-400 hover:text-blue-300 rounded-xl"
+              className="w-full bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white/20 text-white rounded-xl"
             >
               <Sparkles className="mr-2 h-4 w-4" />
               Open Image Studio
@@ -554,7 +629,45 @@ export default function RightPanel({
         {tab === "generation" && (
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-300">Prompt</h3>
+              <div className="flex items-center gap-1">
+                <h3 className="text-sm font-medium text-gray-300">Prompt</h3>
+                {endpointId === "fal-ai/veo2" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <InfoIcon className="w-3.5 h-3.5 text-gray-400 hover:text-gray-300 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-xs bg-black border border-white/10 text-white p-3">
+                        <p className="font-medium mb-1">
+                          Effective Veo 2 Prompts:
+                        </p>
+                        <ul className="list-disc pl-4 text-xs space-y-1">
+                          <li>
+                            <strong>Action:</strong> Describe how the
+                            image/scene should be animated
+                          </li>
+                          <li>
+                            <strong>Style:</strong> Specify the visual style
+                            (realistic, cartoon, etc.)
+                          </li>
+                          <li>
+                            <strong>Camera:</strong> Describe camera movements
+                            (zoom, pan, tracking)
+                          </li>
+                          <li>
+                            <strong>Ambiance:</strong> Set the mood and
+                            atmosphere
+                          </li>
+                        </ul>
+                        <p className="text-xs mt-1 italic">
+                          Example: "A lego chef cooking eggs with steam rising,
+                          camera slowly zooming in, warm morning light"
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
@@ -571,64 +684,173 @@ export default function RightPanel({
               </Button>
             </div>
             <Textarea
-              placeholder="Describe what you want to generate..."
+              placeholder={
+                endpointId === "fal-ai/veo2"
+                  ? generateData.image
+                    ? "Describe how to animate the image (e.g., 'A lego chef cooking eggs, camera slowly zooming in')"
+                    : "Describe the video you want to generate in detail (subject, action, style, camera motion)"
+                  : "Describe what you want to generate..."
+              }
               className="min-h-[100px] bg-black/50 border-white/5 resize-none rounded-xl"
               value={generateData.prompt}
               onChange={(e) => setGenerateData({ prompt: e.target.value })}
             />
 
-            {/* Recraft 20B specific controls */}
-            {endpointId === "fal-ai/recraft-20b" && (
+            {/* Veo 2 specific controls */}
+            {(endpointId === "fal-ai/veo2" ||
+              endpointId === "fal-ai/veo2/image-to-video") && (
               <div className="flex flex-col gap-4 mt-4">
-                {/* Style Selector */}
+                {/* Image Upload Section */}
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-sm font-medium text-gray-300">Style</h3>
-                  <Select
-                    value={generateData.style || "realistic_image"}
-                    onValueChange={(value) => setGenerateData({ style: value })}
-                  >
-                    <SelectTrigger className="bg-black/50 border-white/5 rounded-xl">
-                      <SelectValue placeholder="Select style" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="realistic_image">Realistic</SelectItem>
-                      <SelectItem value="anime">Anime</SelectItem>
-                      <SelectItem value="illustration">Illustration</SelectItem>
-                      <SelectItem value="painting">Painting</SelectItem>
-                      <SelectItem value="3d_render">3D Render</SelectItem>
-                      <SelectItem value="sketch">Sketch</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-400">
-                    Choose the visual style for your generated image
+                  <h3 className="text-sm font-medium text-gray-100">
+                    Input Image
+                  </h3>
+                  <div className="relative">
+                    <label
+                      htmlFor="image-upload"
+                      className="flex flex-col items-center justify-center w-full h-32 bg-black/30 border border-white/10 hover:border-white/20 rounded-xl cursor-pointer overflow-hidden"
+                    >
+                      {generateData.image ? (
+                        <div className="w-full h-full relative">
+                          <img
+                            src={
+                              typeof generateData.image === "string"
+                                ? generateData.image
+                                : URL.createObjectURL(generateData.image)
+                            }
+                            alt="Uploaded image"
+                            className="w-full h-full object-contain"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 bg-black/50 hover:bg-black/70 text-white rounded-full p-1"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setGenerateData({ image: null });
+                            }}
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-gray-300">
+                          <UploadIcon className="w-8 h-8 mb-2" />
+                          <span className="text-sm">
+                            Upload an image to animate
+                          </span>
+                          <span className="text-xs text-gray-400 mt-1">
+                            Click to browse or drag and drop
+                          </span>
+                        </div>
+                      )}
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            try {
+                              // Show loading state
+                              setGenerateData({ image: file });
+
+                              // Upload the file to get a proper URL
+                              const uploadedFiles = await startUpload([file]);
+                              if (uploadedFiles && uploadedFiles.length > 0) {
+                                // Set the uploaded image URL in the generateData
+                                setGenerateData({
+                                  image: uploadedFiles[0].url,
+                                });
+                                toast({
+                                  title: "Image uploaded",
+                                  description:
+                                    "Your image is ready to be animated.",
+                                });
+                              }
+                            } catch (err) {
+                              console.warn(`ERROR! ${err}`);
+                              toast({
+                                title: "Failed to upload image",
+                                description: "Please try again",
+                              });
+                            }
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-300">
+                    Optional: Upload an image to animate, or leave empty to
+                    generate from text prompt
                   </p>
                 </div>
-
-                {/* Image Size Selector */}
+                {/* Aspect Ratio Selector */}
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-sm font-medium text-gray-300">
-                    Image Size
+                  <h3 className="text-sm font-medium text-gray-100">
+                    Aspect Ratio
                   </h3>
                   <Select
-                    value={generateData.image_size || "square_hd"}
+                    value={generateData.aspect_ratio || "auto"}
                     onValueChange={(value) =>
-                      setGenerateData({ image_size: value })
+                      setGenerateData({ aspect_ratio: value as AspectRatio })
                     }
                   >
-                    <SelectTrigger className="bg-black/50 border-white/5 rounded-xl">
-                      <SelectValue placeholder="Select image size" />
+                    <SelectTrigger className="bg-black/30 border-white/10 hover:border-white/20 rounded-xl text-white">
+                      <SelectValue placeholder="Select aspect ratio" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="square_hd">Square HD</SelectItem>
-                      <SelectItem value="portrait_hd">Portrait HD</SelectItem>
-                      <SelectItem value="landscape_hd">Landscape HD</SelectItem>
-                      <SelectItem value="widescreen_hd">
-                        Widescreen HD (16:9)
+                    <SelectContent className="bg-black border-white/10">
+                      <SelectItem value="auto" className="text-white">
+                        Auto (from image)
+                      </SelectItem>
+                      <SelectItem value="16:9" className="text-white">
+                        Landscape (16:9)
+                      </SelectItem>
+                      <SelectItem value="9:16" className="text-white">
+                        Portrait (9:16)
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-gray-400">
-                    Select the aspect ratio and resolution for your image
+                  <p className="text-xs text-gray-300">
+                    Choose the aspect ratio for your generated video
+                  </p>
+                </div>
+
+                {/* Duration Selector */}
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-sm font-medium text-gray-100">
+                    Duration
+                  </h3>
+                  <Select
+                    value={generateData.duration_string || "5s"}
+                    onValueChange={(value) =>
+                      setGenerateData({
+                        duration_string: value as DurationString,
+                      })
+                    }
+                  >
+                    <SelectTrigger className="bg-black/30 border-white/10 hover:border-white/20 rounded-xl text-white">
+                      <SelectValue placeholder="Select duration" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black border-white/10">
+                      <SelectItem value="5s" className="text-white">
+                        5 seconds
+                      </SelectItem>
+                      <SelectItem value="6s" className="text-white">
+                        6 seconds
+                      </SelectItem>
+                      <SelectItem value="7s" className="text-white">
+                        7 seconds
+                      </SelectItem>
+                      <SelectItem value="8s" className="text-white">
+                        8 seconds
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-300">
+                    Select the duration of your generated video
                   </p>
                 </div>
               </div>
@@ -639,7 +861,7 @@ export default function RightPanel({
               variant="default"
               size="lg"
               onClick={handleOnGenerate}
-              disabled={createJob.isPending || !generateData.prompt?.trim()}
+              disabled={isGenerateDisabled}
               className="mt-4 w-full btn-accent rounded-xl"
             >
               {createJob.isPending ? (
@@ -654,4 +876,6 @@ export default function RightPanel({
       </div>
     </div>
   );
-}
+});
+
+export default RightPanel;
